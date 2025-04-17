@@ -35,9 +35,6 @@ namespace TwitchViewerBot.ConsoleUI.Commands
                 _logger.LogError(ex, "Proxy validation failed");
                 Console.WriteLine("Error during proxy validation");
             }
-
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
         }
     }
 }

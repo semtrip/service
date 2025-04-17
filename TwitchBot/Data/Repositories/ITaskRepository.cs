@@ -1,6 +1,6 @@
-﻿using TwitchViewerBot.Core.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using TwitchViewerBot.Core.Models;
 
 namespace TwitchViewerBot.Data.Repositories
 {
@@ -8,7 +8,8 @@ namespace TwitchViewerBot.Data.Repositories
     {
         Task<List<BotTask>> GetAll();
         Task<List<BotTask>> GetPendingTasks();
-        Task<BotTask> GetById(int id);
+        Task<List<BotTask>> GetRunningTasks(); // Добавьте этот метод
+        Task<BotTask?> GetById(int id);
         Task AddTask(BotTask task);
         Task UpdateTask(BotTask task);
     }

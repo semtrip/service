@@ -8,11 +8,13 @@ namespace TwitchViewerBot.ConsoleUI.Menus
     public class MainMenu
     {
         private readonly Dictionary<string, ICommand> _commands;
+        private readonly Dictionary<string, string> _menuItems;
 
         public MainMenu(
             ValidateProxiesCommand validateProxiesCommand,
             ValidateAccountsCommand validateAccountsCommand,
             StartTaskCommand startTaskCommand,
+            ValidateTokensCommand validateTokensCommand,
             ShowTasksCommand showTasksCommand,
             ShowLogsCommand showLogsCommand)
         {
@@ -20,9 +22,21 @@ namespace TwitchViewerBot.ConsoleUI.Menus
             {
                 ["1"] = validateProxiesCommand,
                 ["2"] = validateAccountsCommand,
-                ["3"] = startTaskCommand,
-                ["4"] = showTasksCommand,
-                ["5"] = showLogsCommand
+                ["3"] = validateTokensCommand, // Добавьте эту строку
+                ["4"] = startTaskCommand,
+                ["5"] = showTasksCommand,
+                ["6"] = showLogsCommand
+            };
+
+            _menuItems = new Dictionary<string, string>
+            {
+                ["1"] = "Проверить прокси",
+                ["2"] = "Проверить аккаунты",
+                ["3"] = "Проверить токены", // Добавьте эту строку
+                ["4"] = "Создать задачу",
+                ["5"] = "Список задач",
+                ["6"] = "Показать логи",
+                ["7"] = "Выход"
             };
         }
 
@@ -30,41 +44,67 @@ namespace TwitchViewerBot.ConsoleUI.Menus
         {
             while (true)
             {
-                Console.Clear();
-                PrintMenu();
-                var input = Console.ReadLine();
-
-                if (input == "6") break;
-
-                if (_commands.TryGetValue(input, out var command))
+                try
                 {
-                    try
+                    Console.Clear();
+                    PrintMenu();
+
+                    // Используем Console.ReadLine() вместо Console.ReadKey()
+                    var input = Console.ReadLine();
+
+                    if (string.IsNullOrEmpty(input))
+                        continue;
+
+                    if (input == "6") break;
+
+                    if (_commands.TryGetValue(input, out var command))
                     {
-                        await command.Execute();
+                        try
+                        {
+                            await command.Execute();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Ошибка: {ex.Message}");
+                            await WaitForAnyKey();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Console.WriteLine($"Error: {ex.Message}");
-                        await Task.Delay(2000);
+                        Console.WriteLine("Неверная команда");
+                        await Task.Delay(1000);
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Invalid command");
-                    await Task.Delay(1000);
+                    Console.WriteLine($"Критическая ошибка: {ex.Message}");
+                    await WaitForAnyKey();
                 }
+            }
+        }
+
+        private async Task WaitForAnyKey()
+        {
+            try
+            {
+                Console.WriteLine("Нажмите Enter для продолжения...");
+                // Используем ReadLine() вместо ReadKey()
+                while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
+            }
+            catch (InvalidOperationException)
+            {
+                // Если консольный ввод недоступен, просто ждем 2 секунды
+                await Task.Delay(2000);
             }
         }
 
         private void PrintMenu()
         {
             Console.WriteLine("=== Twitch Viewer Bot ===");
-            Console.WriteLine("1. Validate Proxies");
-            Console.WriteLine("2. Validate Accounts");
-            Console.WriteLine("3. Start New Task");
-            Console.WriteLine("4. Show Tasks");
-            Console.WriteLine("5. Show Logs");
-            Console.WriteLine("6. Exit");
+            foreach (var item in _menuItems)
+            {
+                Console.WriteLine($"{item.Key}. {item.Value}");
+            }
             Console.Write("> ");
         }
     }

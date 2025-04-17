@@ -17,11 +17,17 @@ var builder = Host.CreateDefaultBuilder(args)
         // Database
         services.AddDbContext<BotDbContext>(options =>
             options.UseSqlite("Data Source=twitchbot.db"));
+        
+        // Добавьте эту строку для AppDbContext
+        services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlite("Data Source=twitchbot.db"));
 
         // Services
         services.AddScoped<ITwitchService, TwitchService>();
         services.AddScoped<IProxyService, ProxyService>();
+        services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<ITaskService, TaskService>();
+        services.AddSingleton<TaskMonitor>();
 
         // Repositories
         services.AddScoped<IAccountRepository, AccountRepository>();
@@ -34,21 +40,20 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddTransient<StartTaskCommand>();
         services.AddTransient<ShowTasksCommand>();
         services.AddTransient<ShowLogsCommand>();
+        services.AddTransient<ValidateTokensCommand>();
 
         // Workers
         services.AddHostedService<TaskRunner>();
-        services.AddHostedService<BotWorker>();
-
+        
         // UI
         services.AddSingleton<MainMenu>();
-
-        // Helpers
         services.AddSingleton<LoggingHelper>();
     })
     .ConfigureLogging(logging =>
     {
         logging.ClearProviders();
         logging.AddConsole();
+        logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
     });
 
 var host = builder.Build();
@@ -57,15 +62,8 @@ var host = builder.Build();
 using (var scope = host.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<BotDbContext>();
-   
-    // Удаляем существующую БД
     await db.Database.EnsureDeletedAsync();
-    Console.WriteLine("База данных удалена");
-
-    // Создаем новую
     await db.Database.EnsureCreatedAsync();
-    Console.WriteLine("Новая база данных создана");
-
     await DbInitializer.Initialize(db);
 }
 

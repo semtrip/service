@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/semengusin/Documents/GitHub/streams-shop/servcie/TwitchBot/TwitchBot/TwitchBot.csproj": {}
+    "/Users/semengusin/Documents/GitHub/streams-shop/service/TwitchBot/TwitchBot.csproj": {}
   },
   "projects": {
-    "/Users/semengusin/Documents/GitHub/streams-shop/servcie/TwitchBot/TwitchBot/TwitchBot.csproj": {
+    "/Users/semengusin/Documents/GitHub/streams-shop/service/TwitchBot/TwitchBot.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/semengusin/Documents/GitHub/streams-shop/servcie/TwitchBot/TwitchBot/TwitchBot.csproj",
+        "projectUniqueName": "/Users/semengusin/Documents/GitHub/streams-shop/service/TwitchBot/TwitchBot.csproj",
         "projectName": "TwitchBot",
-        "projectPath": "/Users/semengusin/Documents/GitHub/streams-shop/servcie/TwitchBot/TwitchBot/TwitchBot.csproj",
+        "projectPath": "/Users/semengusin/Documents/GitHub/streams-shop/service/TwitchBot/TwitchBot.csproj",
         "packagesPath": "/Users/semengusin/.nuget/packages/",
-        "outputPath": "/Users/semengusin/Documents/GitHub/streams-shop/servcie/TwitchBot/TwitchBot/obj/",
+        "outputPath": "/Users/semengusin/Documents/GitHub/streams-shop/service/TwitchBot/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/semengusin/.nuget/NuGet/NuGet.Config"

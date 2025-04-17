@@ -95,45 +95,32 @@ namespace TwitchViewerBot.Core.Services
             var result = new ProxyValidationResult
             {
                 Proxy = proxy,
-                TestUrl = TwitchTestUrl
+                TestUrl = "http://httpbin.org/ip"
             };
 
             var stopwatch = Stopwatch.StartNew();
 
             try
             {
-                // 1. Check proxy reachability
-                var (reachabilitySuccess, reachabilityError) = await CheckProxyReachability(proxy);
-                if (!reachabilitySuccess)
-                {
-                    return FinalizeResult(result, false, $"Proxy unreachable: {reachabilityError}", stopwatch);
-                }
+                // 1. Проверка доступности прокси
+                var (reachable, reachError) = await CheckProxyReachability(proxy);
+                if (!reachable)
+                    return FinalizeResult(result, false, $"Proxy unreachable: {reachError}", stopwatch);
 
-                // 2. Check HTTPS connectivity
-                var (httpsSuccess, httpsError) = await CheckHttpsConnectivity(proxy);
-                if (!httpsSuccess)
-                {
-                    return FinalizeResult(result, false, $"HTTPS failed: {httpsError}", stopwatch);
-                }
-
-                // 3. Check Twitch access
-                var (twitchSuccess, twitchError) = await CheckTwitchAccess(proxy);
-                if (!twitchSuccess)
-                {
-                    return FinalizeResult(result, false, $"Twitch blocked: {twitchError}", stopwatch);
-                }
-
-                // 4. Check proxy auth if credentials exist
+                // 2. Проверка авторизации (если есть учетные данные)
                 if (!string.IsNullOrEmpty(proxy.Username))
                 {
-                    var (authSuccess, authError) = await CheckProxyAuthorization(proxy);
-                    if (!authSuccess)
-                    {
-                        return FinalizeResult(result, false, $"Auth failed: {authError}", stopwatch);
-                    }
+                    var (authValid, authError) = await CheckProxyAuthorization(proxy);
+                    if (!authValid)
+                        return FinalizeResult(result, false, authError, stopwatch);
                 }
 
-                return FinalizeResult(result, true, "Proxy works with Twitch", stopwatch);
+                // 3. Проверка доступа к Twitch
+                var (twitchOk, twitchError) = await CheckTwitchAccess(proxy);
+                if (!twitchOk)
+                    return FinalizeResult(result, false, $"Twitch access failed: {twitchError}", stopwatch);
+
+                return FinalizeResult(result, true, "Proxy is valid", stopwatch);
             }
             catch (Exception ex)
             {
@@ -144,7 +131,7 @@ namespace TwitchViewerBot.Core.Services
         public async Task<List<ProxyValidationResult>> ValidateAllProxies()
         {
             var proxies = await _proxyRepository.GetAll();
-            
+
             if (!proxies.Any())
             {
                 _logger.LogWarning("No proxies found in database. Please load proxies first.");
@@ -152,7 +139,7 @@ namespace TwitchViewerBot.Core.Services
             }
 
             _logger.LogInformation("Starting validation of {Count} proxies...", proxies.Count);
-            
+
             var results = new List<ProxyValidationResult>();
             foreach (var proxy in proxies)
             {
@@ -161,9 +148,9 @@ namespace TwitchViewerBot.Core.Services
             }
 
             var validCount = results.Count(r => r.IsValid);
-            _logger.LogInformation("Proxy validation completed. Valid: {Valid}, Invalid: {Invalid}", 
+            _logger.LogInformation("Proxy validation completed. Valid: {Valid}, Invalid: {Invalid}",
                 validCount, proxies.Count - validCount);
-            
+
             return results;
         }
 
@@ -205,8 +192,8 @@ namespace TwitchViewerBot.Core.Services
                 using var client = CreateHttpClient(handler, proxy, TimeSpan.FromSeconds(DefaultTimeoutSeconds));
 
                 var response = await client.GetAsync("https://httpbin.org/get");
-                return response.IsSuccessStatusCode 
-                    ? (true, string.Empty) 
+                return response.IsSuccessStatusCode
+                    ? (true, string.Empty)
                     : (false, $"HTTP {(int)response.StatusCode} {response.StatusCode}");
             }
             catch (Exception ex)
@@ -223,7 +210,7 @@ namespace TwitchViewerBot.Core.Services
                 using var client = CreateHttpClient(handler, proxy, TimeSpan.FromSeconds(15));
 
                 var response = await client.GetAsync(TwitchTestUrl);
-                
+
                 if (!response.IsSuccessStatusCode)
                 {
                     return (false, $"HTTP {(int)response.StatusCode}");
@@ -252,7 +239,8 @@ namespace TwitchViewerBot.Core.Services
         {
             try
             {
-                var handler = new HttpClientHandler
+                // 1. Проверяем с неверными данными (должны получить 407)
+                var invalidHandler = new HttpClientHandler
                 {
                     Proxy = new WebProxy($"{proxy.Address}:{proxy.Port}")
                     {
@@ -261,21 +249,36 @@ namespace TwitchViewerBot.Core.Services
                     UseProxy = true
                 };
 
-                using var client = CreateHttpClient(handler, proxy, TimeSpan.FromSeconds(5));
-                
+                using var invalidClient = CreateHttpClient(invalidHandler, proxy, TimeSpan.FromSeconds(5));
+
                 try
                 {
-                    await client.GetAsync("http://httpbin.org/ip");
-                    return (false, "Accepted invalid credentials");
+                    await invalidClient.GetAsync("http://httpbin.org/ip");
+                    return (false, "Proxy accepted invalid credentials");
                 }
                 catch (HttpRequestException ex) when (ex.Message.Contains("407"))
                 {
-                    return (true, string.Empty);
+                    // 2. Теперь проверяем с реальными данными
+                    var validHandler = new HttpClientHandler
+                    {
+                        Proxy = new WebProxy($"{proxy.Address}:{proxy.Port}")
+                        {
+                            Credentials = new NetworkCredential(proxy.Username, proxy.Password)
+                        },
+                        UseProxy = true
+                    };
+
+                    using var validClient = CreateHttpClient(validHandler, proxy, TimeSpan.FromSeconds(10));
+
+                    var response = await validClient.GetAsync("http://httpbin.org/ip");
+                    return response.IsSuccessStatusCode
+                        ? (true, string.Empty)
+                        : (false, $"HTTP error: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
-                return (false, ex.Message);
+                return (false, $"Auth validation failed: {ex.Message}");
             }
         }
 
@@ -315,33 +318,39 @@ namespace TwitchViewerBot.Core.Services
         }
 
         private ProxyValidationResult FinalizeResult(
-            ProxyValidationResult result,
-            bool isValid,
-            string message,
-            Stopwatch stopwatch)
+        ProxyValidationResult result,
+        bool isValid,
+        string message,
+        Stopwatch stopwatch)
         {
             stopwatch.Stop();
-            
+
             result.IsValid = isValid;
-            result.ErrorMessage = isValid ? string.Empty : message;
+            result.ErrorMessage = message;
             result.ResponseTime = stopwatch.Elapsed;
-            
-            LogResult(result);
-            UpdateProxyInDatabase(result);
-            
+
+            var status = isValid ? "VALID" : "INVALID";
+            _logger.LogInformation(
+                "Proxy {Proxy}:{Port} - {Status} - {Time}ms - {Message}",
+                result.Proxy.Address,
+                result.Proxy.Port,
+                status,
+                result.ResponseTime.TotalMilliseconds,
+                message);
+
             return result;
         }
 
         private void LogResult(ProxyValidationResult result)
         {
             var originalColor = Console.ForegroundColor;
-            
+
             Console.Write($"[{DateTime.UtcNow:HH:mm:ss}] ");
             Console.Write($"Proxy {result.Proxy.Address}:{result.Proxy.Port} - ");
-            
+
             Console.ForegroundColor = result.IsValid ? ConsoleColor.Green : ConsoleColor.Red;
             Console.Write(result.IsValid ? "VALID" : "INVALID");
-            
+
             Console.ForegroundColor = originalColor;
             Console.WriteLine($" - {result.ResponseTime.TotalMilliseconds}ms - {result.ErrorMessage ?? "Success"}");
 

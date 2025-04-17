@@ -45,5 +45,11 @@ namespace TwitchViewerBot.Data.Repositories
             _context.Tasks.Update(task);
             await _context.SaveChangesAsync();
         }
+        public async Task<List<BotTask>> GetRunningTasks()
+        {
+            return await _context.Tasks
+                .Where(t => t.Status == Core.Enums.TaskStatus.Running)
+                .ToListAsync();
+        }
     }
 }

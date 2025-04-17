@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TwitchViewerBot.Core.Enums;
 using TwitchViewerBot.Core.Models;
 using TwitchViewerBot.Core.Services;
 
@@ -17,25 +16,45 @@ namespace TwitchViewerBot.ConsoleUI.Commands
 
         public async Task Execute()
         {
-            Console.Write("Enter channel URL: ");
-            var channelUrl = Console.ReadLine();
-
-            Console.Write("Enter max viewers (10-1000): ");
-            if (!int.TryParse(Console.ReadLine(), out var maxViewers) || maxViewers < 10 || maxViewers > 1000)
+            try
             {
-                Console.WriteLine("Invalid viewers count");
-                return;
+                Console.WriteLine("=== Создание новой задачи ===");
+                
+                var task = new BotTask();
+                
+                Console.Write("URL канала: ");
+                var url = Console.ReadLine();
+                if (string.IsNullOrEmpty(url))
+                    throw new ArgumentException("URL канала не может быть пустым");
+                task.ChannelUrl = url;
+                
+                Console.Write("Пиковый онлайн (10-1000): ");
+                var viewersInput = Console.ReadLine();
+                if (string.IsNullOrEmpty(viewersInput))
+                    throw new ArgumentException("Количество зрителей не может быть пустым");
+                task.MaxViewers = Math.Clamp(int.Parse(viewersInput), 10, 1000);
+                
+                Console.Write("Время взлёта (1-30 мин): ");
+                var rampUpInput = Console.ReadLine();
+                if (string.IsNullOrEmpty(rampUpInput))
+                    throw new ArgumentException("Время взлёта не может быть пустым");
+                task.RampUpTime = Math.Clamp(int.Parse(rampUpInput), 1, 30);
+                
+                Console.Write("Длительность (1-8 часов): ");
+                var durationInput = Console.ReadLine();
+                if (string.IsNullOrEmpty(durationInput))
+                    throw new ArgumentException("Длительность не может быть пустой");
+                var hours = Math.Clamp(int.Parse(durationInput), 1, 8);
+                task.Duration = TimeSpan.FromHours(hours);
+                
+                await _taskService.AddTask(task);
+                Console.WriteLine($"Задача {task.Id} создана! Авторизованных: {task.AuthViewersCount}, Гостевых: {task.GuestViewersCount}");
             }
-
-            var task = new BotTask
+            catch (Exception ex)
             {
-                ChannelUrl = channelUrl,
-                MaxViewers = maxViewers,
-                Status = Core.Enums.TaskStatus.Pending
-            };
-
-            await _taskService.AddTask(task);
-            Console.WriteLine($"Task {task.Id} created");
+                Console.WriteLine($"Ошибка: {ex.Message}");
+            }
+            
             await Task.Delay(1000);
         }
     }

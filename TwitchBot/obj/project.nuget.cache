@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "zonvdCfc2J8=",
+  "dgSpecHash": "A+doWO3EsL8=",
   "success": true,
-  "projectFilePath": "/Users/semengusin/Documents/GitHub/streams-shop/servcie/TwitchBot/TwitchBot/TwitchBot.csproj",
+  "projectFilePath": "/Users/semengusin/Documents/GitHub/streams-shop/service/TwitchBot/TwitchBot.csproj",
   "expectedPackageFiles": [
     "/Users/semengusin/.nuget/packages/microsoft.data.sqlite.core/9.0.4/microsoft.data.sqlite.core.9.0.4.nupkg.sha512",
     "/Users/semengusin/.nuget/packages/microsoft.entityframeworkcore/9.0.4/microsoft.entityframeworkcore.9.0.4.nupkg.sha512",
