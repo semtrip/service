@@ -6,7 +6,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using TwitchViewerBot.Core.Models;
-using SeleniumCookie = OpenQA.Selenium.Cookie; // Алиас для разрешения конфликта имен
+using SeleniumCookie = OpenQA.Selenium.Cookie;
 
 namespace TwitchViewerBot.Core.Services
 {
@@ -24,33 +24,53 @@ namespace TwitchViewerBot.Core.Services
 
         public async Task<bool> IsStreamLive(string channelUrl)
         {
-            var options = new ChromeOptions();
-            options.AddArguments("--headless", "--mute-audio");
-            
+            ChromeDriver driver = null;
             try
             {
-                using var driver = new ChromeDriver(options);
+                var options = new ChromeOptions();
+                options.AddArguments(
+                    "--headless",
+                    "--mute-audio",
+                    "--disable-gpu",
+                    "--no-sandbox",
+                    "--disable-dev-shm-usage",
+                    "--window-size=1920,1080");
+
+                driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(60));
+                driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(30);
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+
                 driver.Navigate().GoToUrl(channelUrl);
                 await Task.Delay(5000); // Ждем загрузки страницы
 
                 return driver.FindElements(By.CssSelector("[data-a-target='live-indicator']")).Any();
             }
+            catch (WebDriverException ex)
+            {
+                _logger.LogError(ex, $"WebDriver error checking stream: {channelUrl}");
+                throw new Exception("Ошибка инициализации браузера. Проверьте установку ChromeDriver.");
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error checking stream live status: {channelUrl}");
-                return false;
+                throw new Exception("Ошибка при проверке стрима. Убедитесь в корректности URL.");
+            }
+            finally
+            {
+                driver?.Quit();
+                driver?.Dispose();
             }
         }
 
         public async Task<bool> VerifyAccount(TwitchAccount account, ProxyServer proxy)
         {
-            var options = new ChromeOptions();
-            ConfigureBrowserOptions(options, proxy);
-            options.AddArgument("--headless");
-
+            ChromeDriver driver = null;
             try
             {
-                using var driver = new ChromeDriver(options);
+                var options = ConfigureBrowserOptions(new ChromeOptions(), proxy);
+                options.AddArgument("--headless");
+
+                driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(60));
                 return await AuthenticateWithCookies(driver, account.AuthToken);
             }
             catch (Exception ex)
@@ -58,17 +78,23 @@ namespace TwitchViewerBot.Core.Services
                 _logger.LogError(ex, $"Account verification failed: {account.Username}");
                 return false;
             }
+            finally
+            {
+                driver?.Quit();
+                driver?.Dispose();
+            }
         }
 
         public async Task WatchStream(TwitchAccount account, ProxyServer proxy, string channelUrl, int minutes)
         {
-            var options = new ChromeOptions();
-            ConfigureBrowserOptions(options, proxy);
-            options.AddArgument("--mute-audio");
-
-            using var driver = new ChromeDriver(options);
+            ChromeDriver driver = null;
             try
             {
+                var options = ConfigureBrowserOptions(new ChromeOptions(), proxy);
+                options.AddArgument("--mute-audio");
+
+                driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(60));
+
                 if (!await AuthenticateWithCookies(driver, account.AuthToken))
                 {
                     _logger.LogWarning($"Auth failed for account: {account.Username}");
@@ -77,30 +103,42 @@ namespace TwitchViewerBot.Core.Services
 
                 await WatchChannel(driver, channelUrl, minutes);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error watching stream for account {account.Username}");
+                throw;
+            }
             finally
             {
-                driver.Quit();
+                driver?.Quit();
+                driver?.Dispose();
             }
         }
 
         public async Task WatchAsGuest(ProxyServer proxy, string channelUrl, int minutes)
         {
-            var options = new ChromeOptions();
-            ConfigureBrowserOptions(options, proxy);
-            options.AddArgument("--mute-audio");
-
-            using var driver = new ChromeDriver(options);
+            ChromeDriver driver = null;
             try
             {
+                var options = ConfigureBrowserOptions(new ChromeOptions(), proxy);
+                options.AddArgument("--mute-audio");
+
+                driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(60));
                 await WatchChannel(driver, channelUrl, minutes);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error watching as guest: {channelUrl}");
+                throw;
             }
             finally
             {
-                driver.Quit();
+                driver?.Quit();
+                driver?.Dispose();
             }
         }
 
-        private async Task<bool> AuthenticateWithCookies(IWebDriver driver, string authToken)
+        private async Task<bool> AuthenticateWithCookies(ChromeDriver driver, string authToken)
         {
             try
             {
@@ -126,7 +164,7 @@ namespace TwitchViewerBot.Core.Services
             }
         }
 
-        private bool IsUserAuthenticated(IWebDriver driver)
+        private bool IsUserAuthenticated(ChromeDriver driver)
         {
             try
             {
@@ -138,13 +176,13 @@ namespace TwitchViewerBot.Core.Services
             }
         }
 
-        private async Task WatchChannel(IWebDriver driver, string channelUrl, int minutes)
+        private async Task WatchChannel(ChromeDriver driver, string channelUrl, int minutes)
         {
             driver.Navigate().GoToUrl(channelUrl);
             await HumanLikeActivity(driver, minutes);
         }
 
-        private async Task HumanLikeActivity(IWebDriver driver, int minutes)
+        private async Task HumanLikeActivity(ChromeDriver driver, int minutes)
         {
             var endTime = DateTime.Now.AddMinutes(minutes);
             var actions = new Action[]
@@ -166,32 +204,11 @@ namespace TwitchViewerBot.Core.Services
                     }
                     catch { }
                 }
-
                 await Task.Delay(_random.Next(15000, 30000));
             }
         }
 
-        private void ClickRandomElement(IWebDriver driver, string selector)
-        {
-            var elements = driver.FindElements(By.CssSelector(selector));
-            if (elements.Count > 0)
-            {
-                elements[_random.Next(0, elements.Count)].Click();
-            }
-        }
-
-        private void SendChatMessage(IWebDriver driver)
-        {
-            try
-            {
-                var chatInput = driver.FindElement(By.CssSelector(".chat-input"));
-                chatInput.SendKeys("Nice stream! " + _random.Next(1000));
-                chatInput.SendKeys(Keys.Enter);
-            }
-            catch { }
-        }
-
-        private void ConfigureBrowserOptions(ChromeOptions options, ProxyServer proxy)
+        private ChromeOptions ConfigureBrowserOptions(ChromeOptions options, ProxyServer proxy)
         {
             if (proxy != null)
             {
@@ -209,7 +226,30 @@ namespace TwitchViewerBot.Core.Services
                 "--disable-popup-blocking",
                 "--disable-extensions",
                 "--disable-gpu",
-                "--no-sandbox");
+                "--no-sandbox",
+                "--disable-dev-shm-usage");
+
+            return options;
+        }
+
+        private void ClickRandomElement(ChromeDriver driver, string selector)
+        {
+            var elements = driver.FindElements(By.CssSelector(selector));
+            if (elements.Count > 0)
+            {
+                elements[_random.Next(0, elements.Count)].Click();
+            }
+        }
+
+        private void SendChatMessage(ChromeDriver driver)
+        {
+            try
+            {
+                var chatInput = driver.FindElement(By.CssSelector(".chat-input"));
+                chatInput.SendKeys("Nice stream! " + _random.Next(1000));
+                chatInput.SendKeys(Keys.Enter);
+            }
+            catch { }
         }
     }
 }

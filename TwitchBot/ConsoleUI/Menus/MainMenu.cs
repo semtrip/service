@@ -22,7 +22,7 @@ namespace TwitchViewerBot.ConsoleUI.Menus
             {
                 ["1"] = validateProxiesCommand,
                 ["2"] = validateAccountsCommand,
-                ["3"] = validateTokensCommand, // Добавьте эту строку
+                ["3"] = validateTokensCommand,
                 ["4"] = startTaskCommand,
                 ["5"] = showTasksCommand,
                 ["6"] = showLogsCommand
@@ -32,7 +32,7 @@ namespace TwitchViewerBot.ConsoleUI.Menus
             {
                 ["1"] = "Проверить прокси",
                 ["2"] = "Проверить аккаунты",
-                ["3"] = "Проверить токены", // Добавьте эту строку
+                ["3"] = "Проверить токены",
                 ["4"] = "Создать задачу",
                 ["5"] = "Список задач",
                 ["6"] = "Показать логи",
@@ -55,7 +55,7 @@ namespace TwitchViewerBot.ConsoleUI.Menus
                     if (string.IsNullOrEmpty(input))
                         continue;
 
-                    if (input == "6") break;
+                    if (input == "7") break;
 
                     if (_commands.TryGetValue(input, out var command))
                     {

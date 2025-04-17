@@ -33,7 +33,22 @@ namespace TwitchViewerBot.Core.Services
 
         public async Task AddTask(BotTask task)
         {
-            await _taskRepository.AddTask(task);
+            try
+            {
+                // Проверяем, что стрим существует и онлайн
+                if (!await _twitchService.IsStreamLive(task.ChannelUrl))
+                {
+                    throw new Exception("Стрим не найден или оффлайн");
+                }
+
+                await _taskRepository.AddTask(task);
+                _logger.LogInformation($"Task {task.Id} created for channel {task.ChannelUrl}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error adding task for {task.ChannelUrl}");
+                throw;
+            }
         }
 
         public async Task<List<BotTask>> GetAllTasks()
