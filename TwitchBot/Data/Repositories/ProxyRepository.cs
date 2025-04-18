@@ -41,13 +41,27 @@ namespace TwitchViewerBot.Data.Repositories
 
         public async Task AddProxy(ProxyServer proxy)
         {
+            Console.WriteLine(proxy);
+            proxy.IsValid = false;
+            proxy.LastChecked = DateTime.MinValue;
+
             await _context.Proxies.AddAsync(proxy);
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateProxy(ProxyServer proxy)
         {
-            _context.Proxies.Update(proxy);
+            // Получаем текущее состояние прокси из БД
+            var existingProxy = await _context.Proxies.FindAsync(proxy.Id);
+            if (existingProxy == null) return;
+
+            // Обновляем только разрешенные поля
+            existingProxy.Username = proxy.Username;
+            existingProxy.Password = proxy.Password;
+            existingProxy.LastChecked = proxy.LastChecked;
+
+            // Явно НЕ обновляем IsValid и другие поля
+            _context.Entry(existingProxy).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 

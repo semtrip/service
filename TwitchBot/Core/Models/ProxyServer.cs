@@ -4,6 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TwitchViewerBot.Core.Models
 {
+    public enum ProxyType
+    {
+        HTTP,
+        SOCKS5
+    }
+
     public class ProxyServer
     {
         [Key]
@@ -18,7 +24,10 @@ namespace TwitchViewerBot.Core.Models
         
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public bool IsValid { get; set; }
+
+        public ProxyType Type { get; set; } = ProxyType.HTTP;
+
+        public bool IsValid { get; set; } = false;
         public DateTime LastChecked { get; set; }
     }
 }

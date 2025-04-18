@@ -21,5 +21,6 @@ namespace TwitchViewerBot.Data
                 .HasForeignKey(a => a.ProxyId)
                 .OnDelete(DeleteBehavior.SetNull);
         }
+        
     }
 }

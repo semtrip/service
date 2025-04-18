@@ -65,11 +65,19 @@
             },
             "Selenium.WebDriver": {
               "target": "Package",
-              "version": "[4.16.2, )"
+              "version": "[4.31.0, )"
             },
             "Selenium.WebDriver.ChromeDriver": {
               "target": "Package",
               "version": "[119.0.6045.10500, )"
+            },
+            "SocksSharp": {
+              "target": "Package",
+              "version": "[1.1.1, )"
+            },
+            "SocksWebProxy": {
+              "target": "Package",
+              "version": "[1.0.5, )"
             }
           },
           "imports": [

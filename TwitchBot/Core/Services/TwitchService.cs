@@ -24,41 +24,45 @@ namespace TwitchViewerBot.Core.Services
 
         public async Task<bool> IsStreamLive(string channelUrl)
         {
-            ChromeDriver driver = null;
+            var options = new ChromeOptions();
+            options.AddArguments(
+                "--headless=new", // Новый headless режим
+                "--disable-gpu",
+                "--no-sandbox",
+                "--disable-dev-shm-usage", // Важно для Docker/лимитов памяти
+                "--window-size=1920,1080",
+                "--mute-audio",
+                "--disable-extensions",
+                "--disable-notifications",
+                "--log-level=3"
+            );
+
             try
             {
-                var options = new ChromeOptions();
-                options.AddArguments(
-                    "--headless",
-                    "--mute-audio",
-                    "--disable-gpu",
-                    "--no-sandbox",
-                    "--disable-dev-shm-usage",
-                    "--window-size=1920,1080");
-
-                driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(60));
-                driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(30);
-                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+                using var driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(30));
+                driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
 
                 driver.Navigate().GoToUrl(channelUrl);
-                await Task.Delay(5000); // Ждем загрузки страницы
 
-                return driver.FindElements(By.CssSelector("[data-a-target='live-indicator']")).Any();
-            }
-            catch (WebDriverException ex)
-            {
-                _logger.LogError(ex, $"WebDriver error checking stream: {channelUrl}");
-                throw new Exception("Ошибка инициализации браузера. Проверьте установку ChromeDriver.");
+                // Ждем появления индикатора live
+                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
+                try
+                {
+                    var liveIndicator = wait.Until(d =>
+                        d.FindElements(By.CssSelector("[data-a-target='live-indicator']"))
+                        .FirstOrDefault(e => e.Displayed));
+
+                    return liveIndicator != null;
+                }
+                catch (WebDriverTimeoutException)
+                {
+                    return false;
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error checking stream live status: {channelUrl}");
-                throw new Exception("Ошибка при проверке стрима. Убедитесь в корректности URL.");
-            }
-            finally
-            {
-                driver?.Quit();
-                driver?.Dispose();
+                _logger.LogError(ex, "Error checking stream: {Url}", channelUrl);
+                throw new Exception("Browser initialization error. Check ChromeDriver installation.");
             }
         }
 
@@ -143,7 +147,7 @@ namespace TwitchViewerBot.Core.Services
             try
             {
                 driver.Navigate().GoToUrl("https://www.twitch.tv");
-                
+
                 var authCookie = new SeleniumCookie(
                     name: AuthCookieName,
                     value: authToken,
@@ -218,7 +222,7 @@ namespace TwitchViewerBot.Core.Services
                     options.AddArgument($"--proxy-auth={proxy.Username}:{proxy.Password}");
                 }
             }
-            
+
             options.AddArguments(
                 "--disable-blink-features=AutomationControlled",
                 "--disable-infobars",

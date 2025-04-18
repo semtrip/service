@@ -10,6 +10,8 @@ namespace TwitchViewerBot.Data
         }
 
         public DbSet<ProxyServer> Proxies { get; set; }
+        public DbSet<TwitchAccount> Accounts { get; set; }
+        public DbSet<BotTask> Tasks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

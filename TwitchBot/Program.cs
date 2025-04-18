@@ -61,10 +61,17 @@ var host = builder.Build();
 // Initialize database
 using (var scope = host.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<BotDbContext>();
-    await db.Database.EnsureDeletedAsync();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var proxyService = scope.ServiceProvider.GetRequiredService<IProxyService>();
+
+    // Создаем БД, если не существует (без удаления)
     await db.Database.EnsureCreatedAsync();
-    await DbInitializer.Initialize(db);
+
+    // Инициализируем данные только если таблица прокси пуста
+    if (!await db.Proxies.AnyAsync())
+    {
+        await DbInitializer.Initialize(db, proxyService);
+    }
 }
 
 // Start main menu

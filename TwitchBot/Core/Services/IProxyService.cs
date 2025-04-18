@@ -6,11 +6,39 @@ namespace TwitchViewerBot.Core.Services
 {
     public interface IProxyService
     {
-        Task<List<ProxyValidationResult>> ValidateAllProxies();
+        /// <summary>
+        /// Загрузить прокси из файла, добавить новые и обновить существующие.
+        /// </summary>
+        Task<int> LoadOrUpdateProxiesFromFile(string filePath);
+
+        /// <summary>
+        /// Проверить и валидировать один прокси.
+        /// </summary>
         Task<ProxyValidationResult> ValidateProxy(ProxyServer proxy);
+
+        /// <summary>
+        /// Проверить и валидировать все прокси из базы.
+        /// </summary>
+        Task<List<ProxyValidationResult>> ValidateAllProxies();
+
+        /// <summary>
+        /// Получить список валидных прокси из базы.
+        /// </summary>
         Task<List<ProxyServer>> GetValidProxies();
-        Task<bool> TestProxyConnection(ProxyServer proxy);
-        Task<int> LoadProxiesFromFile(string filePath);
+
+        /// <summary>
+        /// Добавить единичный прокси в базу.
+        /// </summary>
+        Task AddProxy(ProxyServer proxy);
+
+        /// <summary>
+        /// Обновить данные прокси в базе.
+        /// </summary>
+        Task UpdateProxy(ProxyServer proxy);
+
+        /// <summary>
+        /// Получить общее количество прокси в базе.
+        /// </summary>
         Task<int> GetProxyCount();
     }
 }
