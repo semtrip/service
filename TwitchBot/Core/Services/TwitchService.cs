@@ -7,6 +7,9 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using TwitchViewerBot.Core.Models;
 using SeleniumCookie = OpenQA.Selenium.Cookie;
+using WebDriverManager;
+using WebDriverManager.DriverConfigs.Impl;
+using System.Diagnostics;
 
 namespace TwitchViewerBot.Core.Services
 {
@@ -24,48 +27,100 @@ namespace TwitchViewerBot.Core.Services
 
         public async Task<bool> IsStreamLive(string channelUrl)
         {
-            var options = new ChromeOptions();
-            options.AddArguments(
-                "--headless=new", // Новый headless режим
-                "--disable-gpu",
-                "--no-sandbox",
-                "--disable-dev-shm-usage", // Важно для Docker/лимитов памяти
-                "--window-size=1920,1080",
-                "--mute-audio",
-                "--disable-extensions",
-                "--disable-notifications",
-                "--log-level=3"
-            );
+            // Проверяем валидность URL
+            if (!Uri.TryCreate(channelUrl, UriKind.Absolute, out var uri) ||
+                uri.Host != "www.twitch.tv")
+            {
+                _logger.LogError($"Invalid Twitch URL: {channelUrl}");
+                return false;
+            }
 
             try
             {
+                new DriverManager().SetUpDriver(new ChromeConfig());
+
+                var options = new ChromeOptions();
+                options.AddArguments(
+                    "--headless=new",
+                    "--disable-gpu",
+                    "--no-sandbox",
+                    "--disable-dev-shm-usage",
+                    "--window-size=1920,1080",
+                    "--mute-audio",
+                    "--disable-extensions",
+                    "--disable-notifications",
+                    "--log-level=3",
+                    "--enable-unsafe-swiftshader",
+                    $"user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{GetChromeMajorVersion()} Safari/537.36"
+                );
+
+                options.AddExcludedArgument("enable-automation");
+                options.AddAdditionalOption("useAutomationExtension", false);
+
                 using var driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(30));
-                driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
+
+                // Удаляем признаки автоматизации
+                ((IJavaScriptExecutor)driver).ExecuteScript(
+                    "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
 
                 driver.Navigate().GoToUrl(channelUrl);
+                await Task.Delay(10000); // Увеличиваем время ожидания
 
-                // Ждем появления индикатора live
-                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
                 try
                 {
-                    var liveIndicator = wait.Until(d =>
-                        d.FindElements(By.CssSelector("[data-a-target='live-indicator']"))
-                        .FirstOrDefault(e => e.Displayed));
+                    // Новые селекторы для 2024 года
+                    var liveElements = driver.FindElements(By.XPath(
+                        "//*[contains(@data-a-target,'live-indicator') or contains(text(),'LIVE') or contains(@aria-label,'live')]"));
 
-                    return liveIndicator != null;
+                    return liveElements.Any(e => e.Displayed);
                 }
-                catch (WebDriverTimeoutException)
+                catch
                 {
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error checking stream: {Url}", channelUrl);
-                throw new Exception("Browser initialization error. Check ChromeDriver installation.");
+                _logger.LogError(ex, "Browser initialization failed");
+                return false;
             }
         }
 
+        private string GetChromeMajorVersion()
+        {
+            try
+            {
+                var chromePath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
+                var versionInfo = FileVersionInfo.GetVersionInfo(chromePath);
+                return versionInfo.FileMajorPart.ToString();
+            }
+            catch
+            {
+                return "119"; // Версия по умолчанию
+            }
+        }
+        public async Task<bool> IsStreamLiveApi(string channelName)
+        {
+            try
+            {
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Add("Client-ID", "kimne78kx3ncx6brgo4mv6wki5h1ko"); // Стандартный Client-ID Twitch
+
+                var response = await httpClient.GetAsync(
+                    $"https://gql.twitch.tv/gql?query=%7B%0A%20%20user%28login%3A%22{channelName}%22%29%20%7B%0A%20%20%20%20stream%20%7B%0A%20%20%20%20%20%20id%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    return content.Contains("\"stream\":{\"id\"") || content.Contains("\"type\":\"live\"");
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public async Task<bool> VerifyAccount(TwitchAccount account, ProxyServer proxy)
         {
             ChromeDriver driver = null;

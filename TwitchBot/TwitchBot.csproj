@@ -13,10 +13,11 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.4" />
-    <PackageReference Include="Selenium.WebDriver" Version="4.31.0" />
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="119.0.6045.10500" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.20.0" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="135.0.7049.95" />
     <PackageReference Include="SocksSharp" Version="1.1.1" />
     <PackageReference Include="SocksWebProxy" Version="1.0.5" />
+    <PackageReference Include="WebDriverManager" Version="2.17.5" />
   </ItemGroup>
 
 </Project>

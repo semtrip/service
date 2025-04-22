@@ -35,10 +35,28 @@ namespace TwitchViewerBot.Core.Services
         {
             try
             {
-                // Проверяем, что стрим существует и онлайн
-                if (!await _twitchService.IsStreamLive(task.ChannelUrl))
+                // Проверка формата URL
+                if (!task.ChannelUrl.StartsWith("https://www.twitch.tv/"))
                 {
-                    throw new Exception("Стрим не найден или оффлайн");
+                    throw new Exception("Некорректный URL канала. Должен быть в формате: https://www.twitch.tv/username");
+                }
+
+                // Проверка онлайн-статуса
+                bool isLive = await _twitchService.IsStreamLive(task.ChannelUrl);
+
+                if (!isLive)
+                {
+                    // Пробуем API метод как запасной вариант
+                    var channelName = task.ChannelUrl.Split('/').Last();
+                    isLive = await _twitchService.IsStreamLiveApi(channelName);
+
+                    if (!isLive)
+                    {
+                        throw new Exception("Стрим не в эфире или недоступен. Проверьте:\n" +
+                                         "1. Правильность URL\n" +
+                                         "2. Что стрим действительно онлайн\n" +
+                                         "3. Нет ли блокировки в вашем регионе");
+                    }
                 }
 
                 await _taskRepository.AddTask(task);

@@ -24,41 +24,48 @@ namespace TwitchViewerBot.Core.Services
             _random = new Random();
         }
 
+        // В TaskMonitor.cs
         public async Task MonitorAndAdjustTasks()
         {
-            var runningTasks = (await _taskService.GetRunningTasks())
-                .Where(t => t.LastUpdated < DateTime.UtcNow.AddMinutes(-5))
-                .ToList();
+            var runningTasks = await _taskService.GetRunningTasks();
 
             foreach (var task in runningTasks)
             {
                 try
                 {
-                    if (!await _twitchService.IsStreamLive(task.ChannelUrl!))
+                    // Проверяем, жив ли стрим
+                    var isLive = await _twitchService.IsStreamLive(task.ChannelUrl);
+                    if (!isLive)
                     {
                         await _taskService.PauseTask(task.Id);
                         continue;
                     }
 
-                    var fluctuation = (int)(task.MaxViewers * 0.25 * _random.NextDouble());
-                    var direction = _random.Next(2) == 0 ? -1 : 1;
-                    var newViewers = task.CurrentViewers + (direction * fluctuation);
-
+                    // Имитация естественного колебания зрителей
+                    var fluctuation = CalculateViewerFluctuation(task);
                     task.CurrentViewers = Math.Clamp(
-                        newViewers,
-                        (int)(task.MaxViewers * 0.75),
+                        task.CurrentViewers + fluctuation,
+                        (int)(task.MaxViewers * 0.7), // Минимум 70% от максимума
                         task.MaxViewers);
 
                     task.LastUpdated = DateTime.UtcNow;
                     await _taskService.UpdateTask(task);
 
-                    _logger.LogInformation($"Adjusted viewers for task {task.Id} to {task.CurrentViewers}");
+                    _logger.LogInformation($"Adjusted viewers for task {task.Id}: {task.CurrentViewers}");
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, $"Error monitoring task {task.Id}");
                 }
             }
+        }
+
+        private int CalculateViewerFluctuation(BotTask task)
+        {
+            // Более сложная логика колебаний
+            var baseFluctuation = (int)(task.MaxViewers * 0.1);
+            var randomFactor = _random.NextDouble() * 0.3 - 0.15; // -15% to +15%
+            return (int)(baseFluctuation * (1 + randomFactor));
         }
     }
 }

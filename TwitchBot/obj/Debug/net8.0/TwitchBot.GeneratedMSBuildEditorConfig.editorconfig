@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = TwitchBot
-build_property.ProjectDir = /Users/semengusin/Documents/GitHub/streams-shop/service/TwitchBot/
+build_property.ProjectDir = C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
