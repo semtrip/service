@@ -14,11 +14,8 @@ using TwitchViewerBot.Workers;
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-        // Database
-        services.AddDbContext<BotDbContext>(options =>
-            options.UseSqlite("Data Source=twitchbot.db"));
         
-        // Добавьте эту строку для AppDbContext
+        // DB
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlite("Data Source=twitchbot.db"));
 
@@ -27,7 +24,7 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddScoped<IProxyService, ProxyService>();
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<ITaskService, TaskService>();
-        services.AddSingleton<TaskMonitor>();
+        services.AddScoped<TaskMonitor>();
 
         // Repositories
         services.AddScoped<IAccountRepository, AccountRepository>();
@@ -46,7 +43,7 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddHostedService<TaskRunner>();
         
         // UI
-        services.AddSingleton<MainMenu>();
+        services.AddScoped<MainMenu>();
         services.AddSingleton<LoggingHelper>();
     })
     .ConfigureLogging(logging =>

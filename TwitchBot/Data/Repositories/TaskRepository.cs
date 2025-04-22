@@ -10,9 +10,9 @@ namespace TwitchViewerBot.Data.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
-        private readonly BotDbContext _context;
+        private readonly AppDbContext _context;
 
-        public TaskRepository(BotDbContext context)
+        public TaskRepository(AppDbContext context)
         {
             _context = context;
         }

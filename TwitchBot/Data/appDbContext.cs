@@ -9,6 +9,12 @@ namespace TwitchViewerBot.Data
         {
         }
 
+        public AppDbContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            optionsBuilder.UseSqlite("Data Source=twitchbot.db");
+            return new AppDbContext(optionsBuilder.Options);
+        }
         public DbSet<ProxyServer> Proxies { get; set; }
         public DbSet<TwitchAccount> Accounts { get; set; }
         public DbSet<BotTask> Tasks { get; set; }
@@ -24,6 +30,7 @@ namespace TwitchViewerBot.Data
                 entity.Property(p => p.Username).HasDefaultValue(string.Empty);
                 entity.Property(p => p.Password).HasDefaultValue(string.Empty);
                 entity.Property(p => p.IsValid).HasDefaultValue(false);
+                entity.Property(p => p.Type).HasConversion<string>();
             });
         }
     }
