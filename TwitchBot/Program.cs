@@ -26,6 +26,15 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<ITaskService, TaskService>();
         services.AddScoped<TaskMonitor>();
+        services.AddSingleton<LoggingHelper>();
+        services.AddSingleton<ILoggerProvider, LoggerProvider>();
+
+        services.AddLogging(logging =>
+        {
+            logging.ClearProviders();
+            logging.AddProvider(new LoggerProvider(services.BuildServiceProvider().GetRequiredService<LoggingHelper>()));
+            logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+        });
 
         // Repositories
         services.AddScoped<IAccountRepository, AccountRepository>();
@@ -45,7 +54,6 @@ var builder = Host.CreateDefaultBuilder(args)
         
         // UI
         services.AddScoped<MainMenu>();
-        services.AddSingleton<LoggingHelper>();
     })
     .ConfigureLogging(logging =>
     {

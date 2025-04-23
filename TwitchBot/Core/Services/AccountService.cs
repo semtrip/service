@@ -18,5 +18,14 @@ namespace TwitchViewerBot.Core.Services
         {
             return await _accountRepository.GetValidAccounts(count);
         }
+        public async Task<List<TwitchAccount>> GetAvailableAccounts(int count)
+        {
+            return await _accountRepository.GetAccounts()
+                .Where(a => a.IsValid && a.ActiveTasks < 3)
+                .OrderBy(a => a.LastUsed)
+                .Take(count)
+                .ToListAsync();
+        }
     }
+
 }

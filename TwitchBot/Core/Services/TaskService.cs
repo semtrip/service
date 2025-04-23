@@ -16,13 +16,13 @@ namespace TwitchViewerBot.Core.Services
         private readonly IAccountService _accountService;
         private readonly IProxyService _proxyService;
         private readonly ILogger<TaskService> _logger;
+        private readonly ConcurrentDictionary<int, CancellationTokenSource> _activeTasks = new();
 
-        public TaskService(
-            ITaskRepository taskRepository,
-            ITwitchService twitchService,
-            IAccountService accountService,
-            IProxyService proxyService,
-            ILogger<TaskService> logger)
+        public TaskService(ITaskRepository taskRepository,
+                         ITwitchService twitchService,
+                         IAccountService accountService,
+                         IProxyService proxyService,
+                         ILogger<TaskService> logger)
         {
             _taskRepository = taskRepository;
             _twitchService = twitchService;
@@ -35,156 +35,141 @@ namespace TwitchViewerBot.Core.Services
         {
             try
             {
-                // Проверка формата URL
-                if (!task.ChannelUrl.StartsWith("https://www.twitch.tv/"))
+                // Проверка канала и стрима
+                var (channelExists, isLive) = await _twitchService.CheckChannelAndStream(task.ChannelUrl);
+
+                if (!channelExists)
                 {
-                    throw new Exception("Некорректный URL канала. Должен быть в формате: https://www.twitch.tv/username");
+                    task.Status = TaskStatus.Cancelled;
+                    task.ErrorMessage = "Канал не существует";
                 }
-
-                // Проверка онлайн-статуса
-                bool isLive = await _twitchService.IsStreamLive(task.ChannelUrl);
-
-                if (!isLive)
+                else if (!isLive)
                 {
-                    // Пробуем API метод как запасной вариант
-                    var channelName = task.ChannelUrl.Split('/').Last();
-                    isLive = await _twitchService.IsStreamLiveApi(channelName);
-
-                    if (!isLive)
-                    {
-                        throw new Exception("Стрим не в эфире или недоступен. Проверьте:\n" +
-                                         "1. Правильность URL\n" +
-                                         "2. Что стрим действительно онлайн\n" +
-                                         "3. Нет ли блокировки в вашем регионе");
-                    }
+                    task.Status = TaskStatus.Paused;
+                }
+                else
+                {
+                    task.Status = TaskStatus.Active;
+                    task.StartTime = DateTime.UtcNow;
+                    task.EndTime = DateTime.UtcNow.Add(task.Duration);
                 }
 
                 await _taskRepository.AddTask(task);
-                _logger.LogInformation($"Task {task.Id} created for channel {task.ChannelUrl}");
+
+                if (task.Status == TaskStatus.Active)
+                {
+                    StartTask(task);
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error adding task for {task.ChannelUrl}");
-                throw;
+                task.Status = TaskStatus.Cancelled;
+                task.ErrorMessage = $"Ошибка при создании задачи: {ex.Message}";
+                await _taskRepository.AddTask(task);
+                _logger.LogError(ex, "Ошибка при добавлении задачи");
             }
         }
 
-        public async Task<List<BotTask>> GetAllTasks()
+        private void StartTask(BotTask task)
         {
-            return await _taskRepository.GetAll();
+            var cts = new CancellationTokenSource();
+            _activeTasks.TryAdd(task.Id, cts);
+
+            Task.Run(async () => await ExecuteTaskAsync(task, cts.Token));
         }
 
-        public async Task<List<BotTask>> GetPendingTasks()
-        {
-            return await _taskRepository.GetPendingTasks();
-        }
-
-        public async Task<List<BotTask>> GetRunningTasks()
-        {
-            return await _taskRepository.GetRunningTasks();
-        }
-
-        public async Task ProcessPendingTasks()
-        {
-            var pendingTasks = await GetPendingTasks();
-            foreach (var task in pendingTasks)
-            {
-                await StartTask(task);
-            }
-        }
-
-        public async Task StartTask(BotTask task)
+        private async Task ExecuteTaskAsync(BotTask task, CancellationToken cancellationToken)
         {
             try
             {
-                if (!await _twitchService.IsStreamLive(task.ChannelUrl!))
+                // Подключаем ботов с плавным набором
+                await RampUpBots(task, cancellationToken);
+
+                // Основной цикл выполнения задачи
+                while (!cancellationToken.IsCancellationRequested && !task.IsExpired)
                 {
-                    task.Status = Core.Enums.TaskStatus.Paused;
+                    await AdjustViewers(task);
+                    await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
+                    task.LastUpdated = DateTime.UtcNow;
                     await _taskRepository.UpdateTask(task);
-                    return;
                 }
 
-                var authBots = await _accountService.GetValidAccounts(task.AuthViewersCount);
-                var proxies = await _proxyService.GetValidProxies();
-
-                if (authBots.Count == 0 || proxies.Count == 0)
-                {
-                    _logger.LogWarning($"Not enough resources for task {task.Id}");
-                    return;
-                }
-
-                var botGroups = authBots
-                    .Select((bot, index) => new { Bot = bot, Proxy = proxies[index % proxies.Count] })
-                    .GroupBy(x => x.Proxy);
-
-                foreach (var group in botGroups)
-                {
-                    foreach (var item in group.Take(3))
-                    {
-                        _ = _twitchService.WatchStream(
-                            item.Bot,
-                            item.Proxy,
-                            task.ChannelUrl!,
-                            (int)task.Duration.TotalMinutes);
-                    }
-                }
-
-                var guestProxies = proxies
-                    .Where(p => !authBots.Any(b => b.ProxyId == p.Id))
-                    .ToList();
-
-                for (int i = 0; i < task.GuestViewersCount; i++)
-                {
-                    var proxy = guestProxies[i % guestProxies.Count];
-                    _ = _twitchService.WatchAsGuest(proxy, task.ChannelUrl!, (int)task.Duration.TotalMinutes);
-                }
-
-                task.Status = Core.Enums.TaskStatus.Running;
-                task.StartTime = DateTime.UtcNow;
-                task.CurrentViewers = task.MaxViewers;
-                await _taskRepository.UpdateTask(task);
+                // Завершение задачи
+                await CompleteTask(task);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error starting task {task.Id}");
-                task.Status = Core.Enums.TaskStatus.Failed;
+                _logger.LogError(ex, $"Ошибка при выполнении задачи {task.Id}");
+                task.Status = TaskStatus.Cancelled;
+                task.ErrorMessage = ex.Message;
                 await _taskRepository.UpdateTask(task);
             }
         }
 
-        public async Task PauseTask(int taskId)
+        private async Task RampUpBots(BotTask task, CancellationToken ct)
         {
-            var task = await _taskRepository.GetById(taskId);
-            if (task != null && task.Status == Core.Enums.TaskStatus.Running)
+            int current = 0;
+            while (current < task.MaxViewers && !ct.IsCancellationRequested)
             {
-                task.Status = Core.Enums.TaskStatus.Paused;
-                await _taskRepository.UpdateTask(task);
+                int toAdd = Math.Min(task.ViewersPerMinute, task.MaxViewers - current);
+                await AddBotsToStream(task, toAdd);
+                current += toAdd;
+                await Task.Delay(TimeSpan.FromMinutes(1), ct);
             }
         }
 
-        public async Task ResumeTask(int taskId)
+        private async Task AddBotsToStream(BotTask task, int count)
         {
-            var task = await _taskRepository.GetById(taskId);
-            if (task != null && task.Status == Core.Enums.TaskStatus.Paused)
+            var accounts = await _accountService.GetAvailableAccounts(count);
+            var proxies = await _proxyService.GetAvailableProxies(count);
+
+            foreach (var (account, proxy) in accounts.Zip(proxies, (a, p) => (a, p)))
             {
-                task.Status = Core.Enums.TaskStatus.Pending;
-                await _taskRepository.UpdateTask(task);
+                _ = _twitchService.WatchStream(account, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
+                account.ActiveTasks++;
+                proxy.ActiveConnections++;
+                await _accountService.UpdateAccount(account);
+                await _proxyService.UpdateProxy(proxy);
             }
+
+            task.CurrentViewers += count;
         }
 
-        public async Task CancelTask(int taskId)
+        private async Task AdjustViewers(BotTask task)
         {
-            var task = await _taskRepository.GetById(taskId);
-            if (task != null)
+            // Проверяем онлайн стрима
+            bool isLive = await _twitchService.IsStreamLive(task.ChannelUrl);
+
+            if (!isLive)
             {
-                task.Status = Core.Enums.TaskStatus.Canceled;
-                await _taskRepository.UpdateTask(task);
+                task.Status = TaskStatus.Paused;
+                return;
+            }
+
+            // Корректируем количество зрителей (+/- 15%)
+            int target = task.MaxViewers;
+            int min = (int)(target * 0.85);
+            int max = (int)(target * 1.15);
+
+            if (task.CurrentViewers < min)
+            {
+                int toAdd = min - task.CurrentViewers;
+                await AddBotsToStream(task, toAdd);
+            }
+            else if (task.CurrentViewers > max)
+            {
+                int toRemove = task.CurrentViewers - max;
+                await RemoveBotsFromStream(task, toRemove);
             }
         }
 
-        public async Task UpdateTask(BotTask task)
+        private async Task CompleteTask(BotTask task)
         {
+            await RemoveAllBots(task);
+            task.Status = TaskStatus.Completed;
+            task.EndTime = DateTime.UtcNow;
             await _taskRepository.UpdateTask(task);
+            _activeTasks.TryRemove(task.Id, out _);
         }
     }
 }

@@ -27,7 +27,6 @@ namespace TwitchViewerBot.Core.Services
 
         public async Task<bool> IsStreamLive(string channelUrl)
         {
-            // Проверяем валидность URL
             if (!Uri.TryCreate(channelUrl, UriKind.Absolute, out var uri) ||
                 uri.Host != "www.twitch.tv")
             {
@@ -35,6 +34,40 @@ namespace TwitchViewerBot.Core.Services
                 return false;
             }
 
+            // Сначала пробуем через API (быстрее и надежнее)
+            var channelName = channelUrl.Split('/').Last();
+            var apiResult = await CheckStreamViaApi(channelName);
+            if (apiResult) return true;
+
+            // Если API не сработало, пробуем через браузер
+            return await CheckStreamViaBrowser(channelUrl);
+        }
+
+        private async Task<bool> CheckStreamViaApi(string channelName)
+        {
+            try
+            {
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Add("Client-ID", "kimne78kx3ncx6brgo4mv6wki5h1ko");
+                httpClient.DefaultRequestHeaders.Add("Accept", "application/vnd.twitchtv.v5+json");
+
+                var response = await httpClient.GetAsync(
+                    $"https://api.twitch.tv/kraken/streams/{channelName}");
+
+                if (!response.IsSuccessStatusCode)
+                    return false;
+
+                var content = await response.Content.ReadAsStringAsync();
+                return content.Contains("\"stream\":{") || content.Contains("\"type\":\"live\"");
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private async Task<bool> CheckStreamViaBrowser(string channelUrl)
+        {
             try
             {
                 new DriverManager().SetUpDriver(new ChromeConfig());
@@ -59,29 +92,34 @@ namespace TwitchViewerBot.Core.Services
 
                 using var driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(30));
 
-                // Удаляем признаки автоматизации
                 ((IJavaScriptExecutor)driver).ExecuteScript(
                     "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
 
                 driver.Navigate().GoToUrl(channelUrl);
-                await Task.Delay(10000); // Увеличиваем время ожидания
+                await Task.Delay(10000);
 
                 try
                 {
-                    // Новые селекторы для 2024 года
-                    var liveElements = driver.FindElements(By.XPath(
-                        "//*[contains(@data-a-target,'live-indicator') or contains(text(),'LIVE') or contains(@aria-label,'live')]"));
+                    // Делаем скриншот для отладки
+                    var screenshot = driver.GetScreenshot();
+                    screenshot.SaveAsFile("twitch_debug.png");
 
-                    return liveElements.Any(e => e.Displayed);
+                    // Проверяем LIVE индикатор
+                    var liveIndicator = driver.FindElement(
+                        By.CssSelector(".liveIndicator--x8p4l .CoreText-sc-1txzju1-0"));
+                    Console.WriteLine($"liveIndicator {liveIndicator}");
+                    Console.WriteLine($"liveIndicator?.Text {liveIndicator?.Text}");
+                    return liveIndicator?.Text == "LIVE" || liveIndicator?.Text == "В ЭФИРЕ";
+
                 }
-                catch
+                catch (NoSuchElementException)
                 {
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Browser initialization failed");
+                _logger.LogError(ex, "Browser check failed");
                 return false;
             }
         }
@@ -146,6 +184,7 @@ namespace TwitchViewerBot.Core.Services
 
         public async Task WatchStream(TwitchAccount account, ProxyServer proxy, string channelUrl, int minutes)
         {
+            _logger.LogInformation($"Бот запущен: {account.Username} через {proxy.Address}:{proxy.Port}");
             ChromeDriver driver = null;
             try
             {

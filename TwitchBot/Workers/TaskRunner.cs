@@ -1,16 +1,16 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using TwitchViewerBot.Core.Services;
 
 namespace TwitchViewerBot.Workers
 {
     public class TaskRunner : BackgroundService
     {
+        private readonly ILogger<TaskRunner> _logger;
         private readonly ITaskService _taskService;
         private readonly TaskMonitor _taskMonitor;
-        private readonly ILogger<TaskRunner> _logger;
 
         public TaskRunner(
             ITaskService taskService,
@@ -24,25 +24,35 @@ namespace TwitchViewerBot.Workers
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("TaskRunner started");
+            _logger.LogInformation("TaskRunner запущен");
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    // Обработка новых задач
-                    await _taskService.ProcessPendingTasks();
-                    
-                    // Мониторинг и корректировка
+                    _logger.LogDebug("Проверка задач...");
+
+                    var pendingTasks = await _taskService.GetPendingTasks();
+                    _logger.LogInformation($"Найдено {pendingTasks.Count} задач в ожидании");
+
+                    foreach (var task in pendingTasks)
+                    {
+                        _logger.LogInformation($"Запуск задачи {task.Id} для {task.ChannelUrl}");
+                        await _taskService.StartTask(task);
+                    }
+
+                    _logger.LogDebug("Мониторинг активных задач...");
                     await _taskMonitor.MonitorAndAdjustTasks();
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error in TaskRunner");
+                    _logger.LogError(ex, "Ошибка в TaskRunner");
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
             }
+
+            _logger.LogInformation("TaskRunner остановлен");
         }
     }
 }

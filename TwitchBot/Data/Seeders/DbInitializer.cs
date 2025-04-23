@@ -18,7 +18,14 @@ namespace TwitchViewerBot.Data.Seeders
             var accountsPath = Path.Combine(baseDir, "accounts.txt");
             var proxiesPath = Path.Combine(baseDir, "proxies.txt");
 
-            // Загружаем/обновляем прокси через сервис
+            await LoadProxiesAsync(context, proxiesPath, proxyService);
+            await LoadAccountsAsync(context, accountsPath);
+
+            Console.WriteLine("Инициализация БД завершена");
+        }
+
+        private static async Task LoadProxiesAsync(AppDbContext context, string proxiesPath, IProxyService proxyService)
+        {
             if (!context.Proxies.Any())
             {
                 if (File.Exists(proxiesPath))
@@ -31,8 +38,10 @@ namespace TwitchViewerBot.Data.Seeders
                     Console.WriteLine("Файл proxies.txt не найден");
                 }
             }
+        }
 
-            // Загружаем аккаунты как было
+        private static async Task LoadAccountsAsync(AppDbContext context, string accountsPath)
+        {
             if (!context.Accounts.Any())
             {
                 if (File.Exists(accountsPath))
@@ -57,9 +66,6 @@ namespace TwitchViewerBot.Data.Seeders
                     Console.WriteLine("Файл accounts.txt не найден");
                 }
             }
-
-            await context.SaveChangesAsync();
-            Console.WriteLine("Инициализация БД завершена");
         }
     }
 }
