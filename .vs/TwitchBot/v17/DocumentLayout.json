@@ -3,72 +3,60 @@
   "WorkspaceRootPath": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\core\\services\\taskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\core\\services\\taskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\core\\services\\twitchservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\core\\services\\twitchservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\data\\repositories\\taskrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\data\\repositories\\taskrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\data\\seeders\\dbinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\data\\seeders\\dbinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\core\\services\\accountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\core\\services\\accountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\core\\services\\taskmonitor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\core\\services\\taskmonitor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\core\\services\\proxyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\core\\services\\proxyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\core\\services\\taskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\core\\services\\taskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\core\\services\\iproxyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\core\\services\\iproxyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\core\\models\\bottask.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\core\\models\\bottask.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\core\\models\\proxyserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\core\\models\\proxyserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\core\\enums\\taskstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\core\\enums\\taskstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\core\\services\\iaccountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\core\\services\\iaccountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\consoleui\\helpers\\logginghelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\consoleui\\helpers\\logginghelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\consoleui\\commands\\validateproxiescommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\consoleui\\commands\\validateproxiescommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\consoleui\\helpers\\loggerprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\consoleui\\helpers\\loggerprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\consoleui\\menus\\mainmenu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\consoleui\\menus\\mainmenu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\consoleui\\commands\\showlogscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\consoleui\\commands\\showlogscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\consoleui\\commands\\livelogscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\consoleui\\commands\\livelogscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\data\\repositories\\accountrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\data\\repositories\\accountrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\consoleui\\helpers\\advancedloggerprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\consoleui\\helpers\\advancedloggerprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\consoleui\\helpers\\advancedlogger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\consoleui\\helpers\\advancedlogger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\consoleui\\commands\\validatetokenscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\consoleui\\commands\\validatetokenscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\workers\\taskrunner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\workers\\taskrunner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|c:\\users\\nismo\\documents\\github\\streams-shop\\service\\twitchbot\\data\\repositories\\iaccountrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5509E7EE-6822-456B-A5FE-ACA9C9316AF7}|TwitchBot\\TwitchBot.csproj|solutionrelative:twitchbot\\data\\repositories\\iaccountrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -78,84 +66,58 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AccountService.cs",
-              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\AccountService.cs",
-              "RelativeDocumentMoniker": "TwitchBot\\Core\\Services\\AccountService.cs",
-              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\AccountService.cs",
-              "RelativeToolTip": "TwitchBot\\Core\\Services\\AccountService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAJAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "TaskService.cs",
+              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\TaskService.cs",
+              "RelativeDocumentMoniker": "TwitchBot\\Core\\Services\\TaskService.cs",
+              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\TaskService.cs",
+              "RelativeToolTip": "TwitchBot\\Core\\Services\\TaskService.cs",
+              "ViewState": "AgIAADkAAAAAAAAAAAAowEEAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-23T05:57:39.603Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "TaskMonitor.cs",
-              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\TaskMonitor.cs",
-              "RelativeDocumentMoniker": "TwitchBot\\Core\\Services\\TaskMonitor.cs",
-              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\TaskMonitor.cs",
-              "RelativeToolTip": "TwitchBot\\Core\\Services\\TaskMonitor.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACYAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-23T05:57:10.099Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "TaskStatus.cs",
-              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Enums\\TaskStatus.cs",
-              "RelativeDocumentMoniker": "TwitchBot\\Core\\Enums\\TaskStatus.cs",
-              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Enums\\TaskStatus.cs",
-              "RelativeToolTip": "TwitchBot\\Core\\Enums\\TaskStatus.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-23T05:56:28.456Z",
+              "WhenOpened": "2025-04-23T09:55:25.17Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "BotTask.cs",
-              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Models\\BotTask.cs",
-              "RelativeDocumentMoniker": "TwitchBot\\Core\\Models\\BotTask.cs",
-              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Models\\BotTask.cs",
-              "RelativeToolTip": "TwitchBot\\Core\\Models\\BotTask.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA4AAAAAAAAAA==",
+              "Title": "ProxyService.cs",
+              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\ProxyService.cs",
+              "RelativeDocumentMoniker": "TwitchBot\\Core\\Services\\ProxyService.cs",
+              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\ProxyService.cs",
+              "RelativeToolTip": "TwitchBot\\Core\\Services\\ProxyService.cs",
+              "ViewState": "AgIAAH0AAAAAAAAAAAAwwK0AAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-23T05:56:04.445Z",
+              "WhenOpened": "2025-04-23T07:34:01.301Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "LoggerProvider.cs",
-              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Helpers\\LoggerProvider.cs",
-              "RelativeDocumentMoniker": "TwitchBot\\ConsoleUI\\Helpers\\LoggerProvider.cs",
-              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Helpers\\LoggerProvider.cs",
-              "RelativeToolTip": "TwitchBot\\ConsoleUI\\Helpers\\LoggerProvider.cs",
-              "ViewState": "AgIAABUAAAAAAAAAAAAgwDMAAAABAAAAAAAAAA==",
+              "DocumentIndex": 6,
+              "Title": "IProxyService.cs",
+              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\IProxyService.cs",
+              "RelativeDocumentMoniker": "TwitchBot\\Core\\Services\\IProxyService.cs",
+              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\IProxyService.cs",
+              "RelativeToolTip": "TwitchBot\\Core\\Services\\IProxyService.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAjwC0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-23T04:50:37.35Z",
+              "WhenOpened": "2025-04-23T07:33:54.701Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Program.cs",
-              "RelativeDocumentMoniker": "TwitchBot\\Program.cs",
-              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Program.cs",
-              "RelativeToolTip": "TwitchBot\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFYAAAAWAAAAAAAAAA==",
+              "DocumentIndex": 9,
+              "Title": "ValidateProxiesCommand.cs",
+              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Commands\\ValidateProxiesCommand.cs",
+              "RelativeDocumentMoniker": "TwitchBot\\ConsoleUI\\Commands\\ValidateProxiesCommand.cs",
+              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Commands\\ValidateProxiesCommand.cs",
+              "RelativeToolTip": "TwitchBot\\ConsoleUI\\Commands\\ValidateProxiesCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-23T04:24:45.946Z",
+              "WhenOpened": "2025-04-23T07:33:46.103Z",
               "EditorCaption": ""
             },
             {
@@ -166,9 +128,87 @@
               "RelativeDocumentMoniker": "TwitchBot\\Core\\Services\\TwitchService.cs",
               "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\TwitchService.cs",
               "RelativeToolTip": "TwitchBot\\Core\\Services\\TwitchService.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAA6wBsAAAAsAAAAAAAAAA==",
+              "ViewState": "AgIAADEBAAAAAAAAAAAqwGwBAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-22T13:12:12.338Z",
+              "WhenOpened": "2025-04-23T07:32:40.485Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Program.cs",
+              "RelativeDocumentMoniker": "TwitchBot\\Program.cs",
+              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Program.cs",
+              "RelativeToolTip": "TwitchBot\\Program.cs",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAAD4AAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-23T07:26:03.651Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DbInitializer.cs",
+              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Data\\Seeders\\DbInitializer.cs",
+              "RelativeDocumentMoniker": "TwitchBot\\Data\\Seeders\\DbInitializer.cs",
+              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Data\\Seeders\\DbInitializer.cs",
+              "RelativeToolTip": "TwitchBot\\Data\\Seeders\\DbInitializer.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAgwEwAAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-23T06:54:27.903Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "TaskRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Data\\Repositories\\TaskRepository.cs",
+              "RelativeDocumentMoniker": "TwitchBot\\Data\\Repositories\\TaskRepository.cs",
+              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Data\\Repositories\\TaskRepository.cs",
+              "RelativeToolTip": "TwitchBot\\Data\\Repositories\\TaskRepository.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAgwCEAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-23T06:56:33.342Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AccountService.cs",
+              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\AccountService.cs",
+              "RelativeDocumentMoniker": "TwitchBot\\Core\\Services\\AccountService.cs",
+              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\AccountService.cs",
+              "RelativeToolTip": "TwitchBot\\Core\\Services\\AccountService.cs",
+              "ViewState": "AgIAADkAAAAAAAAAAAAkwFQAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-23T07:51:58.591Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ProxyServer.cs",
+              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Models\\ProxyServer.cs",
+              "RelativeDocumentMoniker": "TwitchBot\\Core\\Models\\ProxyServer.cs",
+              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Models\\ProxyServer.cs",
+              "RelativeToolTip": "TwitchBot\\Core\\Models\\ProxyServer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-23T08:10:46.48Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "IAccountService.cs",
+              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\IAccountService.cs",
+              "RelativeDocumentMoniker": "TwitchBot\\Core\\Services\\IAccountService.cs",
+              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\IAccountService.cs",
+              "RelativeToolTip": "TwitchBot\\Core\\Services\\IAccountService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-23T08:34:45.871Z",
               "EditorCaption": ""
             },
             {
@@ -179,126 +219,35 @@
               "RelativeDocumentMoniker": "TwitchBot\\Data\\appDbContext.cs",
               "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Data\\appDbContext.cs",
               "RelativeToolTip": "TwitchBot\\Data\\appDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-23T04:54:48.889Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "MainMenu.cs",
-              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Menus\\MainMenu.cs",
-              "RelativeDocumentMoniker": "TwitchBot\\ConsoleUI\\Menus\\MainMenu.cs",
-              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Menus\\MainMenu.cs",
-              "RelativeToolTip": "TwitchBot\\ConsoleUI\\Menus\\MainMenu.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAQwBEAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-23T05:05:36.679Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "TaskService.cs",
-              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\TaskService.cs",
-              "RelativeDocumentMoniker": "TwitchBot\\Core\\Services\\TaskService.cs",
-              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Core\\Services\\TaskService.cs",
-              "RelativeToolTip": "TwitchBot\\Core\\Services\\TaskService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-22T13:12:01.002Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "ShowLogsCommand.cs",
-              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Commands\\ShowLogsCommand.cs",
-              "RelativeDocumentMoniker": "TwitchBot\\ConsoleUI\\Commands\\ShowLogsCommand.cs",
-              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Commands\\ShowLogsCommand.cs",
-              "RelativeToolTip": "TwitchBot\\ConsoleUI\\Commands\\ShowLogsCommand.cs",
-              "ViewState": "AgIAACEAAAAAAAAAAAAowGAAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-22T13:11:44.655Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "LoggingHelper.cs",
-              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Helpers\\LoggingHelper.cs",
-              "RelativeDocumentMoniker": "TwitchBot\\ConsoleUI\\Helpers\\LoggingHelper.cs",
-              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Helpers\\LoggingHelper.cs",
-              "RelativeToolTip": "TwitchBot\\ConsoleUI\\Helpers\\LoggingHelper.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAQwCcAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-22T13:11:33.931Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "ValidateTokensCommand.cs",
-              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Commands\\ValidateTokensCommand.cs",
-              "RelativeDocumentMoniker": "TwitchBot\\ConsoleUI\\Commands\\ValidateTokensCommand.cs",
-              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Commands\\ValidateTokensCommand.cs",
-              "RelativeToolTip": "TwitchBot\\ConsoleUI\\Commands\\ValidateTokensCommand.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-23T04:32:10.243Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "AdvancedLogger.cs",
-              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Helpers\\AdvancedLogger.cs",
-              "RelativeDocumentMoniker": "TwitchBot\\ConsoleUI\\Helpers\\AdvancedLogger.cs",
-              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Helpers\\AdvancedLogger.cs",
-              "RelativeToolTip": "TwitchBot\\ConsoleUI\\Helpers\\AdvancedLogger.cs",
-              "ViewState": "AgIAABUAAAAAAAAAAAAowEcAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-23T04:38:34.45Z",
+              "WhenOpened": "2025-04-23T06:56:30.829Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 13,
-              "Title": "AdvancedLoggerProvider.cs",
-              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Helpers\\AdvancedLoggerProvider.cs",
-              "RelativeDocumentMoniker": "TwitchBot\\ConsoleUI\\Helpers\\AdvancedLoggerProvider.cs",
-              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Helpers\\AdvancedLoggerProvider.cs",
-              "RelativeToolTip": "TwitchBot\\ConsoleUI\\Helpers\\AdvancedLoggerProvider.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
+              "Title": "IAccountRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Data\\Repositories\\IAccountRepository.cs",
+              "RelativeDocumentMoniker": "TwitchBot\\Data\\Repositories\\IAccountRepository.cs",
+              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Data\\Repositories\\IAccountRepository.cs",
+              "RelativeToolTip": "TwitchBot\\Data\\Repositories\\IAccountRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-23T04:39:46.19Z",
+              "WhenOpened": "2025-04-23T06:55:47.148Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 12,
-              "Title": "LiveLogsCommand.cs",
-              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Commands\\LiveLogsCommand.cs",
-              "RelativeDocumentMoniker": "TwitchBot\\ConsoleUI\\Commands\\LiveLogsCommand.cs",
-              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\ConsoleUI\\Commands\\LiveLogsCommand.cs",
-              "RelativeToolTip": "TwitchBot\\ConsoleUI\\Commands\\LiveLogsCommand.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAowCQAAAA0AAAAAAAAAA==",
+              "Title": "AccountRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Data\\Repositories\\AccountRepository.cs",
+              "RelativeDocumentMoniker": "TwitchBot\\Data\\Repositories\\AccountRepository.cs",
+              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Data\\Repositories\\AccountRepository.cs",
+              "RelativeToolTip": "TwitchBot\\Data\\Repositories\\AccountRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAoAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-23T04:39:53.138Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "TaskRunner.cs",
-              "DocumentMoniker": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Workers\\TaskRunner.cs",
-              "RelativeDocumentMoniker": "TwitchBot\\Workers\\TaskRunner.cs",
-              "ToolTip": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\Workers\\TaskRunner.cs",
-              "RelativeToolTip": "TwitchBot\\Workers\\TaskRunner.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADkAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-22T13:11:51.971Z",
+              "WhenOpened": "2025-04-23T06:55:20.396Z",
               "EditorCaption": ""
             }
           ]

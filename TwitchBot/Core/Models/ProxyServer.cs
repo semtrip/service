@@ -30,5 +30,6 @@ namespace TwitchViewerBot.Core.Models
 
         public bool IsValid { get; set; } = false;
         public DateTime LastChecked { get; set; }
+        public int ActiveAccountsCount { get; set; }
     }
 }

@@ -40,9 +40,6 @@ namespace TwitchViewerBot.Workers
                         _logger.LogInformation($"Запуск задачи {task.Id} для {task.ChannelUrl}");
                         await _taskService.StartTask(task);
                     }
-
-                    _logger.LogDebug("Мониторинг активных задач...");
-                    await _taskMonitor.MonitorAndAdjustTasks();
                 }
                 catch (Exception ex)
                 {
@@ -55,4 +52,5 @@ namespace TwitchViewerBot.Workers
             _logger.LogInformation("TaskRunner остановлен");
         }
     }
+
 }

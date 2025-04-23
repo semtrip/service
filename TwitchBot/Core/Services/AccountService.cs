@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TwitchViewerBot.Core.Models;
@@ -8,24 +9,176 @@ namespace TwitchViewerBot.Core.Services
     public class AccountService : IAccountService
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly IProxyService _proxyService;
+        private readonly ITwitchService _twitchService;
+        private readonly ILogger<AccountService> _logger;
 
-        public AccountService(IAccountRepository accountRepository)
+        public AccountService(
+            IAccountRepository accountRepository,
+            IProxyService proxyService,
+            ITwitchService twitchService,
+            ILogger<AccountService> logger)
         {
             _accountRepository = accountRepository;
+            _proxyService = proxyService;
+            _twitchService = twitchService;
+            _logger = logger;
         }
 
         public async Task<List<TwitchAccount>> GetValidAccounts(int count)
         {
             return await _accountRepository.GetValidAccounts(count);
         }
-        public async Task<List<TwitchAccount>> GetAvailableAccounts(int count)
+
+        public async Task UpdateAccount(TwitchAccount account)
         {
-            return await _accountRepository.GetAccounts()
-                .Where(a => a.IsValid && a.ActiveTasks < 3)
-                .OrderBy(a => a.LastUsed)
-                .Take(count)
-                .ToListAsync();
+            await _accountRepository.UpdateAccount(account);
+        }
+
+        private static readonly SemaphoreSlim _proxySemaphore = new SemaphoreSlim(1, 1); // Асинхронная блокировка
+
+        public async Task ValidateAccounts()
+        {
+            var accounts = await _accountRepository.GetAll();
+            var proxies = await _proxyService.GetValidProxies();
+
+            var parallelOptions = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = 10 // Ограничиваем количество параллельных задач
+            };
+
+            await Parallel.ForEachAsync(accounts, parallelOptions, async (account, cancellationToken) =>
+            {
+                await ValidateAccountAsync(account, proxies);
+            });
+        }
+
+        private async Task ValidateAccountAsync(TwitchAccount account, List<ProxyServer> proxies)
+        {
+            try
+            {
+                ProxyServer proxy = null;
+                bool isProxyValid = false;
+
+                // Синхронизируем доступ к прокси
+                await _proxySemaphore.WaitAsync();
+                try
+                {
+                    // Фильтруем прокси, которые еще не достигли лимита
+                    var availableProxies = proxies
+                        .Where(p => p.ActiveAccountsCount < 3) // Лимит: 3 аккаунта на прокси
+                        .OrderBy(p => p.ActiveAccountsCount) // Выбираем прокси с наименьшим количеством аккаунтов
+                        .ToList();
+
+                    if (availableProxies.Count == 0)
+                    {
+                        _logger.LogWarning($"Нет доступных прокси для проверки аккаунта {account.Username}");
+                        return;
+                    }
+
+                    // Перебираем доступные прокси, пока не найдем валидный
+                    foreach (var availableProxy in availableProxies)
+                    {
+                        _logger.LogInformation($"Проверка прокси {availableProxy.Address}:{availableProxy.Port} для аккаунта {account.Username}");
+
+                        var validationResult = await _proxyService.ValidateProxy(availableProxy);
+                        if (validationResult.IsValid)
+                        {
+                            proxy = availableProxy;
+                            proxy.ActiveAccountsCount++; // Увеличиваем счетчик активных аккаунтов для прокси
+                            _logger.LogInformation($"Прокси {proxy.Address}:{proxy.Port} выбран для аккаунта {account.Username}");
+                            break;
+                        }
+                        else
+                        {
+                            _logger.LogWarning($"Прокси {availableProxy.Address}:{availableProxy.Port} не валиден: {validationResult.ErrorMessage}");
+                        }
+                    }
+
+                    if (proxy == null)
+                    {
+                        _logger.LogWarning($"Нет валидных прокси для проверки аккаунта {account.Username}");
+                        return;
+                    }
+                }
+                finally
+                {
+                    _proxySemaphore.Release();
+                }
+
+                var isValid = await _twitchService.VerifyAccount(account, proxy);
+
+                account.IsValid = isValid;
+                account.ProxyId = isValid ? proxy.Id : (int?)null;
+                account.LastChecked = DateTime.UtcNow;
+
+                await _accountRepository.UpdateAccount(account);
+
+                _logger.LogInformation($"Аккаунт {account.Username} проверен: {(isValid ? "валиден" : "невалиден")}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Ошибка при проверке аккаунта {account.Username}");
+
+                // Уменьшаем счетчик активных аккаунтов для прокси в случае ошибки
+                await _proxySemaphore.WaitAsync();
+                try
+                {
+                    var proxy = proxies.FirstOrDefault(p => p.Id == account.ProxyId);
+                    if (proxy != null)
+                    {
+                        proxy.ActiveAccountsCount--;
+                    }
+                }
+                finally
+                {
+                    _proxySemaphore.Release();
+                }
+            }
+        }
+
+
+
+
+        public async Task LoadAccountsFromFile(string filePath) // Добавлено
+        {
+            if (!File.Exists(filePath))
+            {
+                _logger.LogError($"Файл {filePath} не найден.");
+                return;
+            }
+
+            var lines = await File.ReadAllLinesAsync(filePath);
+            foreach (var line in lines)
+            {
+                try
+                {
+                    var parts = line.Split(':');
+                    if (parts.Length != 2)
+                    {
+                        _logger.LogWarning($"Некорректный формат строки: {line}");
+                        continue;
+                    }
+
+                    var username = parts[0].Trim();
+                    var authToken = parts[1].Trim();
+
+                    var account = new TwitchAccount
+                    {
+                        Username = username,
+                        AuthToken = authToken,
+                        IsValid = false,
+                        LastChecked = DateTime.MinValue
+                    };
+
+                    await _accountRepository.AddAccount(account);
+                    _logger.LogInformation($"Аккаунт {username} загружен из файла.");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Ошибка при обработке строки: {line}");
+                }
+            }
         }
     }
-
 }

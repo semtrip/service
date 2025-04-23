@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Chrome.ChromeDriverExtensions;
 using OpenQA.Selenium.Support.UI;
 using TwitchViewerBot.Core.Models;
 using SeleniumCookie = OpenQA.Selenium.Cookie;
@@ -164,15 +165,55 @@ namespace TwitchViewerBot.Core.Services
             ChromeDriver driver = null;
             try
             {
-                var options = ConfigureBrowserOptions(new ChromeOptions(), proxy);
+                var options = new ChromeOptions();
                 options.AddArgument("--headless");
+                options.AddArgument("--disable-gpu");
+                options.AddArgument("--no-sandbox");
+                options.AddArgument("--disable-dev-shm-usage");
+                options.AddArgument("--window-size=1920,1080");
+                options.AddArgument("--mute-audio");
+                options.AddArgument("--disable-extensions");
+                options.AddArgument("--disable-notifications");
 
-                driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(60));
-                return await AuthenticateWithCookies(driver, account.AuthToken);
+                if (proxy != null)
+                {
+                    options.AddHttpProxy(proxy.Address, proxy.Port, proxy.Username ?? string.Empty, proxy.Password ?? string.Empty);
+                }
+
+                driver = new ChromeDriver(options);
+
+                // Переходим на страницу Twitch
+                driver.Navigate().GoToUrl("https://www.twitch.tv");
+
+                // Добавляем cookie с токеном
+                var authCookie = new OpenQA.Selenium.Cookie("auth-token", account.AuthToken, ".twitch.tv", "/", DateTime.Now.AddYears(1));
+                driver.Manage().Cookies.AddCookie(authCookie);
+
+                // Обновляем страницу для применения cookie
+                driver.Navigate().Refresh();
+
+                // Ждем загрузки страницы
+                await Task.Delay(5000);
+
+                // Проверяем авторизацию
+                var isAuthenticated = driver.FindElements(By.CssSelector(".Layout-sc-1xcs6mc-0.eKDZrJ")).Any();
+
+                if (isAuthenticated)
+                {
+                    // Создаем скриншот
+                    var screenshotDir = Path.Combine(AppContext.BaseDirectory, "screenshots", "accounts");
+                    Directory.CreateDirectory(screenshotDir);
+                    var screenshotPath = Path.Combine(screenshotDir, $"{account.Username}.png");
+                    driver.GetScreenshot().SaveAsFile(screenshotPath);
+
+                    _logger.LogInformation($"Аккаунт {account.Username} успешно авторизован через прокси {proxy.Address}:{proxy.Port}");
+                }
+
+                return isAuthenticated;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Account verification failed: {account.Username}");
+                _logger.LogError(ex, $"Ошибка при проверке аккаунта {account.Username}");
                 return false;
             }
             finally
@@ -181,6 +222,7 @@ namespace TwitchViewerBot.Core.Services
                 driver?.Dispose();
             }
         }
+
 
         public async Task WatchStream(TwitchAccount account, ProxyServer proxy, string channelUrl, int minutes)
         {
@@ -310,25 +352,25 @@ namespace TwitchViewerBot.Core.Services
         {
             if (proxy != null)
             {
-                options.AddArgument($"--proxy-server={proxy.Address}:{proxy.Port}");
-                if (!string.IsNullOrEmpty(proxy.Username))
-                {
-                    options.AddArgument($"--proxy-auth={proxy.Username}:{proxy.Password}");
-                }
+                options.AddHttpProxy(proxy.Address, proxy.Port, proxy.Username ?? string.Empty, proxy.Password ?? string.Empty);
             }
 
             options.AddArguments(
-                "--disable-blink-features=AutomationControlled",
-                "--disable-infobars",
-                "--disable-notifications",
-                "--disable-popup-blocking",
-                "--disable-extensions",
+                "--headless=new",
                 "--disable-gpu",
                 "--no-sandbox",
-                "--disable-dev-shm-usage");
+                "--disable-dev-shm-usage",
+                "--window-size=1920,1080",
+                "--mute-audio",
+                "--disable-extensions",
+                "--disable-notifications",
+                "--disable-blink-features=AutomationControlled",
+                "--disable-infobars",
+                "--disable-popup-blocking");
 
             return options;
         }
+
 
         private void ClickRandomElement(ChromeDriver driver, string selector)
         {

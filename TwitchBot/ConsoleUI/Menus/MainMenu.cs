@@ -12,7 +12,7 @@ namespace TwitchViewerBot.ConsoleUI.Menus
 
         public MainMenu(
             ValidateProxiesCommand validateProxiesCommand,
-            ValidateAccountsCommand validateAccountsCommand,
+            ValidateAccountsCommand validateAccountsCommand, // Добавлено
             StartTaskCommand startTaskCommand,
             ValidateTokensCommand validateTokensCommand,
             ShowTasksCommand showTasksCommand,
@@ -21,7 +21,7 @@ namespace TwitchViewerBot.ConsoleUI.Menus
             _commands = new Dictionary<string, ICommand>
             {
                 ["1"] = validateProxiesCommand,
-                ["2"] = validateAccountsCommand,
+                ["2"] = validateAccountsCommand, // Добавлено
                 ["3"] = validateTokensCommand,
                 ["4"] = startTaskCommand,
                 ["5"] = showTasksCommand,
@@ -31,7 +31,7 @@ namespace TwitchViewerBot.ConsoleUI.Menus
             _menuItems = new Dictionary<string, string>
             {
                 ["1"] = "Проверить прокси",
-                ["2"] = "Проверить аккаунты",
+                ["2"] = "Проверить аккаунты", // Добавлено
                 ["3"] = "Проверить токены",
                 ["4"] = "Создать задачу",
                 ["5"] = "Список задач",
@@ -44,58 +44,40 @@ namespace TwitchViewerBot.ConsoleUI.Menus
         {
             while (true)
             {
-                try
+                Console.Clear();
+                PrintMenu();
+
+                var input = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(input))
+                    continue;
+
+                if (input == "7") break;
+
+                if (_commands.TryGetValue(input, out var command))
                 {
-                    Console.Clear();
-                    PrintMenu();
-
-                    // Используем Console.ReadLine() вместо Console.ReadKey()
-                    var input = Console.ReadLine();
-
-                    if (string.IsNullOrEmpty(input))
-                        continue;
-
-                    if (input == "7") break;
-
-                    if (_commands.TryGetValue(input, out var command))
+                    try
                     {
-                        try
-                        {
-                            await command.Execute();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Ошибка: {ex.Message}");
-                            await WaitForAnyKey();
-                        }
+                        await command.Execute();
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        Console.WriteLine("Неверная команда");
-                        await Task.Delay(1000);
+                        Console.WriteLine($"Ошибка: {ex.Message}");
+                        await WaitForAnyKey();
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    Console.WriteLine($"Критическая ошибка: {ex.Message}");
-                    await WaitForAnyKey();
+                    Console.WriteLine("Неверная команда");
+                    await Task.Delay(1000);
                 }
             }
         }
 
         private async Task WaitForAnyKey()
         {
-            try
-            {
-                Console.WriteLine("Нажмите Enter для продолжения...");
-                // Используем ReadLine() вместо ReadKey()
-                while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
-            }
-            catch (InvalidOperationException)
-            {
-                // Если консольный ввод недоступен, просто ждем 2 секунды
-                await Task.Delay(2000);
-            }
+            Console.WriteLine("Нажмите Enter для продолжения...");
+            while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
         }
 
         private void PrintMenu()
@@ -108,4 +90,5 @@ namespace TwitchViewerBot.ConsoleUI.Menus
             Console.Write("> ");
         }
     }
+
 }

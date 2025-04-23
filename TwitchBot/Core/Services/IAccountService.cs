@@ -7,5 +7,7 @@ namespace TwitchViewerBot.Core.Services
     public interface IAccountService
     {
         Task<List<TwitchAccount>> GetValidAccounts(int count);
+        Task UpdateAccount(TwitchAccount account);
+        Task ValidateAccounts();
     }
 }

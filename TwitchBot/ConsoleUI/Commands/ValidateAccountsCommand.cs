@@ -7,27 +7,35 @@ namespace TwitchViewerBot.ConsoleUI.Commands
 {
     public class ValidateAccountsCommand : ICommand
     {
-        private readonly ITwitchService _twitchService;
-        private readonly IProxyService _proxyService;
+        private readonly IAccountService _accountService;
         private readonly ILogger<ValidateAccountsCommand> _logger;
 
         public ValidateAccountsCommand(
-            ITwitchService twitchService,
-            IProxyService proxyService,
+            IAccountService accountService,
             ILogger<ValidateAccountsCommand> logger)
         {
-            _twitchService = twitchService;
-            _proxyService = proxyService;
+            _accountService = accountService;
             _logger = logger;
         }
 
         public async Task Execute()
         {
-            Console.WriteLine("Starting accounts validation...");
-            // Реализация проверки аккаунтов
-            Console.WriteLine("Press any key to continue...");
+            Console.WriteLine("Начало проверки аккаунтов...");
+
+            try
+            {
+                await _accountService.ValidateAccounts();
+                Console.WriteLine("Проверка аккаунтов завершена.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при проверке аккаунтов");
+                Console.WriteLine("Ошибка при проверке аккаунтов.");
+            }
+
+            Console.WriteLine("Нажмите любую клавишу для продолжения...");
             Console.ReadKey();
-            await Task.CompletedTask;
         }
     }
+
 }

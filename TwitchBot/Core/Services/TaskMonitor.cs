@@ -26,7 +26,7 @@ namespace TwitchViewerBot.Core.Services
                 try
                 {
                     await _taskService.ProcessPendingTasks();
-                    await _taskService.MonitorActiveTasks();
+                    await MonitorAndAdjustTasks();
                 }
                 catch (Exception ex)
                 {
@@ -36,5 +36,22 @@ namespace TwitchViewerBot.Core.Services
                 await Task.Delay(_checkInterval, stoppingToken);
             }
         }
+
+        private async Task MonitorAndAdjustTasks()
+        {
+            var runningTasks = await _taskService.GetRunningTasks();
+            foreach (var task in runningTasks)
+            {
+                try
+                {
+                    await _taskService.AdjustViewers(task);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Ошибка при мониторинге задачи {task.Id}");
+                }
+            }
+        }
     }
+
 }

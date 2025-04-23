@@ -69,6 +69,10 @@
               "target": "Package",
               "version": "[9.0.4, )"
             },
+            "OpenQA.Selenium.Chrome.ChromeDriverExtensions": {
+              "target": "Package",
+              "version": "[1.2.0, )"
+            },
             "Selenium.WebDriver": {
               "target": "Package",
               "version": "[4.20.0, )"

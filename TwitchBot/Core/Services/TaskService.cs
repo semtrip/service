@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 using TwitchViewerBot.Core.Enums;
 using TwitchViewerBot.Core.Models;
 using TwitchViewerBot.Data.Repositories;
+using System.Collections.Concurrent;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using TwitchViewerBot.Core.Enums;
+using TwitchViewerBot.Core.Models;
+using TwitchViewerBot.Data.Repositories;
 
 namespace TwitchViewerBot.Core.Services
 {
@@ -18,11 +25,12 @@ namespace TwitchViewerBot.Core.Services
         private readonly ILogger<TaskService> _logger;
         private readonly ConcurrentDictionary<int, CancellationTokenSource> _activeTasks = new();
 
-        public TaskService(ITaskRepository taskRepository,
-                         ITwitchService twitchService,
-                         IAccountService accountService,
-                         IProxyService proxyService,
-                         ILogger<TaskService> logger)
+        public TaskService(
+            ITaskRepository taskRepository,
+            ITwitchService twitchService,
+            IAccountService accountService,
+            IProxyService proxyService,
+            ILogger<TaskService> logger)
         {
             _taskRepository = taskRepository;
             _twitchService = twitchService;
@@ -36,46 +44,41 @@ namespace TwitchViewerBot.Core.Services
             try
             {
                 // Проверка канала и стрима
-                var (channelExists, isLive) = await _twitchService.CheckChannelAndStream(task.ChannelUrl);
+                var isLive = await _twitchService.IsStreamLive(task.ChannelUrl);
 
-                if (!channelExists)
+                if (!isLive)
                 {
-                    task.Status = TaskStatus.Cancelled;
-                    task.ErrorMessage = "Канал не существует";
-                }
-                else if (!isLive)
-                {
-                    task.Status = TaskStatus.Paused;
+                    task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Paused;
                 }
                 else
                 {
-                    task.Status = TaskStatus.Active;
+                    task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Running;
                     task.StartTime = DateTime.UtcNow;
                     task.EndTime = DateTime.UtcNow.Add(task.Duration);
                 }
 
                 await _taskRepository.AddTask(task);
 
-                if (task.Status == TaskStatus.Active)
+                if (task.Status == TwitchViewerBot.Core.Enums.TaskStatus.Running)
                 {
-                    StartTask(task);
+                    await StartTask(task);
                 }
             }
             catch (Exception ex)
             {
-                task.Status = TaskStatus.Cancelled;
+                task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Failed;
                 task.ErrorMessage = $"Ошибка при создании задачи: {ex.Message}";
                 await _taskRepository.AddTask(task);
                 _logger.LogError(ex, "Ошибка при добавлении задачи");
             }
         }
 
-        private void StartTask(BotTask task)
+        public async Task StartTask(BotTask task)
         {
             var cts = new CancellationTokenSource();
             _activeTasks.TryAdd(task.Id, cts);
 
-            Task.Run(async () => await ExecuteTaskAsync(task, cts.Token));
+            _ = Task.Run(async () => await ExecuteTaskAsync(task, cts.Token), cts.Token);
         }
 
         private async Task ExecuteTaskAsync(BotTask task, CancellationToken cancellationToken)
@@ -100,7 +103,7 @@ namespace TwitchViewerBot.Core.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Ошибка при выполнении задачи {task.Id}");
-                task.Status = TaskStatus.Cancelled;
+                task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Failed;
                 task.ErrorMessage = ex.Message;
                 await _taskRepository.UpdateTask(task);
             }
@@ -120,14 +123,13 @@ namespace TwitchViewerBot.Core.Services
 
         private async Task AddBotsToStream(BotTask task, int count)
         {
-            var accounts = await _accountService.GetAvailableAccounts(count);
-            var proxies = await _proxyService.GetAvailableProxies(count);
+            var accounts = await _accountService.GetValidAccounts(count);
+            var proxies = await _proxyService.GetValidProxies();
 
             foreach (var (account, proxy) in accounts.Zip(proxies, (a, p) => (a, p)))
             {
                 _ = _twitchService.WatchStream(account, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
-                account.ActiveTasks++;
-                proxy.ActiveConnections++;
+                account.LastChecked = DateTime.UtcNow;
                 await _accountService.UpdateAccount(account);
                 await _proxyService.UpdateProxy(proxy);
             }
@@ -135,14 +137,14 @@ namespace TwitchViewerBot.Core.Services
             task.CurrentViewers += count;
         }
 
-        private async Task AdjustViewers(BotTask task)
+        public async Task AdjustViewers(BotTask task)
         {
             // Проверяем онлайн стрима
             bool isLive = await _twitchService.IsStreamLive(task.ChannelUrl);
 
             if (!isLive)
             {
-                task.Status = TaskStatus.Paused;
+                task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Paused;
                 return;
             }
 
@@ -163,13 +165,92 @@ namespace TwitchViewerBot.Core.Services
             }
         }
 
+        private async Task RemoveBotsFromStream(BotTask task, int count)
+        {
+            // Логика удаления ботов
+            task.CurrentViewers -= count;
+        }
+
+        private async Task RemoveAllBots(BotTask task)
+        {
+            // Логика удаления всех ботов
+            task.CurrentViewers = 0;
+        }
+
         private async Task CompleteTask(BotTask task)
         {
             await RemoveAllBots(task);
-            task.Status = TaskStatus.Completed;
+            task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Completed;
             task.EndTime = DateTime.UtcNow;
             await _taskRepository.UpdateTask(task);
             _activeTasks.TryRemove(task.Id, out _);
         }
+
+        public async Task<List<BotTask>> GetAllTasks()
+        {
+            return await _taskRepository.GetAll();
+        }
+
+        public async Task<List<BotTask>> GetPendingTasks()
+        {
+            return await _taskRepository.GetPendingTasks();
+        }
+
+        public async Task<List<BotTask>> GetRunningTasks()
+        {
+            return await _taskRepository.GetRunningTasks();
+        }
+
+        public async Task ProcessPendingTasks()
+        {
+            var pendingTasks = await _taskRepository.GetPendingTasks();
+            foreach (var task in pendingTasks)
+            {
+                await StartTask(task);
+            }
+        }
+
+        public async Task PauseTask(int taskId)
+        {
+            if (_activeTasks.TryGetValue(taskId, out var cts))
+            {
+                cts.Cancel();
+                var task = await _taskRepository.GetById(taskId);
+                if (task != null)
+                {
+                    task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Paused;
+                    await _taskRepository.UpdateTask(task);
+                }
+            }
+        }
+
+        public async Task ResumeTask(int taskId)
+        {
+            var task = await _taskRepository.GetById(taskId);
+            if (task != null && task.Status == TwitchViewerBot.Core.Enums.TaskStatus.Paused)
+            {
+                await StartTask(task);
+            }
+        }
+
+        public async Task CancelTask(int taskId)
+        {
+            if (_activeTasks.TryGetValue(taskId, out var cts))
+            {
+                cts.Cancel();
+                var task = await _taskRepository.GetById(taskId);
+                if (task != null)
+                {
+                    task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Canceled;
+                    await _taskRepository.UpdateTask(task);
+                }
+            }
+        }
+
+        public async Task UpdateTask(BotTask task)
+        {
+            await _taskRepository.UpdateTask(task);
+        }
     }
+
 }

@@ -361,3 +361,4 @@ C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0\
 C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0\ICSharpCode.SharpZipLib.dll
 C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0\WebDriverManager.dll
+C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0\OpenQA.Selenium.Chrome.ChromeDriverExtensions.dll

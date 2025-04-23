@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -15,7 +14,6 @@ using TwitchViewerBot.Workers;
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-        
         // DB
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlite("Data Source=twitchbot.db"));
@@ -51,7 +49,7 @@ var builder = Host.CreateDefaultBuilder(args)
 
         // Workers
         services.AddHostedService<TaskRunner>();
-        
+
         // UI
         services.AddScoped<MainMenu>();
     })
@@ -59,7 +57,7 @@ var builder = Host.CreateDefaultBuilder(args)
     {
         logging.ClearProviders();
         logging.AddConsole();
-        //logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+        logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
     });
 
 var host = builder.Build();
@@ -69,14 +67,28 @@ using (var scope = host.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     var proxyService = scope.ServiceProvider.GetRequiredService<IProxyService>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbInitializer>>();
 
-    // Создаем БД, если не существует (без удаления)
-    await db.Database.EnsureCreatedAsync();
-
-    // Инициализируем данные только если таблица прокси пуста
-    if (!await db.Proxies.AnyAsync())
+    try
     {
-        await DbInitializer.Initialize(db, proxyService);
+        // Создаем БД, если не существует (без удаления)
+        await db.Database.EnsureCreatedAsync();
+
+        // Проверяем, пуста ли таблица прокси
+        if (!await db.Proxies.AnyAsync())
+        {
+            // Инициализируем данные
+            await DbInitializer.Initialize(db, proxyService, logger);
+        }
+        else
+        {
+            logger.LogInformation("Прокси уже загружены. Пропуск инициализации.");
+        }
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Ошибка при инициализации базы данных");
+        throw;
     }
 }
 

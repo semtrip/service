@@ -36,7 +36,11 @@ namespace TwitchViewerBot.Data.Repositories
 
         public async Task AddTask(BotTask task)
         {
-            await _context.Tasks.AddAsync(task);
+            if (task == null)
+                throw new ArgumentNullException(nameof(task));
+
+            task.ErrorMessage = string.Empty;
+            _context.Tasks.Add(task);
             await _context.SaveChangesAsync();
         }
 

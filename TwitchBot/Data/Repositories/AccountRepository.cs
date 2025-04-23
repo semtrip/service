@@ -28,5 +28,19 @@ namespace TwitchViewerBot.Data.Repositories
             _context.Accounts.Update(account);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<TwitchAccount>> GetAll()
+        {
+            return await _context.Accounts.ToListAsync();
+        }
+        public async Task AddAccount(TwitchAccount account)
+        {
+            if (!_context.Accounts.Any(a => a.Username == account.Username))
+            {
+                _context.Accounts.Add(account);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
+
 }

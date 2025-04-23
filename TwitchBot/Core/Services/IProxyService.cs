@@ -40,5 +40,7 @@ namespace TwitchViewerBot.Core.Services
         /// Получить общее количество прокси в базе.
         /// </summary>
         Task<int> GetProxyCount();
+
+        Task<bool> IsProxyValid(ProxyServer proxy);
     }
 }

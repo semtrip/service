@@ -6,5 +6,7 @@ namespace TwitchViewerBot.Data.Repositories
     {
         Task<List<TwitchAccount>> GetValidAccounts(int count);
         Task UpdateAccount(TwitchAccount account);
+        Task<List<TwitchAccount>> GetAll();
+        Task AddAccount(TwitchAccount account);
     }
 }

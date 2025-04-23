@@ -288,9 +288,36 @@ namespace TwitchViewerBot.Core.Services
             return result;
         }
 
-        // Реализация остальных методов интерфейса...
+        
         public async Task AddProxy(ProxyServer proxy) => await _proxyRepository.AddProxy(proxy);
         public async Task UpdateProxy(ProxyServer proxy) => await _proxyRepository.UpdateProxy(proxy);
         public async Task<int> GetProxyCount() => await _proxyRepository.GetCount();
+        public async Task<bool> IsProxyValid(ProxyServer proxy)
+        {
+            try
+            {
+                var httpClientHandler = new HttpClientHandler
+                {
+                    Proxy = new WebProxy(proxy.Address, proxy.Port),
+                    UseProxy = true
+                };
+
+                if (!string.IsNullOrEmpty(proxy.Username) && !string.IsNullOrEmpty(proxy.Password))
+                {
+                    httpClientHandler.Proxy.Credentials = new NetworkCredential(proxy.Username, proxy.Password);
+                }
+
+                using var httpClient = new HttpClient(httpClientHandler);
+                httpClient.Timeout = TimeSpan.FromSeconds(10); // Устанавливаем тайм-аут
+
+                var response = await httpClient.GetAsync("https://www.twitch.tv");
+                return response.IsSuccessStatusCode;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 }
