@@ -12,6 +12,7 @@ namespace TwitchViewerBot.Core.Models
         public int CurrentViewers { get; set; }
         public int AuthViewersCount { get; set; }
         public int GuestViewersCount { get; set; }
+        public DateTime? CompletedTime { get; set; }
         public int RampUpTime { get; set; } // в минутах
         public TimeSpan Duration { get; set; }
         public TwitchViewerBot.Core.Enums.TaskStatus Status { get; set; }

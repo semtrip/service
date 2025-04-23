@@ -3,6 +3,7 @@ using TwitchViewerBot.Core.Models;
 
 public class AppDbContext : DbContext
 {
+
     public DbSet<TwitchAccount> Accounts { get; set; }
     public DbSet<ProxyServer> Proxies { get; set; }
     public DbSet<BotTask> Tasks { get; set; }

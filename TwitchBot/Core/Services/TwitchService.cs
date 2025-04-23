@@ -329,8 +329,7 @@ namespace TwitchViewerBot.Core.Services
             {
                 () => ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollBy(0, 200)"),
                 () => driver.Navigate().Refresh(),
-                () => ClickRandomElement(driver, ".tw-button"),
-                () => SendChatMessage(driver)
+                () => ClickRandomElement(driver, ".tw-button")
             };
 
             while (DateTime.Now < endTime)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TwitchViewerBot.ConsoleUI.Commands;
+using TwitchViewerBot.Core.Services;
 
 namespace TwitchViewerBot.ConsoleUI.Menus
 {
@@ -9,19 +10,21 @@ namespace TwitchViewerBot.ConsoleUI.Menus
     {
         private readonly Dictionary<string, ICommand> _commands;
         private readonly Dictionary<string, string> _menuItems;
+        private readonly ITaskService _taskService;
 
         public MainMenu(
             ValidateProxiesCommand validateProxiesCommand,
-            ValidateAccountsCommand validateAccountsCommand, // Добавлено
+            ValidateAccountsCommand validateAccountsCommand,
             StartTaskCommand startTaskCommand,
             ValidateTokensCommand validateTokensCommand,
             ShowTasksCommand showTasksCommand,
             ShowLogsCommand showLogsCommand)
+
         {
             _commands = new Dictionary<string, ICommand>
             {
                 ["1"] = validateProxiesCommand,
-                ["2"] = validateAccountsCommand, // Добавлено
+                ["2"] = validateAccountsCommand,
                 ["3"] = validateTokensCommand,
                 ["4"] = startTaskCommand,
                 ["5"] = showTasksCommand,
@@ -31,7 +34,7 @@ namespace TwitchViewerBot.ConsoleUI.Menus
             _menuItems = new Dictionary<string, string>
             {
                 ["1"] = "Проверить прокси",
-                ["2"] = "Проверить аккаунты", // Добавлено
+                ["2"] = "Проверить аккаунты",
                 ["3"] = "Проверить токены",
                 ["4"] = "Создать задачу",
                 ["5"] = "Список задач",
@@ -48,6 +51,12 @@ namespace TwitchViewerBot.ConsoleUI.Menus
                 PrintMenu();
 
                 var input = Console.ReadLine();
+
+                if (input?.StartsWith("/") == true)
+                {
+                    await ProcessCommand(input);
+                    continue;
+                }
 
                 if (string.IsNullOrEmpty(input))
                     continue;
@@ -88,6 +97,57 @@ namespace TwitchViewerBot.ConsoleUI.Menus
                 Console.WriteLine($"{item.Key}. {item.Value}");
             }
             Console.Write("> ");
+        }
+        private async Task ProcessCommand(string command)
+        {
+            var parts = command.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length < 2) return;
+
+            var cmd = parts[0].ToLower();
+            var taskId = int.Parse(parts[1]);
+
+            switch (cmd)
+            {
+                case "/start":
+                    await StartTaskCommand(taskId);
+                    break;
+                case "/stop":
+                    await StopTaskCommand(taskId);
+                    break;
+                default:
+                    Console.WriteLine("Неизвестная команда");
+                    break;
+            }
+
+            await Task.Delay(1000);
+        }
+
+        private async Task StartTaskCommand(int taskId)
+        {
+            var task = await _taskService.GetById(taskId);
+            if (task != null)
+            {
+                await _taskService.StartTask(task);
+                Console.WriteLine($"Задача {taskId} запущена");
+            }
+            else
+            {
+                Console.WriteLine($"Задача {taskId} не найдена");
+            }
+        }
+
+        private async Task StopTaskCommand(int taskId)
+        {
+            var task = await _taskService.GetById(taskId);
+            if (task != null)
+            {
+                await _taskService.CancelTask(taskId);
+                Console.WriteLine($"Задача {taskId} остановлена");
+            }
+            else
+            {
+                Console.WriteLine($"Задача {taskId} не найдена");
+            }
         }
     }
 

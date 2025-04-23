@@ -16,6 +16,8 @@ namespace TwitchViewerBot.Core.Services
         Task ResumeTask(int taskId);
         Task CancelTask(int taskId);
         Task UpdateTask(BotTask task);
-        Task AdjustViewers(BotTask task); // Добавлено
+        Task AdjustViewers(BotTask task);
+        Task CompleteTask(BotTask task);
+        Task<BotTask?> GetById(int id);
     }
 }

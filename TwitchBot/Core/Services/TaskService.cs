@@ -75,10 +75,63 @@ namespace TwitchViewerBot.Core.Services
 
         public async Task StartTask(BotTask task)
         {
-            var cts = new CancellationTokenSource();
-            _activeTasks.TryAdd(task.Id, cts);
+            if (task.Status != TwitchViewerBot.Core.Enums.TaskStatus.Pending) return;
 
-            _ = Task.Run(async () => await ExecuteTaskAsync(task, cts.Token), cts.Token);
+            var isLive = await _twitchService.IsStreamLive(task.ChannelUrl);
+            if (!isLive)
+            {
+                task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Paused;
+                await _taskRepository.UpdateTask(task);
+                return;
+            }
+
+            task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Running;
+            task.StartTime = DateTime.UtcNow;
+            task.EndTime = DateTime.UtcNow.Add(task.Duration);
+
+            await _taskRepository.UpdateTask(task);
+
+            // Запуск распределения зрителей
+            await DistributeViewers(task);
+        }
+
+        private async Task DistributeViewers(BotTask task)
+        {
+            // Получаем необходимое количество аккаунтов и прокси
+            var authAccounts = await GetAuthAccounts(task.AuthViewersCount);
+            var guestProxies = await GetGuestProxies(task.GuestViewersCount);
+
+            // Запуск авторизованных зрителей
+            foreach (var (account, proxy) in authAccounts)
+            {
+                _ = _twitchService.WatchStream(account, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
+            }
+
+            // Запуск гостевых зрителей
+            foreach (var proxy in guestProxies)
+            {
+                _ = _twitchService.WatchAsGuest(proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
+            }
+        }
+        private async Task<List<(TwitchAccount, ProxyServer)>> GetAuthAccounts(int count)
+        {
+            var accounts = await _accountService.GetValidAccounts(count);
+            var result = new List<(TwitchAccount, ProxyServer)>();
+
+            foreach (var account in accounts)
+            {
+                if (account.Proxy != null)
+                {
+                    result.Add((account, account.Proxy));
+                }
+            }
+
+            return result;
+        }
+
+        private async Task<List<ProxyServer>> GetGuestProxies(int count)
+        {
+            return await _proxyService.GetValidProxies();
         }
 
         private async Task ExecuteTaskAsync(BotTask task, CancellationToken cancellationToken)
@@ -171,19 +224,32 @@ namespace TwitchViewerBot.Core.Services
             task.CurrentViewers -= count;
         }
 
+        public async Task CompleteTask(BotTask task)
+        {
+            try
+            {
+                // Останавливаем всех ботов
+                await RemoveAllBots(task);
+
+                // Обновляем статус задачи
+                task.Status =  TwitchViewerBot.Core.Enums.TaskStatus.Completed;
+                task.CompletedTime = DateTime.UtcNow;
+                await _taskRepository.UpdateTask(task);
+
+                _logger.LogInformation($"Задача {task.Id} завершена");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Ошибка при завершении задачи {task.Id}");
+                throw;
+            }
+        }
+
         private async Task RemoveAllBots(BotTask task)
         {
             // Логика удаления всех ботов
             task.CurrentViewers = 0;
-        }
-
-        private async Task CompleteTask(BotTask task)
-        {
-            await RemoveAllBots(task);
-            task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Completed;
-            task.EndTime = DateTime.UtcNow;
             await _taskRepository.UpdateTask(task);
-            _activeTasks.TryRemove(task.Id, out _);
         }
 
         public async Task<List<BotTask>> GetAllTasks()
@@ -250,6 +316,10 @@ namespace TwitchViewerBot.Core.Services
         public async Task UpdateTask(BotTask task)
         {
             await _taskRepository.UpdateTask(task);
+        }
+        public async Task<BotTask?> GetById(int id)
+        {
+            return await _taskRepository.GetById(id);
         }
     }
 

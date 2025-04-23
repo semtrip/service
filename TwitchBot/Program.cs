@@ -12,13 +12,26 @@ using TwitchViewerBot.Data.Seeders;
 using TwitchViewerBot.Workers;
 
 var builder = Host.CreateDefaultBuilder(args)
+    .ConfigureLogging((context, logging) =>
+    {
+        // Очистка всех провайдеров логирования
+        logging.ClearProviders();
+
+        // Добавление консольного логирования
+        logging.AddConsole();
+
+        // Добавление файлового логирования
+        logging.AddFile("logs/log.txt", LogLevel.Information);
+
+        // Установка минимального уровня логирования
+        logging.SetMinimumLevel(LogLevel.Debug);
+    })
     .ConfigureServices((context, services) =>
     {
-        // DB
+        // Регистрация сервисов
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlite("Data Source=twitchbot.db"));
 
-        // Services
         services.AddScoped<ITwitchService, TwitchService>();
         services.AddScoped<IProxyService, ProxyService>();
         services.AddScoped<IAccountService, AccountService>();
@@ -27,19 +40,12 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddSingleton<LoggingHelper>();
         services.AddSingleton<ILoggerProvider, LoggerProvider>();
 
-        services.AddLogging(logging =>
-        {
-            logging.ClearProviders();
-            logging.AddProvider(new LoggerProvider(services.BuildServiceProvider().GetRequiredService<LoggingHelper>()));
-            logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-        });
-
-        // Repositories
+        // Регистрация репозиториев
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<IProxyRepository, ProxyRepository>();
         services.AddScoped<ITaskRepository, TaskRepository>();
 
-        // Commands
+        // Регистрация команд
         services.AddTransient<ValidateProxiesCommand>();
         services.AddTransient<ValidateAccountsCommand>();
         services.AddTransient<StartTaskCommand>();
@@ -47,22 +53,16 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddTransient<ShowLogsCommand>();
         services.AddTransient<ValidateTokensCommand>();
 
-        // Workers
-        services.AddHostedService<TaskRunner>();
+        // Регистрация воркеров
+        services.AddScoped<TaskRunner>();
 
-        // UI
+        // Регистрация UI
         services.AddScoped<MainMenu>();
-    })
-    .ConfigureLogging(logging =>
-    {
-        logging.ClearProviders();
-        logging.AddConsole();
-        logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
     });
 
 var host = builder.Build();
 
-// Initialize database
+// Инициализация базы данных
 using (var scope = host.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -92,7 +92,7 @@ using (var scope = host.Services.CreateScope())
     }
 }
 
-// Start main menu
+// Запуск главного меню
 var mainMenu = host.Services.GetRequiredService<MainMenu>();
 await mainMenu.ShowAsync();
 
