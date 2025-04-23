@@ -1,0 +1,16 @@
+2025-04-23 19:19:30.482 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Инициализация базы данных...
+2025-04-23 19:19:30.498 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Инициализация базы данных...
+2025-04-23 19:19:30.946 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Прокси уже загружены.
+2025-04-23 19:19:30.975 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Аккаунты уже загружены.
+2025-04-23 19:19:31.014 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Инициализация БД завершена.
+2025-04-23 19:19:31.050 [Information] [TwitchViewerBot.Workers.TaskRunner] TaskRunner запущен
+2025-04-23 19:19:31.313 [Information] [TwitchViewerBot.Workers.TaskRunner] Найдено 1 задач в ожидании запуска
+2025-04-23 19:19:31.313 [Information] [TwitchViewerBot.Workers.TaskRunner] Запуск задачи 4 для https://www.twitch.tv/therevtrev
+2025-04-23 19:19:31.426 [Information] [Microsoft.Hosting.Lifetime] Application started. Press Ctrl+C to shut down.
+2025-04-23 19:19:31.436 [Information] [Microsoft.Hosting.Lifetime] Hosting environment: Production
+2025-04-23 19:19:31.436 [Information] [Microsoft.Hosting.Lifetime] Content root path: C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0
+2025-04-23 19:20:02.511 [Warning] [TwitchViewerBot.Core.Services.TwitchService] Error in human-like activity
+2025-04-23 19:21:30.663 [Warning] [TwitchViewerBot.Core.Services.TwitchService] Error in human-like activity
+2025-04-23 19:22:50.280 [Warning] [TwitchViewerBot.Core.Services.TwitchService] Error in human-like activity
+2025-04-23 19:25:06.811 [Warning] [TwitchViewerBot.Core.Services.TwitchService] Error in human-like activity
+2025-04-23 19:25:08.879 [Warning] [TwitchViewerBot.Core.Services.TwitchService] Error in human-like activity

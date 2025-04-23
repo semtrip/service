@@ -1,0 +1,15 @@
+2025-04-23 19:30:50.794 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Инициализация базы данных...
+2025-04-23 19:30:50.807 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Инициализация базы данных...
+2025-04-23 19:30:51.188 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Прокси уже загружены.
+2025-04-23 19:30:51.197 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Аккаунты уже загружены.
+2025-04-23 19:30:51.210 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Инициализация БД завершена.
+2025-04-23 19:30:51.210 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Инициализация БД завершена.
+2025-04-23 19:30:51.236 [Information] [TwitchViewerBot.Workers.TaskRunner] TaskRunner запущен
+2025-04-23 19:30:51.450 [Information] [TwitchViewerBot.Workers.TaskRunner] Найдено 1 задач в ожидании запуска
+2025-04-23 19:30:51.450 [Information] [TwitchViewerBot.Workers.TaskRunner] Запуск задачи 4 для https://www.twitch.tv/therevtrev
+2025-04-23 19:30:51.512 [Information] [Microsoft.Hosting.Lifetime] Application started. Press Ctrl+C to shut down.
+2025-04-23 19:30:51.515 [Information] [Microsoft.Hosting.Lifetime] Hosting environment: Production
+2025-04-23 19:30:51.515 [Information] [Microsoft.Hosting.Lifetime] Content root path: C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0
+2025-04-23 19:32:17.591 [Information] [Microsoft.Hosting.Lifetime] Application is shutting down...
+2025-04-23 19:32:19.214 [Error] [TwitchViewerBot.Core.Services.TwitchService] Error watching as guest: https://www.twitch.tv/therevtrev
+2025-04-23 19:32:30.117 [Error] [TwitchViewerBot.Core.Services.TwitchService] Error watching as guest: https://www.twitch.tv/therevtrev

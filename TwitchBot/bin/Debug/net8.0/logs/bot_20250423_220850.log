@@ -1,0 +1,52 @@
+2025-04-23 22:08:51.021 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Инициализация базы данных...
+2025-04-23 22:08:51.374 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Прокси уже загружены.
+2025-04-23 22:08:51.381 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Аккаунты уже загружены.
+2025-04-23 22:08:51.393 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Инициализация БД завершена.
+2025-04-23 22:08:51.409 [Information] TwitchViewerBot.Workers.TaskRunner: TaskRunner запущен
+2025-04-23 22:08:51.570 [Information] TwitchViewerBot.Workers.TaskRunner: Найдено 1 задач в ожидании запуска
+2025-04-23 22:08:51.571 [Information] TwitchViewerBot.Workers.TaskRunner: Запуск задачи 4 для https://www.twitch.tv/wabrat
+2025-04-23 22:08:51.647 [Information] Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2025-04-23 22:08:51.648 [Information] Microsoft.Hosting.Lifetime: Hosting environment: Production
+2025-04-23 22:08:51.654 [Information] Microsoft.Hosting.Lifetime: Content root path: C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0
+2025-04-23 22:09:25.932 [Information] TwitchViewerBot.Core.Services.TaskService: Starting distribution for task 4: 6 auth, 4 guest viewers
+2025-04-23 22:09:26.077 [Information] TwitchViewerBot.Core.Services.TaskService: Retrieved 6 auth accounts and 4 proxies
+2025-04-23 22:09:26.077 [Information] TwitchViewerBot.Core.Services.TaskService: Starting auth viewer: shadowanrs3 via 213.226.101.11
+2025-04-23 22:09:34.029 [Information] TwitchViewerBot.Core.Services.TaskService: Starting auth viewer: chungyqueso via 2.59.50.55
+2025-04-23 22:09:42.709 [Information] TwitchViewerBot.Core.Services.TaskService: Starting auth viewer: iw4oo via 109.248.167.7
+2025-04-23 22:09:52.429 [Information] TwitchViewerBot.Core.Services.TaskService: Starting auth viewer: tpfjae via 46.8.22.20
+2025-04-23 22:10:04.019 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for chungyqueso
+2025-04-23 22:10:07.424 [Information] TwitchViewerBot.Core.Services.TaskService: Starting auth viewer: lxm7377 via 188.130.187.173
+2025-04-23 22:10:13.317 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for shadowanrs3
+2025-04-23 22:10:19.826 [Information] TwitchViewerBot.Core.Services.TaskService: Starting auth viewer: szejme_ via 188.130.210.168
+2025-04-23 22:10:29.239 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for tpfjae
+2025-04-23 22:10:34.680 [Information] TwitchViewerBot.Core.Services.TaskService: Starting guest viewer via 213.226.101.25
+2025-04-23 22:10:35.483 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for tpfjae
+2025-04-23 22:10:45.398 [Information] TwitchViewerBot.Core.Services.TaskService: Starting guest viewer via 212.115.49.125
+2025-04-23 22:10:50.961 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for chungyqueso
+2025-04-23 22:10:51.495 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for lxm7377
+2025-04-23 22:10:53.928 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for iw4oo
+2025-04-23 22:10:57.835 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for szejme_
+2025-04-23 22:10:58.034 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for lxm7377
+2025-04-23 22:10:58.086 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for chungyqueso
+2025-04-23 22:11:03.782 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for iw4oo
+2025-04-23 22:11:04.385 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for szejme_
+2025-04-23 22:11:09.621 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for tpfjae
+2025-04-23 22:11:10.794 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for szejme_
+2025-04-23 22:11:11.726 [Warning] TwitchViewerBot.Core.Services.TwitchService: Error in human-like activity
+2025-04-23 22:11:11.731 [Information] TwitchViewerBot.Core.Services.TaskService: Starting guest viewer via 188.130.220.189
+2025-04-23 22:11:14.069 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for shadowanrs3
+2025-04-23 22:11:16.887 [Warning] TwitchViewerBot.Core.Services.TwitchService: Error in human-like activity
+2025-04-23 22:11:17.794 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for szejme_
+2025-04-23 22:11:19.178 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for chungyqueso
+2025-04-23 22:11:22.320 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for iw4oo
+2025-04-23 22:11:24.114 [Information] TwitchViewerBot.Core.Services.TaskService: Starting guest viewer via 46.8.23.44
+2025-04-23 22:11:30.073 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for iw4oo
+2025-04-23 22:11:32.025 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for szejme_
+2025-04-23 22:11:37.033 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for shadowanrs3
+2025-04-23 22:11:38.821 [Warning] TwitchViewerBot.Core.Services.TwitchService: Error in human-like activity
+2025-04-23 22:11:44.764 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for tpfjae
+2025-04-23 22:11:51.133 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for lxm7377
+2025-04-23 22:12:03.330 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for tpfjae
+2025-04-23 22:12:06.991 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for chungyqueso
+2025-04-23 22:12:08.351 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for iw4oo
+2025-04-23 22:12:13.218 [Warning] TwitchViewerBot.Core.Services.TwitchService: Activity error for chungyqueso

@@ -12,19 +12,12 @@ using TwitchViewerBot.Data.Seeders;
 using TwitchViewerBot.Workers;
 
 var builder = Host.CreateDefaultBuilder(args)
-    .ConfigureLogging((context, logging) =>
+    .ConfigureLogging(logging =>
     {
-        // Очистка всех провайдеров логирования
         logging.ClearProviders();
-
-        // Добавление консольного логирования
+        logging.AddProvider(new AdvancedLoggerProvider());
         logging.AddConsole();
-
-        // Добавление файлового логирования
-        logging.AddFile("logs/log.txt", LogLevel.Information);
-
-        // Установка минимального уровня логирования
-        logging.SetMinimumLevel(LogLevel.Debug);
+        logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
     })
     .ConfigureServices((context, services) =>
     {
@@ -32,7 +25,7 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlite("Data Source=twitchbot.db"));
 
-        services.AddScoped<ITwitchService, TwitchService>();
+        services.AddTransient<ITwitchService, TwitchService>();
         services.AddScoped<IProxyService, ProxyService>();
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<ITaskService, TaskService>();
@@ -54,10 +47,17 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddTransient<ValidateTokensCommand>();
 
         // Регистрация воркеров
-        services.AddScoped<TaskRunner>();
+        services.AddHostedService<TaskRunner>();
 
         // Регистрация UI
         services.AddScoped<MainMenu>();
+
+
+        services.AddHttpClient("twitch")
+        .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+        {
+            MaxConnectionsPerServer = 100
+        });
     });
 
 var host = builder.Build();
@@ -73,17 +73,7 @@ using (var scope = host.Services.CreateScope())
     {
         // Создаем БД, если не существует (без удаления)
         await db.Database.EnsureCreatedAsync();
-
-        // Проверяем, пуста ли таблица прокси
-        if (!await db.Proxies.AnyAsync())
-        {
-            // Инициализируем данные
-            await DbInitializer.Initialize(db, proxyService, logger);
-        }
-        else
-        {
-            logger.LogInformation("Прокси уже загружены. Пропуск инициализации.");
-        }
+        await DbInitializer.Initialize(db, proxyService, logger);
     }
     catch (Exception ex)
     {
@@ -92,8 +82,11 @@ using (var scope = host.Services.CreateScope())
     }
 }
 
-// Запуск главного меню
-var mainMenu = host.Services.GetRequiredService<MainMenu>();
-await mainMenu.ShowAsync();
+var runHost = host.RunAsync();
 
-await host.RunAsync();
+// Параллельно запускаем меню
+var mainMenu = host.Services.GetRequiredService<MainMenu>();
+//await mainMenu.ShowAsync();
+
+// Дождаться завершения хоста
+await runHost;

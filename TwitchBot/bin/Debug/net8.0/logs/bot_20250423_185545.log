@@ -1,0 +1,14 @@
+2025-04-23 18:55:47.453 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Инициализация базы данных...
+2025-04-23 18:55:47.472 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Инициализация базы данных...
+2025-04-23 18:55:47.929 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Прокси уже загружены.
+2025-04-23 18:55:47.980 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Аккаунты уже загружены.
+2025-04-23 18:55:47.993 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Инициализация БД завершена.
+2025-04-23 18:55:48.015 [Information] [TwitchViewerBot.Workers.TaskRunner] TaskRunner запущен
+2025-04-23 18:55:48.197 [Information] [TwitchViewerBot.Workers.TaskRunner] Найдено 1 задач в ожидании запуска
+2025-04-23 18:55:48.197 [Information] [TwitchViewerBot.Workers.TaskRunner] Запуск задачи 4 для https://www.twitch.tv/liruvex
+2025-04-23 18:55:48.305 [Information] [Microsoft.Hosting.Lifetime] Application started. Press Ctrl+C to shut down.
+2025-04-23 18:55:48.308 [Information] [Microsoft.Hosting.Lifetime] Hosting environment: Production
+2025-04-23 18:55:48.308 [Information] [Microsoft.Hosting.Lifetime] Content root path: C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0
+2025-04-23 18:58:28.086 [Information] [Microsoft.Hosting.Lifetime] Application is shutting down...
+2025-04-23 18:58:33.585 [Error] [TwitchViewerBot.Core.Services.TwitchService] Error watching as guest: https://www.twitch.tv/liruvex
+2025-04-23 18:58:43.999 [Error] [TwitchViewerBot.Core.Services.TwitchService] Error watching as guest: https://www.twitch.tv/liruvex

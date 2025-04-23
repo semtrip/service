@@ -25,6 +25,7 @@ namespace TwitchViewerBot.Core.Services
         private readonly ILogger<TaskService> _logger;
         private readonly ConcurrentDictionary<int, CancellationTokenSource> _activeTasks = new();
 
+
         public TaskService(
             ITaskRepository taskRepository,
             ITwitchService twitchService,
@@ -43,30 +44,36 @@ namespace TwitchViewerBot.Core.Services
         {
             try
             {
+                // Рассчитываем количество авторизованных зрителей (60-80% от общего числа)
+                var random = new Random();
+                var authPercentage = random.Next(60, 81) / 100.0;
+                task.AuthViewersCount = (int)Math.Round(task.MaxViewers * authPercentage);
+                task.GuestViewersCount = task.MaxViewers - task.AuthViewersCount;
+
                 // Проверка канала и стрима
                 var isLive = await _twitchService.IsStreamLive(task.ChannelUrl);
 
                 if (!isLive)
                 {
-                    task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Paused;
+                    task.Status = Core.Enums.TaskStatus.Paused;
                 }
                 else
                 {
-                    task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Running;
+                    task.Status = Core.Enums.TaskStatus.Running;
                     task.StartTime = DateTime.UtcNow;
                     task.EndTime = DateTime.UtcNow.Add(task.Duration);
                 }
 
                 await _taskRepository.AddTask(task);
 
-                if (task.Status == TwitchViewerBot.Core.Enums.TaskStatus.Running)
+                if (task.Status == Core.Enums.TaskStatus.Running)
                 {
                     await StartTask(task);
                 }
             }
             catch (Exception ex)
             {
-                task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Failed;
+                task.Status = Core.Enums.TaskStatus.Failed;
                 task.ErrorMessage = $"Ошибка при создании задачи: {ex.Message}";
                 await _taskRepository.AddTask(task);
                 _logger.LogError(ex, "Ошибка при добавлении задачи");
@@ -75,64 +82,132 @@ namespace TwitchViewerBot.Core.Services
 
         public async Task StartTask(BotTask task)
         {
-            if (task.Status != TwitchViewerBot.Core.Enums.TaskStatus.Pending) return;
-
             var isLive = await _twitchService.IsStreamLive(task.ChannelUrl);
             if (!isLive)
             {
-                task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Paused;
+                Console.WriteLine($"{task.ChannelUrl} стрим не запущен, ставим на паузу");
+                task.Status = Core.Enums.TaskStatus.Paused;
                 await _taskRepository.UpdateTask(task);
                 return;
             }
 
-            task.Status = TwitchViewerBot.Core.Enums.TaskStatus.Running;
+            task.Status = Core.Enums.TaskStatus.Running;
             task.StartTime = DateTime.UtcNow;
             task.EndTime = DateTime.UtcNow.Add(task.Duration);
+            Console.WriteLine($"{task.ChannelUrl} стрим запущен, начинаем накрутку");
 
             await _taskRepository.UpdateTask(task);
-
-            // Запуск распределения зрителей
             await DistributeViewers(task);
         }
 
-        private async Task DistributeViewers(BotTask task)
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(10, 10);
+
+        public async Task DistributeViewers(BotTask task)
         {
-            // Получаем необходимое количество аккаунтов и прокси
-            var authAccounts = await GetAuthAccounts(task.AuthViewersCount);
-            var guestProxies = await GetGuestProxies(task.GuestViewersCount);
-
-            // Запуск авторизованных зрителей
-            foreach (var (account, proxy) in authAccounts)
+            try
             {
-                _ = _twitchService.WatchStream(account, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
-            }
+                _logger.LogInformation($"Starting distribution for task {task.Id}: {task.AuthViewersCount} auth, {task.GuestViewersCount} guest viewers");
 
-            // Запуск гостевых зрителей
-            foreach (var proxy in guestProxies)
-            {
-                _ = _twitchService.WatchAsGuest(proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
-            }
-        }
-        private async Task<List<(TwitchAccount, ProxyServer)>> GetAuthAccounts(int count)
-        {
-            var accounts = await _accountService.GetValidAccounts(count);
-            var result = new List<(TwitchAccount, ProxyServer)>();
+                // Получаем аккаунты и прокси параллельно
+                var getAuthTask = GetAuthAccounts(task.AuthViewersCount);
+                var getGuestTask = GetGuestProxies(task.GuestViewersCount);
+                await Task.WhenAll(getAuthTask, getGuestTask);
 
-            foreach (var account in accounts)
-            {
-                if (account.Proxy != null)
+                var authAccounts = await getAuthTask;
+                var guestProxies = await getGuestTask;
+
+                _logger.LogInformation($"Retrieved {authAccounts.Count} auth accounts and {guestProxies.Count} proxies");
+
+                // Список всех задач для отслеживания
+                var allTasks = new List<Task>();
+
+                // Запуск авторизованных зрителей с ограничением параллелизма
+                var authTasks = authAccounts.Select(async (pair) =>
                 {
-                    result.Add((account, account.Proxy));
+                    await _semaphore.WaitAsync();
+                    try
+                    {
+                        var (account, proxy) = pair;
+                        _logger.LogInformation($"Starting auth viewer: {account.Username} via {proxy.Address}");
+                        await _twitchService.WatchStream(account, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
+                    }
+                    finally
+                    {
+                        _semaphore.Release();
+                    }
+                });
+                allTasks.AddRange(authTasks);
+
+                // Запуск гостевых зрителей с ограничением параллелизма
+                var guestTasks = guestProxies.Select(async proxy =>
+                {
+                    await _semaphore.WaitAsync();
+                    try
+                    {
+                        _logger.LogInformation($"Starting guest viewer via {proxy.Address}");
+                        await _twitchService.WatchAsGuest(proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
+                    }
+                    finally
+                    {
+                        _semaphore.Release();
+                    }
+                });
+                allTasks.AddRange(guestTasks);
+
+                // Обновляем счетчики после запуска
+                task.CurrentViewers = authAccounts.Count + guestProxies.Count;
+                await _taskRepository.UpdateTask(task);
+
+                // Ждем завершения всех задач с таймаутом
+                var timeout = TimeSpan.FromMinutes(5);
+                var completedTask = await Task.WhenAny(
+                    Task.WhenAll(allTasks),
+                    Task.Delay(timeout)
+                );
+
+                if (completedTask is Task delayTask && delayTask.IsCompleted)
+                {
+                    _logger.LogWarning($"Not all viewers started within {timeout.TotalMinutes} minutes");
                 }
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error in DistributeViewers for task {task.Id}");
+            }
+        }
 
-            return result;
+        private async Task<List<(TwitchAccount, ProxyServer)>> GetAuthAccounts(int count)
+        {
+            if (count <= 0) return new List<(TwitchAccount, ProxyServer)>();
+
+            // Используем параллелизм для проверки аккаунтов
+            var accounts = (await _accountService.GetValidAccounts(count))
+                .AsParallel()
+                .Where(a => a.Proxy != null || _proxyService.GetValidProxies().Result.Any())
+                .Take(count)
+                .ToList();
+
+            var result = new ConcurrentBag<(TwitchAccount, ProxyServer)>();
+
+            Parallel.ForEach(accounts, account =>
+            {
+                var proxy = account.Proxy ?? _proxyService.GetValidProxies().Result.First();
+                result.Add((account, proxy));
+            });
+
+            return result.ToList();
         }
 
         private async Task<List<ProxyServer>> GetGuestProxies(int count)
         {
-            return await _proxyService.GetValidProxies();
+            if (count <= 0) return new List<ProxyServer>();
+
+            return (await _proxyService.GetValidProxies())
+                .AsParallel()
+                .Take(count)
+                .ToList();
         }
+
 
         private async Task ExecuteTaskAsync(BotTask task, CancellationToken cancellationToken)
         {

@@ -8,7 +8,7 @@ namespace TwitchViewerBot.Data.Repositories
     {
         Task<List<BotTask>> GetAll();
         Task<List<BotTask>> GetPendingTasks();
-        Task<List<BotTask>> GetRunningTasks(); // Добавьте этот метод
+        Task<List<BotTask>> GetRunningTasks();
         Task<BotTask?> GetById(int id);
         Task AddTask(BotTask task);
         Task UpdateTask(BotTask task);

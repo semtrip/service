@@ -226,35 +226,105 @@ namespace TwitchViewerBot.Core.Services
 
         public async Task WatchStream(TwitchAccount account, ProxyServer proxy, string channelUrl, int minutes)
         {
-            _logger.LogInformation($"Бот запущен: {account.Username} через {proxy.Address}:{proxy.Port}");
+            await WatchStreamInternal(account, proxy, channelUrl, minutes, CancellationToken.None);
+        }
+        private async Task WatchStreamInternal(TwitchAccount account, ProxyServer proxy, string channelUrl, int minutes, CancellationToken cancellationToken)
+        {
             ChromeDriver driver = null;
             try
             {
-                var options = ConfigureBrowserOptions(new ChromeOptions(), proxy);
+                Console.WriteLine($"================ ПОДКЛЮЧАЕМСЯ НА СТРИМ ЧЕРЕЗ {proxy.Address} {account.Username} ==========================");
+                var options = new ChromeOptions();
+                options.AddArgument("--headless");
+                options.AddArgument("--disable-gpu");
+                options.AddArgument("--no-sandbox");
+                options.AddArgument("--disable-dev-shm-usage");
+                options.AddArgument("--window-size=1920,1080");
                 options.AddArgument("--mute-audio");
+                options.AddArgument("--disable-extensions");
+                options.AddArgument("--disable-notifications");
 
-                driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(60));
-
-                if (!await AuthenticateWithCookies(driver, account.AuthToken))
+                if (proxy != null)
                 {
-                    _logger.LogWarning($"Auth failed for account: {account.Username}");
+                    options.AddHttpProxy(proxy.Address, proxy.Port, proxy.Username ?? string.Empty, proxy.Password ?? string.Empty);
+                }
+
+                driver = new ChromeDriver(options);
+
+                // Аутентификация
+                driver.Navigate().GoToUrl("https://www.twitch.tv");
+                var authCookie = new OpenQA.Selenium.Cookie("auth-token", account.AuthToken, ".twitch.tv", "/", DateTime.Now.AddYears(1));
+                driver.Manage().Cookies.AddCookie(authCookie);
+                driver.Navigate().Refresh();
+                await Task.Delay(5000, cancellationToken);
+
+                var isAuthenticated = driver.FindElements(By.CssSelector(".Layout-sc-1xcs6mc-0.eKDZrJ")).Any();
+
+                if (!isAuthenticated)
+                {
+                    Console.WriteLine($"Auth failed for {account.Username}");
+                    _logger.LogError($"Auth failed for {account.Username}");
                     return;
                 }
 
-                await WatchChannel(driver, channelUrl, minutes);
+                // Переход на канал
+                driver.Navigate().GoToUrl(channelUrl);
+                await Task.Delay(10000, cancellationToken);
+
+                var screenshotDir = Path.Combine(AppContext.BaseDirectory, "screenshots", "123");
+                Directory.CreateDirectory(screenshotDir);
+                var screenshotPath = Path.Combine(screenshotDir, $"{account.Username}.png");
+                driver.GetScreenshot().SaveAsFile(screenshotPath);
+
+                // Основной цикл просмотра
+                var endTime = DateTime.Now.AddMinutes(minutes);
+                while (DateTime.Now < endTime && !cancellationToken.IsCancellationRequested)
+                {
+                    try
+                    {
+                        // Человеко-подобные действия
+                        switch (_random.Next(0, 3))
+                        {
+                            case 0:
+                                ((IJavaScriptExecutor)driver).ExecuteScript($"window.scrollBy(0, {_random.Next(200, 500)})");
+                                break;
+                            case 1:
+                                var chatInput = driver.FindElements(By.CssSelector(".chat-input"));
+                                if (chatInput.Count > 0)
+                                {
+                                    chatInput[0].Click();
+                                    await Task.Delay(1000, cancellationToken);
+                                    chatInput[0].SendKeys(Keys.Escape);
+                                }
+                                break;
+                        }
+
+                        await Task.Delay(_random.Next(5000, 15000), cancellationToken);
+                    }
+                    catch (Exception ex) when (!cancellationToken.IsCancellationRequested)
+                    {
+                        _logger.LogWarning(ex, $"Activity error for {account.Username}");
+                        await Task.Delay(5000, cancellationToken);
+                    }
+                }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!cancellationToken.IsCancellationRequested)
             {
-                _logger.LogError(ex, $"Error watching stream for account {account.Username}");
-                throw;
+                _logger.LogError(ex, $"WatchStream error for {account.Username}");
             }
             finally
             {
-                driver?.Quit();
-                driver?.Dispose();
+                try
+                {
+                    driver?.Quit();
+                    driver?.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Error closing driver for {account.Username}");
+                }
             }
         }
-
         public async Task WatchAsGuest(ProxyServer proxy, string channelUrl, int minutes)
         {
             ChromeDriver driver = null;
@@ -325,25 +395,44 @@ namespace TwitchViewerBot.Core.Services
         private async Task HumanLikeActivity(ChromeDriver driver, int minutes)
         {
             var endTime = DateTime.Now.AddMinutes(minutes);
-            var actions = new Action[]
-            {
-                () => ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollBy(0, 200)"),
-                () => driver.Navigate().Refresh(),
-                () => ClickRandomElement(driver, ".tw-button")
-            };
+            var random = new Random();
 
             while (DateTime.Now < endTime)
             {
-                if (_random.NextDouble() > 0.7)
+                try
                 {
-                    try
+                    // Случайные действия
+                    switch (random.Next(0, 4))
                     {
-                        actions[_random.Next(actions.Length)]();
-                        await Task.Delay(_random.Next(2000, 5000));
+                        case 0:
+                            // Прокрутка страницы
+                            ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollBy(0, 200)");
+                            break;
+                        case 1:
+                            // Клик по случайному элементу
+                            var elements = driver.FindElements(By.CssSelector("button, a"));
+                            if (elements.Count > 0)
+                            {
+                                elements[random.Next(0, elements.Count)].Click();
+                            }
+                            break;
+                        case 2:
+                            // Обновление страницы (редко)
+                            if (random.Next(0, 10) == 0)
+                            {
+                                driver.Navigate().Refresh();
+                            }
+                            break;
                     }
-                    catch { }
+
+                    // Случайная задержка между действиями
+                    await Task.Delay(random.Next(50000, 150000));
                 }
-                await Task.Delay(_random.Next(15000, 30000));
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Error in human-like activity");
+                    await Task.Delay(5000);
+                }
             }
         }
 
@@ -365,7 +454,8 @@ namespace TwitchViewerBot.Core.Services
                 "--disable-notifications",
                 "--disable-blink-features=AutomationControlled",
                 "--disable-infobars",
-                "--disable-popup-blocking");
+                "--disable-popup-blocking",
+                "--enable-unsafe-swiftshader");
 
             return options;
         }

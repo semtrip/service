@@ -1,0 +1,10 @@
+2025-04-23 18:40:11.273 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Инициализация базы данных...
+2025-04-23 18:40:11.288 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Инициализация базы данных...
+2025-04-23 18:40:11.658 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Прокси уже загружены.
+2025-04-23 18:40:11.683 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Аккаунты уже загружены.
+2025-04-23 18:40:11.713 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Инициализация БД завершена.
+2025-04-23 18:40:11.767 [Information] [TwitchViewerBot.Workers.TaskRunner] TaskRunner запущен
+2025-04-23 18:40:11.885 [Information] [TwitchViewerBot.Workers.TaskRunner] Найдено 0 задач в ожидании
+2025-04-23 18:40:11.889 [Information] [Microsoft.Hosting.Lifetime] Application started. Press Ctrl+C to shut down.
+2025-04-23 18:40:11.892 [Information] [Microsoft.Hosting.Lifetime] Hosting environment: Production
+2025-04-23 18:40:11.892 [Information] [Microsoft.Hosting.Lifetime] Content root path: C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0

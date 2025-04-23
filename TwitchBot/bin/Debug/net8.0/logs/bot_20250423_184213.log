@@ -1,0 +1,15 @@
+2025-04-23 18:42:14.650 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Инициализация базы данных...
+2025-04-23 18:42:14.664 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Инициализация базы данных...
+2025-04-23 18:42:15.024 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Прокси уже загружены.
+2025-04-23 18:42:15.048 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Аккаунты уже загружены.
+2025-04-23 18:42:15.096 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Инициализация БД завершена.
+2025-04-23 18:42:15.117 [Information] [TwitchViewerBot.Workers.TaskRunner] TaskRunner запущен
+2025-04-23 18:42:15.323 [Information] [TwitchViewerBot.Workers.TaskRunner] Найдено 2 задач в ожидании
+2025-04-23 18:42:15.324 [Information] [TwitchViewerBot.Workers.TaskRunner] Запуск задачи 4 для https://www.twitch.tv/liruvex
+2025-04-23 18:42:15.325 [Information] [TwitchViewerBot.Workers.TaskRunner] Запуск задачи 5 для https://www.twitch.tv/donkdavis
+2025-04-23 18:42:15.328 [Information] [Microsoft.Hosting.Lifetime] Application started. Press Ctrl+C to shut down.
+2025-04-23 18:42:15.331 [Information] [Microsoft.Hosting.Lifetime] Hosting environment: Production
+2025-04-23 18:42:15.331 [Information] [Microsoft.Hosting.Lifetime] Content root path: C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0
+2025-04-23 18:43:15.369 [Information] [TwitchViewerBot.Workers.TaskRunner] Найдено 2 задач в ожидании
+2025-04-23 18:43:15.369 [Information] [TwitchViewerBot.Workers.TaskRunner] Запуск задачи 4 для https://www.twitch.tv/liruvex
+2025-04-23 18:43:15.369 [Information] [TwitchViewerBot.Workers.TaskRunner] Запуск задачи 5 для https://www.twitch.tv/donkdavis

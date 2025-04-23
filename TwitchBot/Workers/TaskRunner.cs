@@ -32,10 +32,10 @@ namespace TwitchViewerBot.Workers
                 {
                     _logger.LogDebug("Проверка задач...");
 
-                    var pendingTasks = await _taskService.GetPendingTasks();
-                    _logger.LogInformation($"Найдено {pendingTasks.Count} задач в ожидании");
+                    var runnigTasks = await _taskService.GetRunningTasks();
+                    _logger.LogInformation($"Найдено {runnigTasks.Count} задач в ожидании запуска");
 
-                    foreach (var task in pendingTasks)
+                    foreach (var task in runnigTasks)
                     {
                         _logger.LogInformation($"Запуск задачи {task.Id} для {task.ChannelUrl}");
                         await _taskService.StartTask(task);
