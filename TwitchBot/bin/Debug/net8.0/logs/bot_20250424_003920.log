@@ -1,0 +1,8 @@
+2025-04-24 00:39:21.597 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Инициализация базы данных...
+2025-04-24 00:39:21.608 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Инициализация базы данных...
+2025-04-24 00:39:21.911 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Прокси уже загружены.
+2025-04-24 00:39:21.938 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Аккаунты уже загружены.
+2025-04-24 00:39:21.967 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Инициализация БД завершена.
+2025-04-24 00:39:22.714 [Information] [TwitchViewerBot.Workers.TaskRunner] TaskRunner запущен
+2025-04-24 00:39:22.947 [Information] [TwitchViewerBot.Workers.TaskRunner] Найдено 1 задач в ожидании запуска
+2025-04-24 00:39:22.948 [Information] [TwitchViewerBot.Workers.TaskRunner] Запуск задачи 4 для https://www.twitch.tv/suzukaspec

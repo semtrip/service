@@ -1,0 +1,44 @@
+2025-04-24 12:22:24.411 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Инициализация базы данных...
+2025-04-24 12:22:24.429 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Инициализация базы данных...
+2025-04-24 12:22:24.736 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Прокси уже загружены.
+2025-04-24 12:22:24.805 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Аккаунты уже загружены.
+2025-04-24 12:22:24.821 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Инициализация БД завершена.
+2025-04-24 12:22:26.039 [Information] [TwitchViewerBot.Workers.TaskRunner] TaskRunner запущен
+2025-04-24 12:22:26.201 [Information] [TwitchViewerBot.Workers.TaskRunner] Найдено 1 задач в ожидании запуска
+2025-04-24 12:22:26.202 [Information] [TwitchViewerBot.Workers.TaskRunner] Запуск задачи 4 для https://www.twitch.tv/deebomb101
+2025-04-24 12:22:26.202 [Information] [TwitchViewerBot.Workers.TaskRunner] Запрошено просмотров: Авторизованных 270 Не авторизованных 80
+2025-04-24 12:22:26.478 [Information] [TwitchViewerBot.Core.Services.TaskService] Получено ботов: Авторизованных 270 Не авторизованных 80
+2025-04-24 12:22:43.586 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с shadowanrs3
+2025-04-24 12:22:52.596 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с chungyqueso
+2025-04-24 12:22:55.319 [Error] [TwitchViewerBot.Core.Services.TwitchService] Auth failed for iw4oo
+2025-04-24 12:22:57.861 [Error] [TwitchViewerBot.Core.Services.TwitchService] Auth failed for tpfjae
+2025-04-24 12:23:09.739 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с lxm7377
+2025-04-24 12:23:12.536 [Error] [TwitchViewerBot.Core.Services.TwitchService] Auth failed for szejme_
+2025-04-24 12:23:24.060 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с lagman_o3
+2025-04-24 12:23:36.936 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с coopiskrxzy
+2025-04-24 12:23:48.692 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с matti_23_ita
+2025-04-24 12:24:02.085 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с leonovich1
+2025-04-24 12:24:18.706 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с isyhjyi
+2025-04-24 12:24:37.242 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с stoviksedi
+2025-04-24 12:24:59.864 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с ow_despair
+2025-04-24 12:25:26.086 [Error] [TwitchViewerBot.Core.Services.TwitchService] Auth failed for pintinhochoco
+2025-04-24 12:26:18.894 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с kamisatoteera
+2025-04-24 12:26:30.931 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с elissontheo
+2025-04-24 12:26:34.299 [Error] [TwitchViewerBot.Core.Services.TwitchService] Auth failed for psycho_punck
+2025-04-24 12:26:48.278 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с sunshy1a1a
+2025-04-24 12:26:51.755 [Error] [TwitchViewerBot.Core.Services.TwitchService] Auth failed for zilverelxd
+2025-04-24 12:26:55.680 [Error] [TwitchViewerBot.Core.Services.TwitchService] Auth failed for qwejyt
+2025-04-24 12:27:08.292 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с mrstuartlirul
+2025-04-24 12:27:25.569 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с ihatque
+2025-04-24 12:27:49.919 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с dark_angel444
+2025-04-24 12:27:54.619 [Error] [TwitchViewerBot.Core.Services.TwitchService] Auth failed for attycwe
+2025-04-24 12:28:02.222 [Error] [TwitchViewerBot.Core.Services.TwitchService] Auth failed for igris_hou
+2025-04-24 12:28:19.949 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с indigo_leoj
+2025-04-24 12:28:44.193 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с podejrzany_typ
+2025-04-24 12:29:01.735 [Error] [TwitchViewerBot.Core.Services.TwitchService] Auth failed for reicherfisch
+2025-04-24 12:29:23.191 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с niccooocontrese
+2025-04-24 12:29:55.183 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с italo186465
+2025-04-24 12:30:03.029 [Error] [TwitchViewerBot.Core.Services.TwitchService] Auth failed for nobreadface
+2025-04-24 12:30:13.134 [Information] [Microsoft.Hosting.Lifetime] Application is shutting down...
+2025-04-24 12:30:30.662 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с soonesong
+2025-04-24 12:30:47.890 [Error] [TwitchViewerBot.Core.Services.TwitchService] Auth failed for benni2131

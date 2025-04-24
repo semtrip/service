@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "8F9jPVgFqzU=",
+  "dgSpecHash": "hiO/ZIu7b7s=",
   "success": true,
   "projectFilePath": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\TwitchBot.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Nismo\\.nuget\\packages\\anglesharp\\1.1.2\\anglesharp.1.1.2.nupkg.sha512",
+    "C:\\Users\\Nismo\\.nuget\\packages\\bogus\\35.6.3\\bogus.35.6.3.nupkg.sha512",
     "C:\\Users\\Nismo\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Nismo\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\7.0.0\\microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",
     "C:\\Users\\Nismo\\.nuget\\packages\\microsoft.build.framework\\17.8.3\\microsoft.build.framework.17.8.3.nupkg.sha512",

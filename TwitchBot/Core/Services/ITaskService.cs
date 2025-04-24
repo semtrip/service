@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿// TwitchBot/Core/Services/ITaskService.cs
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using TwitchViewerBot.Core.Enums;
 using TwitchViewerBot.Core.Models;
 
 namespace TwitchViewerBot.Core.Services

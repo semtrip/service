@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v8.0": {
       "TwitchBot/1.0.0": {
         "dependencies": {
+          "Bogus": "35.6.3",
           "Microsoft.EntityFrameworkCore": "9.0.4",
           "Microsoft.EntityFrameworkCore.Design": "9.0.4",
           "Microsoft.EntityFrameworkCore.Sqlite": "9.0.4",
@@ -35,6 +36,14 @@
           "lib/net8.0/AngleSharp.dll": {
             "assemblyVersion": "1.1.2.0",
             "fileVersion": "1.1.2.0"
+          }
+        }
+      },
+      "Bogus/35.6.3": {
+        "runtime": {
+          "lib/net6.0/Bogus.dll": {
+            "assemblyVersion": "35.6.3.0",
+            "fileVersion": "35.6.3.0"
           }
         }
       },
@@ -1738,6 +1747,13 @@
       "sha512": "sha512-aRFpAqixbuj1Vmqy2hsWPF0PJygo1SfjvmpBvVWZv6i+/u+C/L4wDdwFIzyCGUbjqr61NsZdPNPqDE8wlmG2qA==",
       "path": "anglesharp/1.1.2",
       "hashPath": "anglesharp.1.1.2.nupkg.sha512"
+    },
+    "Bogus/35.6.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+5omfZWy8gOcbpc48vKfMI4h/ecbdf3NQm6xCl3zMbaP4J3rMMm5h3kPFeIWBgt4mbz6YY0eeZDLR/6yv1khKw==",
+      "path": "bogus/35.6.3",
+      "hashPath": "bogus.35.6.3.nupkg.sha512"
     },
     "Humanizer.Core/2.14.1": {
       "type": "package",

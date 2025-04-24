@@ -58,6 +58,14 @@ var builder = Host.CreateDefaultBuilder(args)
         {
             MaxConnectionsPerServer = 100
         });
+        services.AddHttpClient("twitch_light", client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(10);
+            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0");
+        });
+        services.AddSingleton<WebDriverPool>(_ => new WebDriverPool(
+            maxDrivers: 40, // Оптимальное количество драйверов
+            proxy: null));
     });
 
 var host = builder.Build();
@@ -86,7 +94,8 @@ var runHost = host.RunAsync();
 
 // Параллельно запускаем меню
 var mainMenu = host.Services.GetRequiredService<MainMenu>();
-//await mainMenu.ShowAsync();
+await mainMenu.ShowAsync();
+
 
 // Дождаться завершения хоста
 await runHost;

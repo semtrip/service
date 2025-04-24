@@ -1,484 +1,152 @@
-﻿using System;
-using System.Linq;
+﻿// TwitchBot/Core/Services/TwitchService.cs
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Chrome.ChromeDriverExtensions;
 using OpenQA.Selenium.Support.UI;
 using TwitchViewerBot.Core.Models;
-using SeleniumCookie = OpenQA.Selenium.Cookie;
-using WebDriverManager;
-using WebDriverManager.DriverConfigs.Impl;
-using System.Diagnostics;
 
 namespace TwitchViewerBot.Core.Services
 {
-    public class TwitchService : ITwitchService
+    public class TwitchService : ITwitchService, IDisposable
     {
         private readonly ILogger<TwitchService> _logger;
-        private readonly Random _random;
-        private const string AuthCookieName = "auth-token";
+        private readonly WebDriverPool _driverPool;
+        private readonly Random _random = new();
 
-        public TwitchService(ILogger<TwitchService> logger)
+        public TwitchService(ILogger<TwitchService> logger, WebDriverPool driverPool)
         {
             _logger = logger;
-            _random = new Random();
+            _driverPool = driverPool;
         }
 
         public async Task<bool> IsStreamLive(string channelUrl)
         {
-            if (!Uri.TryCreate(channelUrl, UriKind.Absolute, out var uri) ||
-                uri.Host != "www.twitch.tv")
-            {
-                _logger.LogError($"Invalid Twitch URL: {channelUrl}");
-                return false;
-            }
-
-            // Сначала пробуем через API (быстрее и надежнее)
-            var channelName = channelUrl.Split('/').Last();
-            var apiResult = await CheckStreamViaApi(channelName);
-            if (apiResult) return true;
-
-            // Если API не сработало, пробуем через браузер
-            return await CheckStreamViaBrowser(channelUrl);
-        }
-
-        private async Task<bool> CheckStreamViaApi(string channelName)
-        {
+            IWebDriver driver = null;
             try
             {
-                using var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Add("Client-ID", "kimne78kx3ncx6brgo4mv6wki5h1ko");
-                httpClient.DefaultRequestHeaders.Add("Accept", "application/vnd.twitchtv.v5+json");
-
-                var response = await httpClient.GetAsync(
-                    $"https://api.twitch.tv/kraken/streams/{channelName}");
-
-                if (!response.IsSuccessStatusCode)
-                    return false;
-
-                var content = await response.Content.ReadAsStringAsync();
-                return content.Contains("\"stream\":{") || content.Contains("\"type\":\"live\"");
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private async Task<bool> CheckStreamViaBrowser(string channelUrl)
-        {
-            try
-            {
-                new DriverManager().SetUpDriver(new ChromeConfig());
-
-                var options = new ChromeOptions();
-                options.AddArguments(
-                    "--headless=new",
-                    "--disable-gpu",
-                    "--no-sandbox",
-                    "--disable-dev-shm-usage",
-                    "--window-size=1920,1080",
-                    "--mute-audio",
-                    "--disable-extensions",
-                    "--disable-notifications",
-                    "--log-level=3",
-                    "--enable-unsafe-swiftshader",
-                    $"user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{GetChromeMajorVersion()} Safari/537.36"
-                );
-
-                options.AddExcludedArgument("enable-automation");
-                options.AddAdditionalOption("useAutomationExtension", false);
-
-                using var driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(30));
-
-                ((IJavaScriptExecutor)driver).ExecuteScript(
-                    "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
-
+                driver = await _driverPool.GetDriver();
                 driver.Navigate().GoToUrl(channelUrl);
-                await Task.Delay(10000);
+                await Task.Delay(5000); // Ждем загрузки
 
                 try
                 {
-                    // Делаем скриншот для отладки
-                    var screenshot = driver.GetScreenshot();
-                    screenshot.SaveAsFile("twitch_debug.png");
-
-                    // Проверяем LIVE индикатор
-                    var liveIndicator = driver.FindElement(
-                        By.CssSelector(".liveIndicator--x8p4l .CoreText-sc-1txzju1-0"));
-                    Console.WriteLine($"liveIndicator {liveIndicator}");
-                    Console.WriteLine($"liveIndicator?.Text {liveIndicator?.Text}");
-                    return liveIndicator?.Text == "LIVE" || liveIndicator?.Text == "В ЭФИРЕ";
-
+                    var liveIndicator = driver.FindElement(By.CssSelector("[data-a-target='stream-status-indicator']"));
+                    return liveIndicator.Text.Contains("LIVE") || liveIndicator.Text.Contains("В ЭФИРЕ");
                 }
-                catch (NoSuchElementException)
-                {
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Browser check failed");
-                return false;
-            }
-        }
-
-        private string GetChromeMajorVersion()
-        {
-            try
-            {
-                var chromePath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
-                var versionInfo = FileVersionInfo.GetVersionInfo(chromePath);
-                return versionInfo.FileMajorPart.ToString();
-            }
-            catch
-            {
-                return "119"; // Версия по умолчанию
-            }
-        }
-        public async Task<bool> IsStreamLiveApi(string channelName)
-        {
-            try
-            {
-                using var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Add("Client-ID", "kimne78kx3ncx6brgo4mv6wki5h1ko"); // Стандартный Client-ID Twitch
-
-                var response = await httpClient.GetAsync(
-                    $"https://gql.twitch.tv/gql?query=%7B%0A%20%20user%28login%3A%22{channelName}%22%29%20%7B%0A%20%20%20%20stream%20%7B%0A%20%20%20%20%20%20id%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    return content.Contains("\"stream\":{\"id\"") || content.Contains("\"type\":\"live\"");
-                }
-                return false;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-        public async Task<bool> VerifyAccount(TwitchAccount account, ProxyServer proxy)
-        {
-            ChromeDriver driver = null;
-            try
-            {
-                var options = new ChromeOptions();
-                options.AddArgument("--headless");
-                options.AddArgument("--disable-gpu");
-                options.AddArgument("--no-sandbox");
-                options.AddArgument("--disable-dev-shm-usage");
-                options.AddArgument("--window-size=1920,1080");
-                options.AddArgument("--mute-audio");
-                options.AddArgument("--disable-extensions");
-                options.AddArgument("--disable-notifications");
-
-                if (proxy != null)
-                {
-                    options.AddHttpProxy(proxy.Address, proxy.Port, proxy.Username ?? string.Empty, proxy.Password ?? string.Empty);
-                }
-
-                driver = new ChromeDriver(options);
-
-                // Переходим на страницу Twitch
-                driver.Navigate().GoToUrl("https://www.twitch.tv");
-
-                // Добавляем cookie с токеном
-                var authCookie = new OpenQA.Selenium.Cookie("auth-token", account.AuthToken, ".twitch.tv", "/", DateTime.Now.AddYears(1));
-                driver.Manage().Cookies.AddCookie(authCookie);
-
-                // Обновляем страницу для применения cookie
-                driver.Navigate().Refresh();
-
-                // Ждем загрузки страницы
-                await Task.Delay(5000);
-
-                // Проверяем авторизацию
-                var isAuthenticated = driver.FindElements(By.CssSelector(".Layout-sc-1xcs6mc-0.eKDZrJ")).Any();
-
-                if (isAuthenticated)
-                {
-                    // Создаем скриншот
-                    var screenshotDir = Path.Combine(AppContext.BaseDirectory, "screenshots", "accounts");
-                    Directory.CreateDirectory(screenshotDir);
-                    var screenshotPath = Path.Combine(screenshotDir, $"{account.Username}.png");
-                    driver.GetScreenshot().SaveAsFile(screenshotPath);
-
-                    _logger.LogInformation($"Аккаунт {account.Username} успешно авторизован через прокси {proxy.Address}:{proxy.Port}");
-                }
-
-                return isAuthenticated;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Ошибка при проверке аккаунта {account.Username}");
-                return false;
+                catch { return false; }
             }
             finally
             {
-                driver?.Quit();
-                driver?.Dispose();
+                if (driver != null)
+                    _driverPool.ReleaseDriver(driver);
             }
         }
 
+        public async Task<bool> VerifyAccount(TwitchAccount account, ProxyServer proxy)
+        {
+            using var proxyDriverPool = new WebDriverPool(2, proxy);
+            IWebDriver driver = null;
+            try
+            {
+                driver = await proxyDriverPool.GetDriver();
+                return await AuthenticateWithCookies(driver, account.AuthToken);
+            }
+            finally
+            {
+                if (driver != null)
+                    proxyDriverPool.ReleaseDriver(driver);
+            }
+        }
 
         public async Task WatchStream(TwitchAccount account, ProxyServer proxy, string channelUrl, int minutes)
         {
-            await WatchStreamInternal(account, proxy, channelUrl, minutes, CancellationToken.None);
-        }
-        private async Task WatchStreamInternal(TwitchAccount account, ProxyServer proxy, string channelUrl, int minutes, CancellationToken cancellationToken)
-        {
-            ChromeDriver driver = null;
+            using var proxyDriverPool = new WebDriverPool(2, proxy);
+            IWebDriver driver = null;
             try
             {
-                Console.WriteLine($"================ ПОДКЛЮЧАЕМСЯ НА СТРИМ ЧЕРЕЗ {proxy.Address} {account.Username} ==========================");
-                var options = new ChromeOptions();
-                options.AddArgument("--headless");
-                options.AddArgument("--disable-gpu");
-                options.AddArgument("--no-sandbox");
-                options.AddArgument("--disable-dev-shm-usage");
-                options.AddArgument("--window-size=1920,1080");
-                options.AddArgument("--mute-audio");
-                options.AddArgument("--disable-extensions");
-                options.AddArgument("--disable-notifications");
+                driver = await proxyDriverPool.GetDriver();
 
-                if (proxy != null)
+                if (!await AuthenticateWithCookies(driver, account.AuthToken))
                 {
-                    options.AddHttpProxy(proxy.Address, proxy.Port, proxy.Username ?? string.Empty, proxy.Password ?? string.Empty);
-                }
-
-                driver = new ChromeDriver(options);
-
-                // Аутентификация
-                driver.Navigate().GoToUrl("https://www.twitch.tv");
-                var authCookie = new OpenQA.Selenium.Cookie("auth-token", account.AuthToken, ".twitch.tv", "/", DateTime.Now.AddYears(1));
-                driver.Manage().Cookies.AddCookie(authCookie);
-                driver.Navigate().Refresh();
-                await Task.Delay(5000, cancellationToken);
-
-                var isAuthenticated = driver.FindElements(By.CssSelector(".Layout-sc-1xcs6mc-0.eKDZrJ")).Any();
-
-                if (!isAuthenticated)
-                {
-                    Console.WriteLine($"Auth failed for {account.Username}");
                     _logger.LogError($"Auth failed for {account.Username}");
                     return;
                 }
+                _logger.LogInformation($"Просматриваем стрим с {account.Username}");
 
-                // Переход на канал
-                driver.Navigate().GoToUrl(channelUrl);
-                await Task.Delay(10000, cancellationToken);
-
-                var screenshotDir = Path.Combine(AppContext.BaseDirectory, "screenshots", "123");
-                Directory.CreateDirectory(screenshotDir);
-                var screenshotPath = Path.Combine(screenshotDir, $"{account.Username}.png");
-                driver.GetScreenshot().SaveAsFile(screenshotPath);
-
-                // Основной цикл просмотра
-                var endTime = DateTime.Now.AddMinutes(minutes);
-                while (DateTime.Now < endTime && !cancellationToken.IsCancellationRequested)
-                {
-                    try
-                    {
-                        // Человеко-подобные действия
-                        switch (_random.Next(0, 3))
-                        {
-                            case 0:
-                                ((IJavaScriptExecutor)driver).ExecuteScript($"window.scrollBy(0, {_random.Next(200, 500)})");
-                                break;
-                            case 1:
-                                var chatInput = driver.FindElements(By.CssSelector(".chat-input"));
-                                if (chatInput.Count > 0)
-                                {
-                                    chatInput[0].Click();
-                                    await Task.Delay(1000, cancellationToken);
-                                    chatInput[0].SendKeys(Keys.Escape);
-                                }
-                                break;
-                        }
-
-                        await Task.Delay(_random.Next(5000, 15000), cancellationToken);
-                    }
-                    catch (Exception ex) when (!cancellationToken.IsCancellationRequested)
-                    {
-                        _logger.LogWarning(ex, $"Activity error for {account.Username}");
-                        await Task.Delay(5000, cancellationToken);
-                    }
-                }
-            }
-            catch (Exception ex) when (!cancellationToken.IsCancellationRequested)
-            {
-                _logger.LogError(ex, $"WatchStream error for {account.Username}");
+                await NavigateAndWatch(driver, channelUrl, minutes);
             }
             finally
             {
-                try
-                {
-                    driver?.Quit();
-                    driver?.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"Error closing driver for {account.Username}");
-                }
+                if (driver != null)
+                    proxyDriverPool.ReleaseDriver(driver);
             }
         }
+
         public async Task WatchAsGuest(ProxyServer proxy, string channelUrl, int minutes)
         {
-            ChromeDriver driver = null;
+            using var proxyDriverPool = new WebDriverPool(2, proxy);
+            IWebDriver driver = null;
             try
             {
-                var options = ConfigureBrowserOptions(new ChromeOptions(), proxy);
-                options.AddArgument("--mute-audio");
-
-                driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(60));
-                await WatchChannel(driver, channelUrl, minutes);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error watching as guest: {channelUrl}");
-                throw;
+                driver = await proxyDriverPool.GetDriver();
+                await NavigateAndWatch(driver, channelUrl, minutes);
             }
             finally
             {
-                driver?.Quit();
-                driver?.Dispose();
+                if (driver != null)
+                    proxyDriverPool.ReleaseDriver(driver);
             }
         }
 
-        private async Task<bool> AuthenticateWithCookies(ChromeDriver driver, string authToken)
+        private async Task<bool> AuthenticateWithCookies(IWebDriver driver, string authToken)
         {
+            driver.Navigate().GoToUrl("https://www.twitch.tv");
+            var cookie = new OpenQA.Selenium.Cookie("auth-token", authToken, ".twitch.tv", "/", DateTime.Now.AddYears(1));
+            driver.Manage().Cookies.AddCookie(cookie);
+            driver.Navigate().Refresh();
+            await Task.Delay(5000);
+
             try
             {
-                driver.Navigate().GoToUrl("https://www.twitch.tv");
-
-                var authCookie = new SeleniumCookie(
-                    name: AuthCookieName,
-                    value: authToken,
-                    domain: ".twitch.tv",
-                    path: "/",
-                    expiry: DateTime.Now.AddYears(1));
-
-                driver.Manage().Cookies.AddCookie(authCookie);
-                driver.Navigate().Refresh();
-                await Task.Delay(5000);
-
-                return IsUserAuthenticated(driver);
+                return driver.FindElements(By.CssSelector("[data-a-target='user-menu-toggle']")).Count > 0;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Cookie authentication error");
-                return false;
-            }
+            catch { return false; }
         }
 
-        private bool IsUserAuthenticated(ChromeDriver driver)
-        {
-            try
-            {
-                return driver.FindElements(By.CssSelector("[data-a-target='user-menu-toggle']")).Any();
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private async Task WatchChannel(ChromeDriver driver, string channelUrl, int minutes)
+        private async Task NavigateAndWatch(IWebDriver driver, string channelUrl, int minutes)
         {
             driver.Navigate().GoToUrl(channelUrl);
-            await HumanLikeActivity(driver, minutes);
-        }
+            await Task.Delay(30000); // Минимальное время просмотра
 
-        private async Task HumanLikeActivity(ChromeDriver driver, int minutes)
-        {
             var endTime = DateTime.Now.AddMinutes(minutes);
-            var random = new Random();
-
             while (DateTime.Now < endTime)
             {
                 try
                 {
-                    // Случайные действия
-                    switch (random.Next(0, 4))
+                    switch (_random.Next(0, 4))
                     {
                         case 0:
-                            // Прокрутка страницы
                             ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollBy(0, 200)");
                             break;
                         case 1:
-                            // Клик по случайному элементу
                             var elements = driver.FindElements(By.CssSelector("button, a"));
-                            if (elements.Count > 0)
-                            {
-                                elements[random.Next(0, elements.Count)].Click();
-                            }
+                            if (elements.Count > 0) elements[_random.Next(0, elements.Count)].Click();
                             break;
                         case 2:
-                            // Обновление страницы (редко)
-                            if (random.Next(0, 10) == 0)
-                            {
-                                driver.Navigate().Refresh();
-                            }
+                            if (_random.Next(0, 10) == 0) driver.Navigate().Refresh();
                             break;
                     }
-
-                    // Случайная задержка между действиями
-                    await Task.Delay(random.Next(50000, 150000));
+                    await Task.Delay(_random.Next(30000, 90000));
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, "Error in human-like activity");
-                    await Task.Delay(5000);
-                }
+                catch { /* Игнорируем ошибки */ }
             }
         }
 
-        private ChromeOptions ConfigureBrowserOptions(ChromeOptions options, ProxyServer proxy)
+        public void Dispose()
         {
-            if (proxy != null)
-            {
-                options.AddHttpProxy(proxy.Address, proxy.Port, proxy.Username ?? string.Empty, proxy.Password ?? string.Empty);
-            }
-
-            options.AddArguments(
-                "--headless=new",
-                "--disable-gpu",
-                "--no-sandbox",
-                "--disable-dev-shm-usage",
-                "--window-size=1920,1080",
-                "--mute-audio",
-                "--disable-extensions",
-                "--disable-notifications",
-                "--disable-blink-features=AutomationControlled",
-                "--disable-infobars",
-                "--disable-popup-blocking",
-                "--enable-unsafe-swiftshader");
-
-            return options;
-        }
-
-
-        private void ClickRandomElement(ChromeDriver driver, string selector)
-        {
-            var elements = driver.FindElements(By.CssSelector(selector));
-            if (elements.Count > 0)
-            {
-                elements[_random.Next(0, elements.Count)].Click();
-            }
-        }
-
-        private void SendChatMessage(ChromeDriver driver)
-        {
-            try
-            {
-                var chatInput = driver.FindElement(By.CssSelector(".chat-input"));
-                chatInput.SendKeys("Nice stream! " + _random.Next(1000));
-                chatInput.SendKeys(Keys.Enter);
-            }
-            catch { }
+            _driverPool?.Dispose();
         }
     }
 }

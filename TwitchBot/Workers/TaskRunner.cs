@@ -38,6 +38,7 @@ namespace TwitchViewerBot.Workers
                     foreach (var task in runnigTasks)
                     {
                         _logger.LogInformation($"Запуск задачи {task.Id} для {task.ChannelUrl}");
+                        _logger.LogInformation($"Запрошено просмотров: Авторизованных {task.AuthViewersCount} Не авторизованных {task.GuestViewersCount}");
                         await _taskService.StartTask(task);
                     }
                 }

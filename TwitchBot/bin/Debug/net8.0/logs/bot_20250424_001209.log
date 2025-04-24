@@ -1,0 +1,293 @@
+2025-04-24 00:12:10.681 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Инициализация базы данных...
+2025-04-24 00:12:10.692 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Инициализация базы данных...
+2025-04-24 00:12:10.967 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Прокси уже загружены.
+2025-04-24 00:12:10.992 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Аккаунты уже загружены.
+2025-04-24 00:12:11.016 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Инициализация БД завершена.
+2025-04-24 00:12:11.085 [Information] [TwitchViewerBot.Workers.TaskRunner] TaskRunner запущен
+2025-04-24 00:12:11.272 [Information] [TwitchViewerBot.Workers.TaskRunner] Найдено 1 задач в ожидании запуска
+2025-04-24 00:12:11.273 [Information] [TwitchViewerBot.Workers.TaskRunner] Запуск задачи 4 для https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.546 [Information] [Microsoft.Hosting.Lifetime] Application started. Press Ctrl+C to shut down.
+2025-04-24 00:12:11.563 [Information] [Microsoft.Hosting.Lifetime] Hosting environment: Production
+2025-04-24 00:12:11.563 [Information] [Microsoft.Hosting.Lifetime] Content root path: C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0
+2025-04-24 00:12:11.575 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.575 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.575 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.575 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.575 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.575 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.575 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.575 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.575 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.575 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.575 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.575 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.575 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.575 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.576 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.683 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:12:11.706 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.706 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.706 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.706 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:11.707 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:12:12.233 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 516.4319ms - 200
+2025-04-24 00:12:12.233 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 515.7705ms - 200
+2025-04-24 00:12:12.233 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 515.5938ms - 200
+2025-04-24 00:12:12.233 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 515.7914ms - 200
+2025-04-24 00:12:12.234 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 516.4408ms - 200
+2025-04-24 00:12:12.234 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 516.4306ms - 200
+2025-04-24 00:12:12.235 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 527.6882ms - 200
+2025-04-24 00:12:12.235 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 528.4392ms - 200
+2025-04-24 00:12:12.235 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 527.9006ms - 200
+2025-04-24 00:12:12.235 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 527.6288ms - 200
+2025-04-24 00:12:12.235 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 528.4301ms - 200
+2025-04-24 00:12:12.235 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 528.5208ms - 200
+2025-04-24 00:12:12.235 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 527.7264ms - 200
+2025-04-24 00:12:12.235 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 527.9633ms - 200
+2025-04-24 00:12:12.244 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 536.5978ms - 200
+2025-04-24 00:12:12.244 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 537.2152ms - 200
+2025-04-24 00:12:12.252 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 545.3526ms - 200
+2025-04-24 00:12:12.252 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 545.6319ms - 200
+2025-04-24 00:12:12.271 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 563.5892ms - 200
+2025-04-24 00:12:12.271 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 564.118ms - 200
+2025-04-24 00:12:12.400 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 716.7712ms - 200
+2025-04-24 00:12:12.400 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 717.0553ms - 200
+2025-04-24 00:12:12.402 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 825.1334ms - 200
+2025-04-24 00:12:12.402 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 835.4273ms - 200
+2025-04-24 00:12:12.403 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 826.314ms - 200
+2025-04-24 00:12:12.403 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 836.8277ms - 200
+2025-04-24 00:12:12.409 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 726.3003ms - 200
+2025-04-24 00:12:12.410 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 726.5526ms - 200
+2025-04-24 00:12:12.410 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 833.2586ms - 200
+2025-04-24 00:12:12.410 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 843.6677ms - 200
+2025-04-24 00:12:12.410 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 834.0931ms - 200
+2025-04-24 00:12:12.411 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 844.544ms - 200
+2025-04-24 00:12:12.413 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 729.4577ms - 200
+2025-04-24 00:12:12.413 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 729.6824ms - 200
+2025-04-24 00:12:12.413 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 836.5111ms - 200
+2025-04-24 00:12:12.413 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 836.777ms - 200
+2025-04-24 00:12:12.413 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 847.0781ms - 200
+2025-04-24 00:12:12.413 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 847.2573ms - 200
+2025-04-24 00:12:12.415 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 731.7501ms - 200
+2025-04-24 00:12:12.415 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 731.9734ms - 200
+2025-04-24 00:12:12.417 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 840.8417ms - 200
+2025-04-24 00:12:12.417 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 840.9111ms - 200
+2025-04-24 00:12:12.417 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 851.3404ms - 200
+2025-04-24 00:12:12.417 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 851.3351ms - 200
+2025-04-24 00:12:12.418 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 734.3225ms - 200
+2025-04-24 00:12:12.418 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 734.6309ms - 200
+2025-04-24 00:12:12.418 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 842.106ms - 200
+2025-04-24 00:12:12.419 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 852.383ms - 200
+2025-04-24 00:12:12.421 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 844.3737ms - 200
+2025-04-24 00:12:12.421 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 854.8185ms - 200
+2025-04-24 00:12:12.421 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 844.8763ms - 200
+2025-04-24 00:12:12.421 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 855.3233ms - 200
+2025-04-24 00:12:12.423 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 846.9037ms - 200
+2025-04-24 00:12:12.423 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 857.4247ms - 200
+2025-04-24 00:12:12.426 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 849.2458ms - 200
+2025-04-24 00:12:12.426 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 859.7583ms - 200
+2025-04-24 00:12:12.429 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 745.873ms - 200
+2025-04-24 00:12:12.429 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 746.1249ms - 200
+2025-04-24 00:12:12.431 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 854.25ms - 200
+2025-04-24 00:12:12.431 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 864.5765ms - 200
+2025-04-24 00:12:12.431 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 855.0985ms - 200
+2025-04-24 00:12:12.432 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 865.3781ms - 200
+2025-04-24 00:12:12.436 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 859.7648ms - 200
+2025-04-24 00:12:12.436 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 870.1326ms - 200
+2025-04-24 00:12:12.438 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 755.1895ms - 200
+2025-04-24 00:12:12.438 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 755.4573ms - 200
+2025-04-24 00:12:12.445 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 761.5442ms - 200
+2025-04-24 00:12:12.445 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 761.7961ms - 200
+2025-04-24 00:12:12.656 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 973.1787ms - 200
+2025-04-24 00:12:12.656 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 973.4097ms - 200
+2025-04-24 00:13:12.704 [Information] [TwitchViewerBot.Workers.TaskRunner] Найдено 1 задач в ожидании запуска
+2025-04-24 00:13:12.704 [Information] [TwitchViewerBot.Workers.TaskRunner] Запуск задачи 4 для https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.752 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.752 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.752 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.752 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.752 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.752 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.763 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.763 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.763 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.763 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.770 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.770 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.770 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.770 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.770 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.771 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.771 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.771 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.777 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.777 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.783 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.783 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.783 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.783 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.783 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.783 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.786 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.786 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.787 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.787 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.787 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.787 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.791 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.791 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.794 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.794 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.795 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.795 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.795 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.795 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.795 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.795 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.796 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.796 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.798 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.798 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.798 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.798 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.803 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.803 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.809 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.810 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.810 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.810 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.810 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.810 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.810 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.810 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.810 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.810 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request POST https://gql.twitch.tv/gql
+2025-04-24 00:13:12.811 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.811 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.811 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.811 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.815 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.815 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.816 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.816 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.825 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] Start processing HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.825 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Sending HTTP request GET https://www.twitch.tv/suzukaspec
+2025-04-24 00:13:12.851 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 88.6927ms - 200
+2025-04-24 00:13:12.852 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 89.4798ms - 200
+2025-04-24 00:13:12.867 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 84.0642ms - 200
+2025-04-24 00:13:12.867 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 85.1255ms - 200
+2025-04-24 00:13:12.879 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 85.3678ms - 200
+2025-04-24 00:13:12.879 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 86.2149ms - 200
+2025-04-24 00:13:12.891 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 79.8021ms - 200
+2025-04-24 00:13:12.891 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 80.1115ms - 200
+2025-04-24 00:13:12.893 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 82.8004ms - 200
+2025-04-24 00:13:12.893 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 82.9821ms - 200
+2025-04-24 00:13:12.896 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 79.5571ms - 200
+2025-04-24 00:13:12.896 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 79.8227ms - 200
+2025-04-24 00:13:12.897 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 86.7057ms - 200
+2025-04-24 00:13:12.897 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 87.772ms - 200
+2025-04-24 00:13:12.897 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 80.7968ms - 200
+2025-04-24 00:13:12.897 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 85.3186ms - 200
+2025-04-24 00:13:12.897 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 85.6318ms - 200
+2025-04-24 00:13:12.897 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 82.0782ms - 200
+2025-04-24 00:13:12.913 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 85.8956ms - 200
+2025-04-24 00:13:12.913 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 88.3534ms - 200
+2025-04-24 00:13:13.007 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 254.565ms - 200
+2025-04-24 00:13:13.007 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 254.7949ms - 200
+2025-04-24 00:13:13.010 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 258.3874ms - 200
+2025-04-24 00:13:13.010 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 258.5026ms - 200
+2025-04-24 00:13:13.010 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 258.7067ms - 200
+2025-04-24 00:13:13.010 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 258.6373ms - 200
+2025-04-24 00:13:13.020 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 257.4377ms - 200
+2025-04-24 00:13:13.020 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 257.595ms - 200
+2025-04-24 00:13:13.025 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 254.949ms - 200
+2025-04-24 00:13:13.025 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 255.3559ms - 200
+2025-04-24 00:13:13.025 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 254.5681ms - 200
+2025-04-24 00:13:13.025 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 254.856ms - 200
+2025-04-24 00:13:13.029 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 257.3998ms - 200
+2025-04-24 00:13:13.029 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 258.4336ms - 200
+2025-04-24 00:13:13.033 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 255.6876ms - 200
+2025-04-24 00:13:13.033 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 255.8268ms - 200
+2025-04-24 00:13:13.034 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 251.2115ms - 200
+2025-04-24 00:13:13.034 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 251.2612ms - 200
+2025-04-24 00:13:13.034 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 252.1139ms - 200
+2025-04-24 00:13:13.034 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 251.3582ms - 200
+2025-04-24 00:13:13.035 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 263.284ms - 200
+2025-04-24 00:13:13.035 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 248.4519ms - 200
+2025-04-24 00:13:13.035 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 263.4181ms - 200
+2025-04-24 00:13:13.035 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 248.7241ms - 200
+2025-04-24 00:13:13.042 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 254.9854ms - 200
+2025-04-24 00:13:13.042 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 255.0792ms - 200
+2025-04-24 00:13:13.043 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 251.7072ms - 200
+2025-04-24 00:13:13.043 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 252.2323ms - 200
+2025-04-24 00:13:13.044 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 246.3314ms - 200
+2025-04-24 00:13:13.044 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 246.5116ms - 200
+2025-04-24 00:13:13.045 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 249.1535ms - 200
+2025-04-24 00:13:13.045 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 249.3113ms - 200
+2025-04-24 00:13:13.046 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 259.626ms - 200
+2025-04-24 00:13:13.046 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 259.7662ms - 200
+2025-04-24 00:13:13.046 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 250.484ms - 200
+2025-04-24 00:13:13.046 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 248.1012ms - 200
+2025-04-24 00:13:13.046 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 250.7721ms - 200
+2025-04-24 00:13:13.046 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 248.2124ms - 200
+2025-04-24 00:13:13.048 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 253.175ms - 200
+2025-04-24 00:13:13.048 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 253.5519ms - 200
+2025-04-24 00:13:13.049 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 254.0991ms - 200
+2025-04-24 00:13:13.050 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 254.4808ms - 200
+2025-04-24 00:13:13.053 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 250.2912ms - 200
+2025-04-24 00:13:13.053 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 250.4176ms - 200
+2025-04-24 00:13:13.059 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 248.7717ms - 200
+2025-04-24 00:13:13.059 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 249.3874ms - 200
+2025-04-24 00:13:13.061 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 251.1844ms - 200
+2025-04-24 00:13:13.061 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 251.4605ms - 200
+2025-04-24 00:13:13.064 [Information] [System.Net.Http.HttpClient.twitch_light.ClientHandler] Received HTTP response headers after 253.5803ms - 200
+2025-04-24 00:13:13.064 [Information] [System.Net.Http.HttpClient.twitch_light.LogicalHandler] End processing HTTP request after 254.4026ms - 200

@@ -1,0 +1,13 @@
+2025-04-24 00:45:13.482 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Инициализация базы данных...
+2025-04-24 00:45:13.495 [Information] [TwitchViewerBot.Data.Seeders.DbInitializer] Инициализация базы данных...
+2025-04-24 00:45:13.781 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Прокси уже загружены.
+2025-04-24 00:45:13.803 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Аккаунты уже загружены.
+2025-04-24 00:45:13.897 [Information] TwitchViewerBot.Data.Seeders.DbInitializer: Инициализация БД завершена.
+2025-04-24 00:45:14.619 [Information] TwitchViewerBot.Workers.TaskRunner: TaskRunner запущен
+2025-04-24 00:45:14.791 [Information] TwitchViewerBot.Workers.TaskRunner: Найдено 1 задач в ожидании запуска
+2025-04-24 00:45:14.791 [Information] TwitchViewerBot.Workers.TaskRunner: Запуск задачи 4 для https://www.twitch.tv/suzukaspec
+2025-04-24 00:45:14.791 [Information] [TwitchViewerBot.Workers.TaskRunner] Запуск задачи 4 для https://www.twitch.tv/suzukaspec
+2025-04-24 00:45:30.241 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с i4pqkcd5wuc155cmnfzo8s0veka1m5
+2025-04-24 00:45:39.333 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с q2bevycjbwhqq48mxmseallamsiy8z
+2025-04-24 00:45:49.481 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с 910zzo81isg26or6rr9ij88ofcl0uc
+2025-04-24 00:46:02.429 [Information] [TwitchViewerBot.Core.Services.TwitchService] Просматриваем стрим с g6b49fgq1dpul14olm5fdly96u2wog
