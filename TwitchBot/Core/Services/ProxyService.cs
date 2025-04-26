@@ -1,4 +1,5 @@
-﻿using System;
+﻿// TwitchBot/Core/Services/ProxyService.cs
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -12,6 +13,7 @@ using TwitchViewerBot.Core.Models;
 using TwitchViewerBot.Data.Repositories;
 using SocksSharp;
 using SocksSharp.Proxy;
+using Microsoft.EntityFrameworkCore;
 
 namespace TwitchViewerBot.Core.Services
 {
@@ -318,6 +320,10 @@ namespace TwitchViewerBot.Core.Services
                 return false;
             }
         }
-
+        public async Task<ProxyServer> GetRandomValidProxy()
+        {
+            var valid = await GetValidProxies();
+            return valid.OrderBy(_ => Guid.NewGuid()).FirstOrDefault();
+        }
     }
 }

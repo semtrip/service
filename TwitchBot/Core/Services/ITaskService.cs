@@ -8,6 +8,7 @@ namespace TwitchViewerBot.Core.Services
 {
     public interface ITaskService
     {
+        Task InitializeAsync();
         Task AddTask(BotTask task);
         Task StartTask(BotTask task);
         Task<List<BotTask>> GetAllTasks();

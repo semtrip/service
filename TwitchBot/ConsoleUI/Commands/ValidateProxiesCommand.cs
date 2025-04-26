@@ -22,18 +22,14 @@ namespace TwitchViewerBot.ConsoleUI.Commands
         {
             try
             {
-                Console.WriteLine("Starting proxy validation...");
+                _logger.LogInformation("Starting proxy validation...");
                 var results = await _proxyService.ValidateAllProxies();
-
-                ConsoleHelper.PrintProxyValidationResults(results);
-
                 var validCount = results.Count(r => r.IsValid);
-                Console.WriteLine($"\nValidation completed. Valid: {validCount}, Invalid: {results.Count - validCount}");
+                _logger.LogInformation($"\nValidation completed. Valid: {validCount}, Invalid: {results.Count - validCount}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Proxy validation failed");
-                Console.WriteLine("Error during proxy validation");
             }
         }
     }

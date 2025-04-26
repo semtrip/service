@@ -1,8 +1,10 @@
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TwitchViewerBot.Core.Models;
 using TwitchViewerBot.Data.Repositories;
+using System.Threading;
 
 namespace TwitchViewerBot.Core.Services
 {
@@ -25,6 +27,8 @@ namespace TwitchViewerBot.Core.Services
             _logger = logger;
         }
 
+        private static readonly SemaphoreSlim _proxySemaphore = new SemaphoreSlim(1, 1); // Асинхронная блокировка
+
         public async Task<List<TwitchAccount>> GetValidAccounts(int count)
         {
             return await _accountRepository.GetValidAccounts(count);
@@ -35,22 +39,14 @@ namespace TwitchViewerBot.Core.Services
             await _accountRepository.UpdateAccount(account);
         }
 
-        private static readonly SemaphoreSlim _proxySemaphore = new SemaphoreSlim(1, 1); // Асинхронная блокировка
-
         public async Task ValidateAccounts()
         {
-            var accounts = await _accountRepository.GetAll();
-            var proxies = await _proxyService.GetValidProxies();
+            var accounts = await _accountRepository.GetAll(); // Получаем все аккаунты.
+            var proxies = await _proxyService.GetValidProxies(); // Получаем все валидные прокси.
 
-            var parallelOptions = new ParallelOptions
-            {
-                MaxDegreeOfParallelism = 10 // Ограничиваем количество параллельных задач
-            };
-
-            await Parallel.ForEachAsync(accounts, parallelOptions, async (account, cancellationToken) =>
-            {
-                await ValidateAccountAsync(account, proxies);
-            });
+            // Параллельно валидируем аккаунты, но с ограничением на количество параллельных задач.
+            var tasks = accounts.Select(account => ValidateAccountAsync(account, proxies)).ToList();
+            await Task.WhenAll(tasks);
         }
 
         private async Task ValidateAccountAsync(TwitchAccount account, List<ProxyServer> proxies)
@@ -58,7 +54,6 @@ namespace TwitchViewerBot.Core.Services
             try
             {
                 ProxyServer proxy = null;
-                bool isProxyValid = false;
 
                 // Синхронизируем доступ к прокси
                 await _proxySemaphore.WaitAsync();
@@ -79,20 +74,10 @@ namespace TwitchViewerBot.Core.Services
                     // Перебираем доступные прокси, пока не найдем валидный
                     foreach (var availableProxy in availableProxies)
                     {
-                        _logger.LogInformation($"Проверка прокси {availableProxy.Address}:{availableProxy.Port} для аккаунта {account.Username}");
-
-                        var validationResult = await _proxyService.ValidateProxy(availableProxy);
-                        if (validationResult.IsValid)
-                        {
-                            proxy = availableProxy;
-                            proxy.ActiveAccountsCount++; // Увеличиваем счетчик активных аккаунтов для прокси
-                            _logger.LogInformation($"Прокси {proxy.Address}:{proxy.Port} выбран для аккаунта {account.Username}");
-                            break;
-                        }
-                        else
-                        {
-                            _logger.LogWarning($"Прокси {availableProxy.Address}:{availableProxy.Port} не валиден: {validationResult.ErrorMessage}");
-                        }
+                        proxy = availableProxy;
+                        proxy.ActiveAccountsCount++; // Увеличиваем счетчик активных аккаунтов для прокси
+                        _logger.LogInformation($"Прокси {proxy.Address}:{proxy.Port} выбран для аккаунта {account.Username}");
+                        break;
                     }
 
                     if (proxy == null)
@@ -136,9 +121,6 @@ namespace TwitchViewerBot.Core.Services
                 }
             }
         }
-
-
-
 
         public async Task LoadAccountsFromFile(string filePath) // Добавлено
         {

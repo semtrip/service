@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿//Program.cs
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -23,13 +25,13 @@ var builder = Host.CreateDefaultBuilder(args)
     {
         // Регистрация сервисов
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlite("Data Source=twitchbot.db"));
+            options.UseNpgsql(context.Configuration.GetConnectionString("DefaultConnection")));
 
-        services.AddTransient<ITwitchService, TwitchService>();
-        services.AddScoped<IProxyService, ProxyService>();
-        services.AddScoped<IAccountService, AccountService>();
-        services.AddScoped<ITaskService, TaskService>();
-        services.AddScoped<TaskMonitor>();
+        services.AddSingleton<ITwitchService, TwitchService>();
+        services.AddSingleton<IProxyService, ProxyService>();
+        services.AddSingleton<IAccountService, AccountService>();
+        services.AddSingleton<ITaskService, TaskService>();
+        services.AddSingleton<TaskMonitor>();
         services.AddSingleton<LoggingHelper>();
         services.AddSingleton<ILoggerProvider, LoggerProvider>();
 
@@ -76,12 +78,14 @@ using (var scope = host.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     var proxyService = scope.ServiceProvider.GetRequiredService<IProxyService>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbInitializer>>();
+    var taskService = scope.ServiceProvider.GetRequiredService<ITaskService>();
 
     try
     {
         // Создаем БД, если не существует (без удаления)
         await db.Database.EnsureCreatedAsync();
         await DbInitializer.Initialize(db, proxyService, logger);
+        await taskService.InitializeAsync();
     }
     catch (Exception ex)
     {

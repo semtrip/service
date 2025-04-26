@@ -45,5 +45,7 @@ namespace TwitchViewerBot.Data.Repositories
         /// Возвращает общее количество прокси
         /// </summary>
         Task<int> GetCount();
+
+        Task<ProxyServer?> GetFreeProxy();
     }
 }

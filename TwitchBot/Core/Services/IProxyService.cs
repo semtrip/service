@@ -42,5 +42,7 @@ namespace TwitchViewerBot.Core.Services
         Task<int> GetProxyCount();
 
         Task<bool> IsProxyValid(ProxyServer proxy);
+
+        Task<ProxyServer> GetRandomValidProxy();
     }
 }

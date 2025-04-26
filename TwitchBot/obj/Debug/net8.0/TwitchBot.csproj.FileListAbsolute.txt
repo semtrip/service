@@ -454,3 +454,7 @@ C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0\
 C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0\Serilog.Sinks.Debug.dll
 C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0\Serilog.Sinks.File.dll
 C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0\Bogus.dll
+C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0\PuppeteerSharp.dll
+C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0\appsettings.json
+C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0\Npgsql.dll
+C:\Users\Nismo\Documents\GitHub\streams-shop\service\TwitchBot\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll

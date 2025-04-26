@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "hiO/ZIu7b7s=",
+  "dgSpecHash": "QO5u0tFvDxc=",
   "success": true,
   "projectFilePath": "C:\\Users\\Nismo\\Documents\\GitHub\\streams-shop\\service\\TwitchBot\\TwitchBot.csproj",
   "expectedPackageFiles": [
@@ -59,7 +59,10 @@
     "C:\\Users\\Nismo\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
     "C:\\Users\\Nismo\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
     "C:\\Users\\Nismo\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\Nismo\\.nuget\\packages\\npgsql\\9.0.3\\npgsql.9.0.3.nupkg.sha512",
+    "C:\\Users\\Nismo\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\9.0.4\\npgsql.entityframeworkcore.postgresql.9.0.4.nupkg.sha512",
     "C:\\Users\\Nismo\\.nuget\\packages\\openqa.selenium.chrome.chromedriverextensions\\1.2.0\\openqa.selenium.chrome.chromedriverextensions.1.2.0.nupkg.sha512",
+    "C:\\Users\\Nismo\\.nuget\\packages\\puppeteersharp\\20.1.3\\puppeteersharp.20.1.3.nupkg.sha512",
     "C:\\Users\\Nismo\\.nuget\\packages\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Users\\Nismo\\.nuget\\packages\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Users\\Nismo\\.nuget\\packages\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",

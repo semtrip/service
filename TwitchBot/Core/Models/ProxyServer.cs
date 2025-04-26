@@ -25,7 +25,7 @@ namespace TwitchViewerBot.Core.Models
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
 
-        [Column(TypeName = "nvarchar(10)")]
+        [Column(TypeName = "varchar(10)")]
         public ProxyType Type { get; set; } = ProxyType.HTTP;
 
         public bool IsValid { get; set; } = false;

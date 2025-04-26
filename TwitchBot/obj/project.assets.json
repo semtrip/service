@@ -1249,6 +1249,40 @@
           }
         }
       },
+      "Npgsql/9.0.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.2"
+        },
+        "compile": {
+          "lib/net8.0/Npgsql.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Npgsql.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Npgsql.EntityFrameworkCore.PostgreSQL/9.0.4": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "[9.0.1, 10.0.0)",
+          "Microsoft.EntityFrameworkCore.Relational": "[9.0.1, 10.0.0)",
+          "Npgsql": "9.0.3"
+        },
+        "compile": {
+          "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "OpenQA.Selenium.Chrome.ChromeDriverExtensions/1.2.0": {
         "type": "package",
         "dependencies": {
@@ -1259,6 +1293,22 @@
         },
         "runtime": {
           "lib/netstandard2.0/OpenQA.Selenium.Chrome.ChromeDriverExtensions.dll": {}
+        }
+      },
+      "PuppeteerSharp/20.1.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Logging": "8.0.0"
+        },
+        "compile": {
+          "lib/net8.0/PuppeteerSharp.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/PuppeteerSharp.dll": {
+            "related": ".xml"
+          }
         }
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
@@ -4992,6 +5042,38 @@
         "packageIcon.png"
       ]
     },
+    "Npgsql/9.0.3": {
+      "sha512": "tPvY61CxOAWxNsKLEBg+oR646X4Bc8UmyQ/tJszL/7mEmIXQnnBhVJZrZEEUv0Bstu0mEsHZD5At3EO8zQRAYw==",
+      "type": "package",
+      "path": "npgsql/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net6.0/Npgsql.dll",
+        "lib/net6.0/Npgsql.xml",
+        "lib/net8.0/Npgsql.dll",
+        "lib/net8.0/Npgsql.xml",
+        "npgsql.9.0.3.nupkg.sha512",
+        "npgsql.nuspec",
+        "postgresql.png"
+      ]
+    },
+    "Npgsql.EntityFrameworkCore.PostgreSQL/9.0.4": {
+      "sha512": "mw5vcY2IEc7L+IeGrxpp/J5OSnCcjkjAgJYCm/eD52wpZze8zsSifdqV7zXslSMmfJG2iIUGZyo3KuDtEFKwMQ==",
+      "type": "package",
+      "path": "npgsql.entityframeworkcore.postgresql/9.0.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll",
+        "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.xml",
+        "npgsql.entityframeworkcore.postgresql.9.0.4.nupkg.sha512",
+        "npgsql.entityframeworkcore.postgresql.nuspec",
+        "postgresql.png"
+      ]
+    },
     "OpenQA.Selenium.Chrome.ChromeDriverExtensions/1.2.0": {
       "sha512": "z5/MAdjFlHcECXN4sxS356Hul5iJD1vHznAwINo9YR3j+PXVU2PjgmkLEB6zvRLxzouL8qfNBioSWkxfvlsbMg==",
       "type": "package",
@@ -5002,6 +5084,21 @@
         "lib/netstandard2.0/OpenQA.Selenium.Chrome.ChromeDriverExtensions.dll",
         "openqa.selenium.chrome.chromedriverextensions.1.2.0.nupkg.sha512",
         "openqa.selenium.chrome.chromedriverextensions.nuspec"
+      ]
+    },
+    "PuppeteerSharp/20.1.3": {
+      "sha512": "9GL6iz34AABMaQAGCTG5/BLTJsSHkbaCpPI8EqvH+B+eK2lN4QWIGVomviP+bXR/Uok2uc28G3hWX8wef6wPIg==",
+      "type": "package",
+      "path": "puppeteersharp/20.1.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net8.0/PuppeteerSharp.dll",
+        "lib/net8.0/PuppeteerSharp.xml",
+        "lib/netstandard2.0/PuppeteerSharp.dll",
+        "lib/netstandard2.0/PuppeteerSharp.xml",
+        "puppeteersharp.20.1.3.nupkg.sha512",
+        "puppeteersharp.nuspec"
       ]
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
@@ -8077,7 +8174,9 @@
       "Microsoft.Extensions.DependencyInjection >= 9.0.4",
       "Microsoft.Extensions.Hosting >= 9.0.4",
       "Microsoft.Extensions.Logging >= 9.0.4",
+      "Npgsql.EntityFrameworkCore.PostgreSQL >= 9.0.4",
       "OpenQA.Selenium.Chrome.ChromeDriverExtensions >= 1.2.0",
+      "PuppeteerSharp >= 20.1.3",
       "Selenium.WebDriver >= 4.20.0",
       "Selenium.WebDriver.ChromeDriver >= 135.0.7049.95",
       "Serilog.AspNetCore >= 9.0.0",
@@ -8166,9 +8265,17 @@
             "target": "Package",
             "version": "[9.0.4, )"
           },
+          "Npgsql.EntityFrameworkCore.PostgreSQL": {
+            "target": "Package",
+            "version": "[9.0.4, )"
+          },
           "OpenQA.Selenium.Chrome.ChromeDriverExtensions": {
             "target": "Package",
             "version": "[1.2.0, )"
+          },
+          "PuppeteerSharp": {
+            "target": "Package",
+            "version": "[20.1.3, )"
           },
           "Selenium.WebDriver": {
             "target": "Package",

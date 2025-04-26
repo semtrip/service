@@ -84,6 +84,7 @@ namespace TwitchViewerBot.Core.Services
         {
             var options = new ChromeOptions();
             options.AddArguments(
+                "--headless",
                 "--disable-gpu",
                 "--no-sandbox",
                 "--disable-dev-shm-usage",
@@ -103,10 +104,9 @@ namespace TwitchViewerBot.Core.Services
             options.AddArgument("--disable-blink-features=AutomationControlled");
             options.AddArgument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
             
-            var faker = new Faker();
-            var randomUserAgent = faker.Internet.UserAgent();
-            options.AddArgument($"--user-agent={randomUserAgent}");
-            Console.WriteLine($"Используемый User-Agent: {randomUserAgent}");
+            //var faker = new Faker();
+            //var randomUserAgent = faker.Internet.UserAgent();
+            //options.AddArgument($"--user-agent={randomUserAgent}");
             if (proxy != null)
             {
                 options.AddHttpProxy(proxy.Address, proxy.Port, proxy.Username ?? "", proxy.Password ?? "");

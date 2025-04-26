@@ -79,5 +79,12 @@ namespace TwitchViewerBot.Data.Repositories
         {
             return await _context.Proxies.CountAsync();
         }
+        public async Task<ProxyServer?> GetFreeProxy()
+        {
+            return await _context.Proxies
+                .Where(p => p.IsValid && p.ActiveAccountsCount < 3)
+                .OrderBy(p => p.ActiveAccountsCount)
+                .FirstOrDefaultAsync();
+        }
     }
 }
