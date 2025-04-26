@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using TwitchViewerBot.Core.Models;
-using TwitchViewerBot.Core.Services;
-using TwitchViewerBot.Data;
+using TwitchBot.Core.Models;
+using TwitchBot.Core.Services;
+using TwitchBot.Data;
 
-namespace TwitchViewerBot.Data.Seeders
+namespace TwitchBot.Data.Seeders
 {
     public class DbInitializer
     {

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TwitchViewerBot.Workers
+namespace TwitchBot.Workers
 {
     public class BotWorker : BackgroundService
     {

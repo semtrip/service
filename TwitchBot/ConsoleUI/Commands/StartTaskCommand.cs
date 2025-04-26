@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TwitchViewerBot.Core.Models;
-using TwitchViewerBot.Core.Services;
+using TwitchBot.Core.Models;
+using TwitchBot.Core.Services;
 
-namespace TwitchViewerBot.ConsoleUI.Commands
+namespace TwitchBot.ConsoleUI.Commands
 {
     public class StartTaskCommand : ICommand
     {

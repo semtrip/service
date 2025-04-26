@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using TwitchViewerBot.Core.Services;
+using TwitchBot.Core.Services;
 
-namespace TwitchViewerBot.Workers
+namespace TwitchBot.Workers
 {
     public class TaskRunner : BackgroundService
     {

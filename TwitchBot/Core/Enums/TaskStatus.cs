@@ -1,4 +1,4 @@
-﻿namespace TwitchViewerBot.Core.Enums
+﻿namespace TwitchBot.Core.Enums
 {
     public enum TaskStatus
     {

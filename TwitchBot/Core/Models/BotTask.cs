@@ -1,7 +1,7 @@
 ﻿using System;
-using TwitchViewerBot.Core.Enums;
+using TwitchBot.Core.Enums;
 
-namespace TwitchViewerBot.Core.Models
+namespace TwitchBot.Core.Models
 {
     public class BotTask
     {
@@ -15,7 +15,7 @@ namespace TwitchViewerBot.Core.Models
         public DateTime? CompletedTime { get; set; }
         public int RampUpTime { get; set; } // в минутах
         public TimeSpan Duration { get; set; }
-        public TwitchViewerBot.Core.Enums.TaskStatus Status { get; set; }
+        public TwitchBot.Core.Enums.TaskStatus Status { get; set; }
         public TimeSpan ElapsedTime { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
@@ -25,7 +25,7 @@ namespace TwitchViewerBot.Core.Models
         // Расчетные свойства
         public int ViewersPerMinute => (int)Math.Ceiling((double)MaxViewers / RampUpTime);
         public TimeSpan TimeRemaining => Duration - (DateTime.UtcNow - StartTime.GetValueOrDefault());
-        public bool IsExpired => Status == TwitchViewerBot.Core.Enums.TaskStatus.Running && TimeRemaining <= TimeSpan.Zero;
+        public bool IsExpired => Status == TwitchBot.Core.Enums.TaskStatus.Running && TimeRemaining <= TimeSpan.Zero;
 
     }
 }

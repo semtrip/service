@@ -5,9 +5,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TwitchViewerBot.ConsoleUI.Helpers;
+using TwitchBot.ConsoleUI.Helpers;
 
-namespace TwitchViewerBot.ConsoleUI.Commands
+namespace TwitchBot.ConsoleUI.Commands
 {
     public class ValidateTokensCommand : ICommand
     {

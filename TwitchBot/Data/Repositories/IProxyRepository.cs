@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TwitchViewerBot.Core.Models;
+using TwitchBot.Core.Models;
 
-namespace TwitchViewerBot.Data.Repositories
+namespace TwitchBot.Data.Repositories
 {
     public interface IProxyRepository
     {

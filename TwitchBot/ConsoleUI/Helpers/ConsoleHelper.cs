@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using TwitchViewerBot.Core.Models;
+using TwitchBot.Core.Models;
 
-namespace TwitchViewerBot.ConsoleUI.Helpers
+namespace TwitchBot.ConsoleUI.Helpers
 {
     public static class ConsoleHelper
     {

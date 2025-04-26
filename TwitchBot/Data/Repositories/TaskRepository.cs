@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TwitchViewerBot.Core.Enums;
-using TwitchViewerBot.Core.Models;
-using TwitchViewerBot.Data;
+using TwitchBot.Core.Enums;
+using TwitchBot.Core.Models;
+using TwitchBot.Data;
 
-namespace TwitchViewerBot.Data.Repositories
+namespace TwitchBot.Data.Repositories
 {
     public class TaskRepository : ITaskRepository
     {

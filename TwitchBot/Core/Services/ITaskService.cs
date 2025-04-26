@@ -1,10 +1,10 @@
 ﻿// TwitchBot/Core/Services/ITaskService.cs
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TwitchViewerBot.Core.Enums;
-using TwitchViewerBot.Core.Models;
+using TwitchBot.Core.Enums;
+using TwitchBot.Core.Models;
 
-namespace TwitchViewerBot.Core.Services
+namespace TwitchBot.Core.Services
 {
     public interface ITaskService
     {

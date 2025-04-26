@@ -1,6 +1,8 @@
-﻿using TwitchViewerBot.Core.Models;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using TwitchBot.Core.Models;
 
-namespace TwitchViewerBot.Data.Repositories
+namespace TwitchBot.Data.Repositories
 {
     public interface IAccountRepository
     {
@@ -8,5 +10,6 @@ namespace TwitchViewerBot.Data.Repositories
         Task UpdateAccount(TwitchAccount account);
         Task<List<TwitchAccount>> GetAll();
         Task AddAccount(TwitchAccount account);
+        Task AddAccounts(List<TwitchAccount> accounts);
     }
 }

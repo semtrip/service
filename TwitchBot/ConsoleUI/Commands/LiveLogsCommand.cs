@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using TwitchViewerBot.ConsoleUI.Helpers;
+using TwitchBot.ConsoleUI.Helpers;
 
-namespace TwitchViewerBot.ConsoleUI.Commands
+namespace TwitchBot.ConsoleUI.Commands
 {
     public class LiveLogsCommand : ICommand
     {

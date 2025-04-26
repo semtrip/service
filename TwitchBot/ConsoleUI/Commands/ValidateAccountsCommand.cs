@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TwitchViewerBot.ConsoleUI.Helpers;
-using TwitchViewerBot.Core.Services;
+using TwitchBot.ConsoleUI.Helpers;
+using TwitchBot.Core.Services;
 
-namespace TwitchViewerBot.ConsoleUI.Commands
+namespace TwitchBot.ConsoleUI.Commands
 {
     public class ValidateAccountsCommand : ICommand
     {

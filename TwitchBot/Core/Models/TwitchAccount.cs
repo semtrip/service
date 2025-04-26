@@ -1,4 +1,4 @@
-﻿namespace TwitchViewerBot.Core.Models
+﻿namespace TwitchBot.Core.Models
 {
     public class TwitchAccount
     {

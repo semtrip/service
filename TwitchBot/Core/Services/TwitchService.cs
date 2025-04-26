@@ -4,143 +4,144 @@ using Microsoft.Extensions.Logging;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
-using TwitchViewerBot.Core.Models;
+using System.Linq;
+using System.Collections.Generic;
+using System.Threading;
+using Bogus;
+using TwitchBot.Core.Models;
 
-namespace TwitchViewerBot.Core.Services
+namespace TwitchBot.Core.Services
 {
     public class TwitchService : ITwitchService, IDisposable
     {
         private readonly ILogger<TwitchService> _logger;
         private readonly WebDriverPool _driverPool;
         private readonly Random _random = new();
-        private IWebDriver _driver;
+        private readonly Faker _faker = new();
+        private IWebDriver _mainDriver;
+        private bool _disposed;
 
-        public TwitchService(ILogger<TwitchService> logger, WebDriverPool driverPool)
+        public TwitchService(
+            ILogger<TwitchService> logger,
+            WebDriverPool driverPool)
         {
             _logger = logger;
             _driverPool = driverPool;
-            InitializeBrowser();
+            InitializeMainDriver();
         }
 
-        public void InitializeBrowser()
+        private void InitializeMainDriver()
         {
-            if (_driver != null)
+            try
             {
-                _logger.LogWarning("Браузер уже инициализирован.");
-                return;
+                // Используем пул драйверов вместо прямого создания
+                _mainDriver = _driverPool.CreateNewDriver();
+                _logger.LogInformation("Main driver initialized");
             }
-
-            var options = new ChromeOptions();
-
-            // Настройки для обхода детекции
-            options.AddArgument("--disable-blink-features=AutomationControlled");
-            options.AddExcludedArgument("enable-automation");
-            options.AddAdditionalOption("useAutomationExtension", false);
-            options.AddArgument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36");
-            options.AddArgument("--headless=new");
-            options.AddArgument("--no-sandbox");
-            options.AddArgument("--disable-gpu");
-            options.AddArgument("--disable-dev-shm-usage");
-
-            _driver = new ChromeDriver(options);
-
-            // Удаление webdriver-флага
-            ((IJavaScriptExecutor)_driver).ExecuteScript("Object.defineProperty(navigator, 'webdriver', { get: () => undefined })");
-
-            _logger.LogInformation("Браузер успешно инициализирован");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to initialize main driver");
+                throw;
+            }
         }
 
         public async Task<bool> IsStreamLive(string channelUrl)
         {
-            
+            if (_mainDriver == null) return false;
+
             try
             {
-                if (_driver == null)
-                {
-                    _logger.LogError("Браузер не инициализирован");
-                    return false;
-                }
+                var originalWindow = _mainDriver.CurrentWindowHandle;
+                ((IJavaScriptExecutor)_mainDriver).ExecuteScript("window.open();");
+                _mainDriver.SwitchTo().Window(_mainDriver.WindowHandles.Last());
 
-                _logger.LogInformation($"Проверка стрима на канале {channelUrl}");
+                _mainDriver.Navigate().GoToUrl(channelUrl);
+                await Task.Delay(5000 + _random.Next(1000, 3000));
 
-                var originalWindow = _driver.CurrentWindowHandle;
+                var liveIndicator = _mainDriver.FindElements(
+                    By.CssSelector("[data-a-target='live-indicator'], .live-indicator"));
 
-                ((IJavaScriptExecutor)_driver).ExecuteScript("window.open();");
-                _driver.SwitchTo().Window(_driver.WindowHandles.Last());
-                _driver.Navigate().GoToUrl(channelUrl);
+                bool isLive = liveIndicator.Any(e => e.Displayed && e.Enabled);
 
-                await Task.Delay(5000);
-
-                // Проверяем индикатор живого стрима
-                var liveIndicator = _driver.FindElements(By.CssSelector("[data-a-target='live-indicator']"));
-                bool isLive = liveIndicator.Any();
-
-                // Закрываем вкладку и возвращаемся
-                _driver.Close();
-                _driver.SwitchTo().Window(originalWindow);
+                _mainDriver.Close();
+                _mainDriver.SwitchTo().Window(originalWindow);
 
                 return isLive;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Ошибка при проверке стрима: {channelUrl}");
+                _logger.LogError(ex, $"Error checking stream: {channelUrl}");
                 return false;
             }
         }
 
         public async Task<bool> VerifyAccount(TwitchAccount account, ProxyServer proxy)
         {
-            using var proxyDriverPool = new WebDriverPool(2, proxy);
             IWebDriver driver = null;
             try
             {
-                driver = await proxyDriverPool.GetDriver();
+                driver = await _driverPool.GetDriver();
                 return await AuthenticateWithCookies(driver, account);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Account verification failed: {account.Username}");
+                return false;
             }
             finally
             {
                 if (driver != null)
-                    proxyDriverPool.ReleaseDriver(driver);
+                    _driverPool.ReleaseDriver(driver);
             }
         }
 
-        public async Task WatchStream(TwitchAccount account, ProxyServer proxy, string channelUrl, int minutes)
+        public async Task WatchStream(
+            TwitchAccount account,
+            ProxyServer proxy,
+            string channelUrl,
+            int minutes)
         {
-            using var proxyDriverPool = new WebDriverPool(2, proxy);
             IWebDriver driver = null;
             try
             {
-                driver = await proxyDriverPool.GetDriver();
+                driver = await _driverPool.GetDriver();
 
                 if (!await AuthenticateWithCookies(driver, account))
                 {
                     _logger.LogError($"Auth failed for {account.Username}");
                     return;
                 }
-                _logger.LogInformation($"Просматриваем стрим с {account.Username}");
 
+                _logger.LogInformation($"Watching stream with {account.Username}");
                 await NavigateAndWatch(driver, channelUrl, minutes);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error watching stream with {account.Username}");
             }
             finally
             {
                 if (driver != null)
-                    proxyDriverPool.ReleaseDriver(driver);
+                    _driverPool.ReleaseDriver(driver);
             }
         }
 
         public async Task WatchAsGuest(ProxyServer proxy, string channelUrl, int minutes)
         {
-            using var proxyDriverPool = new WebDriverPool(2, proxy);
             IWebDriver driver = null;
             try
             {
-                driver = await proxyDriverPool.GetDriver();
+                driver = await _driverPool.GetDriver();
                 await NavigateAndWatch(driver, channelUrl, minutes);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in guest watching");
             }
             finally
             {
                 if (driver != null)
-                    proxyDriverPool.ReleaseDriver(driver);
+                    _driverPool.ReleaseDriver(driver);
             }
         }
 
@@ -149,62 +150,145 @@ namespace TwitchViewerBot.Core.Services
             try
             {
                 driver.Navigate().GoToUrl("https://www.twitch.tv");
-                var cookie = new OpenQA.Selenium.Cookie("auth-token", account.AuthToken, ".twitch.tv", "/", DateTime.Now.AddYears(1));
+                var cookie = new Cookie(
+                    "auth-token",
+                    account.AuthToken,
+                    ".twitch.tv",
+                    "/",
+                    DateTime.Now.AddYears(1));
+
                 driver.Manage().Cookies.AddCookie(cookie);
                 driver.Navigate().Refresh();
-                await Task.Delay(5000);
+                await Task.Delay(3000 + _random.Next(1000, 3000));
 
-                var isAuth = driver.FindElements(By.CssSelector("[data-a-target='user-menu-toggle']")).Count > 0;
+                var userMenu = driver.FindElements(
+                    By.CssSelector("[data-a-target='user-menu-toggle']"));
 
-                if (isAuth)
-                {
-                    _logger.LogInformation($"Авторизация через {account.Username} Выполнена успешно");
-                    return true;
-                }
-                else
-                {
-                    _logger.LogInformation($"Авторизация через {account.Username} Не удачна. Уккаунт не валиден!");
-                    return false;
-                }
+                return userMenu.Count > 0 && userMenu[0].Displayed;
             }
-            catch (Exception ex) {
-                _logger.LogInformation($"Ошибка при авторизации аккаунта {account.Username} MESSAGE: {ex.Message}");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Auth error for {account.Username}");
                 return false;
-            }            
+            }
         }
 
         private async Task NavigateAndWatch(IWebDriver driver, string channelUrl, int minutes)
         {
             driver.Navigate().GoToUrl(channelUrl);
-            await Task.Delay(30000); // Минимальное время просмотра
+            await Task.Delay(15000 + _random.Next(5000, 10000));
 
             var endTime = DateTime.Now.AddMinutes(minutes);
             while (DateTime.Now < endTime)
             {
                 try
                 {
-                    switch (_random.Next(0, 4))
-                    {
-                        case 0:
-                            ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollBy(0, 200)");
-                            break;
-                        case 1:
-                            var elements = driver.FindElements(By.CssSelector("button, a"));
-                            if (elements.Count > 0) elements[_random.Next(0, elements.Count)].Click();
-                            break;
-                        case 2:
-                            if (_random.Next(0, 10) == 0) driver.Navigate().Refresh();
-                            break;
-                    }
+                    await PerformRandomAction(driver);
                     await Task.Delay(_random.Next(30000, 90000));
                 }
-                catch { /* Игнорируем ошибки */ }
+                catch { /* Ignore */ }
             }
+        }
+
+        private async Task PerformRandomAction(IWebDriver driver)
+        {
+            var action = _random.Next(0, 5);
+            switch (action)
+            {
+                case 0:
+                    ScrollRandomly(driver);
+                    break;
+                case 1:
+                    //ClickRandomElement(driver);
+                    break;
+                case 2:
+                    if (_random.Next(0, 10) == 0)
+                        driver.Navigate().Refresh();
+                    break;
+                case 3:
+                    MoveMouseRandomly(driver);
+                    break;
+                case 4:
+                    PauseVideo(driver);
+                    break;
+            }
+        }
+
+        private void ScrollRandomly(IWebDriver driver)
+        {
+            try
+            {
+                var scrollAmount = _random.Next(200, 800);
+                var script = $"window.scrollBy(0, {scrollAmount});";
+                ((IJavaScriptExecutor)driver).ExecuteScript(script);
+            }
+            catch { /* Ignore */ }
+        }
+
+        private void ClickRandomElement(IWebDriver driver)
+        {
+            try
+            {
+                var elements = driver.FindElements(
+                    By.CssSelector("button, a, [role='button']"))
+                    .Where(e => e.Displayed && e.Enabled)
+                    .ToList();
+
+                if (elements.Count > 0)
+                {
+                    var element = elements[_random.Next(0, elements.Count)];
+                    element.Click();
+                }
+            }
+            catch { /* Ignore */ }
+        }
+
+        private void MoveMouseRandomly(IWebDriver driver)
+        {
+            try
+            {
+                var x = _random.Next(0, 1000);
+                var y = _random.Next(0, 700);
+                var script = $@"
+                    var evt = new MouseEvent('mousemove', {{
+                        clientX: {x},
+                        clientY: {y},
+                        bubbles: true,
+                        cancelable: true,
+                        view: window
+                    }});
+                    document.dispatchEvent(evt);";
+
+                ((IJavaScriptExecutor)driver).ExecuteScript(script);
+            }
+            catch { /* Ignore */ }
+        }
+
+        private void PauseVideo(IWebDriver driver)
+        {
+            try
+            {
+                var script = @"
+                    var video = document.querySelector('video');
+                    if (video) {
+                        video.paused ? video.play() : video.pause();
+                    }";
+                ((IJavaScriptExecutor)driver).ExecuteScript(script);
+            }
+            catch { /* Ignore */ }
         }
 
         public void Dispose()
         {
-            _driverPool?.Dispose();
+            if (_disposed) return;
+            _disposed = true;
+
+            try
+            {
+                _mainDriver?.Quit();
+                _driverPool?.Dispose();
+            }
+            catch { /* Ignore */ }
         }
     }
 }

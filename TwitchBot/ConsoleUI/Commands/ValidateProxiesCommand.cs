@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using TwitchViewerBot.Core.Models;
-using TwitchViewerBot.Core.Services;
-using TwitchViewerBot.ConsoleUI.Helpers;
+using TwitchBot.Core.Models;
+using TwitchBot.Core.Services;
+using TwitchBot.ConsoleUI.Helpers;
 
-namespace TwitchViewerBot.ConsoleUI.Commands
+namespace TwitchBot.ConsoleUI.Commands
 {
     public class ValidateProxiesCommand : ICommand
     {

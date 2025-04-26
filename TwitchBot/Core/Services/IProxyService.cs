@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TwitchViewerBot.Core.Models;
+using TwitchBot.Core.Models;
 
-namespace TwitchViewerBot.Core.Services
+namespace TwitchBot.Core.Services
 {
     public interface IProxyService
     {

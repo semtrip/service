@@ -1,165 +1,216 @@
-using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TwitchViewerBot.Core.Models;
-using TwitchViewerBot.Data.Repositories;
+using Microsoft.Extensions.Logging;
+using TwitchBot.Core.Models;
+using TwitchBot.Data.Repositories;
 using System.Threading;
 
-namespace TwitchViewerBot.Core.Services
+namespace TwitchBot.Core.Services
 {
     public class AccountService : IAccountService
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly IProxyRepository _proxyRepository;
         private readonly IProxyService _proxyService;
         private readonly ITwitchService _twitchService;
         private readonly ILogger<AccountService> _logger;
+        private readonly SemaphoreSlim _validationLock = new(1, 1);
+        private readonly Random _random = new();
 
         public AccountService(
             IAccountRepository accountRepository,
+            IProxyRepository proxyRepository,
             IProxyService proxyService,
             ITwitchService twitchService,
             ILogger<AccountService> logger)
         {
             _accountRepository = accountRepository;
+            _proxyRepository = proxyRepository;
             _proxyService = proxyService;
             _twitchService = twitchService;
             _logger = logger;
         }
 
-        private static readonly SemaphoreSlim _proxySemaphore = new SemaphoreSlim(1, 1); // Асинхронная блокировка
-
         public async Task<List<TwitchAccount>> GetValidAccounts(int count)
         {
-            return await _accountRepository.GetValidAccounts(count);
+            try
+            {
+                return await _accountRepository.GetValidAccounts(count);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting valid accounts");
+                return new List<TwitchAccount>();
+            }
         }
 
         public async Task UpdateAccount(TwitchAccount account)
         {
-            await _accountRepository.UpdateAccount(account);
+            try
+            {
+                account.LastChecked = DateTime.UtcNow;
+                await _accountRepository.UpdateAccount(account);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error updating account {account.Username}");
+                throw;
+            }
         }
 
         public async Task ValidateAccounts()
         {
-            var accounts = await _accountRepository.GetAll(); // Получаем все аккаунты.
-            var proxies = await _proxyService.GetValidProxies(); // Получаем все валидные прокси.
-
-            // Параллельно валидируем аккаунты, но с ограничением на количество параллельных задач.
-            var tasks = accounts.Select(account => ValidateAccountAsync(account, proxies)).ToList();
-            await Task.WhenAll(tasks);
-        }
-
-        private async Task ValidateAccountAsync(TwitchAccount account, List<ProxyServer> proxies)
-        {
+            await _validationLock.WaitAsync();
             try
             {
-                ProxyServer proxy = null;
+                _logger.LogInformation("Starting account validation...");
 
-                // Синхронизируем доступ к прокси
-                await _proxySemaphore.WaitAsync();
-                try
+                var accounts = await _accountRepository.GetAll();
+                var proxies = await _proxyService.GetValidProxies();
+
+                if (!proxies.Any())
                 {
-                    // Фильтруем прокси, которые еще не достигли лимита
-                    var availableProxies = proxies
-                        .Where(p => p.ActiveAccountsCount < 3) // Лимит: 3 аккаунта на прокси
-                        .OrderBy(p => p.ActiveAccountsCount) // Выбираем прокси с наименьшим количеством аккаунтов
-                        .ToList();
-
-                    if (availableProxies.Count == 0)
-                    {
-                        _logger.LogWarning($"Нет доступных прокси для проверки аккаунта {account.Username}");
-                        return;
-                    }
-
-                    // Перебираем доступные прокси, пока не найдем валидный
-                    foreach (var availableProxy in availableProxies)
-                    {
-                        proxy = availableProxy;
-                        proxy.ActiveAccountsCount++; // Увеличиваем счетчик активных аккаунтов для прокси
-                        _logger.LogInformation($"Прокси {proxy.Address}:{proxy.Port} выбран для аккаунта {account.Username}");
-                        break;
-                    }
-
-                    if (proxy == null)
-                    {
-                        _logger.LogWarning($"Нет валидных прокси для проверки аккаунта {account.Username}");
-                        return;
-                    }
-                }
-                finally
-                {
-                    _proxySemaphore.Release();
+                    _logger.LogWarning("No valid proxies available for validation");
+                    return;
                 }
 
-                var isValid = await _twitchService.VerifyAccount(account, proxy);
+                var validationTasks = new List<Task>();
+                var proxyIndex = 0;
+                var proxyCount = proxies.Count;
 
-                account.IsValid = isValid;
-                account.ProxyId = isValid ? proxy.Id : (int?)null;
-                account.LastChecked = DateTime.UtcNow;
+                foreach (var account in accounts)
+                {
+                    var proxy = proxies[proxyIndex % proxyCount];
+                    validationTasks.Add(ValidateAccountWithRetryAsync(account, proxy));
 
-                await _accountRepository.UpdateAccount(account);
+                    proxyIndex++;
+                    if (validationTasks.Count >= 5) // Ограничение параллелизма
+                    {
+                        await Task.WhenAll(validationTasks);
+                        validationTasks.Clear();
+                        await Task.Delay(5000); // Задержка между группами
+                    }
+                }
 
-                _logger.LogInformation($"Аккаунт {account.Username} проверен: {(isValid ? "валиден" : "невалиден")}");
+                if (validationTasks.Any())
+                {
+                    await Task.WhenAll(validationTasks);
+                }
+
+                _logger.LogInformation("Account validation completed");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Ошибка при проверке аккаунта {account.Username}");
+                _logger.LogError(ex, "Account validation failed");
+            }
+            finally
+            {
+                _validationLock.Release();
+            }
+        }
 
-                // Уменьшаем счетчик активных аккаунтов для прокси в случае ошибки
-                await _proxySemaphore.WaitAsync();
+        private async Task ValidateAccountWithRetryAsync(TwitchAccount account, ProxyServer proxy, int maxRetries = 3)
+        {
+            int retryCount = 0;
+            while (retryCount < maxRetries)
+            {
                 try
                 {
-                    var proxy = proxies.FirstOrDefault(p => p.Id == account.ProxyId);
-                    if (proxy != null)
-                    {
-                        proxy.ActiveAccountsCount--;
+                    _logger.LogInformation($"Validation {account.Username}");
+                    var isValid = await _twitchService.VerifyAccount(account, proxy);
+                    account.IsValid = isValid;
+                    account.ProxyId = isValid ? proxy.Id : (int?)null;
+                    account.LastChecked = DateTime.UtcNow;
+                    if (isValid) {
+                        proxy.ActiveAccountsCount++;
                     }
+
+                    await _accountRepository.UpdateAccount(account);
+                    await _proxyRepository.UpdateProxy(proxy);
+
+                    _logger.LogInformation($"Account {account.Username} validation: {(isValid ? "VALID" : "INVALID")}");
+                    return;
                 }
-                finally
+                catch (Exception ex)
                 {
-                    _proxySemaphore.Release();
+                    retryCount++;
+                    _logger.LogWarning(ex, $"Retry {retryCount} for account {account.Username}");
+
+                    if (retryCount < maxRetries)
+                    {
+                        await Task.Delay(3000 * retryCount);
+                    }
+                    else
+                    {
+                        account.IsValid = false;
+                        account.LastChecked = DateTime.UtcNow;
+                        await _accountRepository.UpdateAccount(account);
+                        _logger.LogError(ex, $"Validation failed for account {account.Username}");
+                    }
                 }
             }
         }
 
-        public async Task LoadAccountsFromFile(string filePath) // Добавлено
+        public async Task LoadAccountsFromFile(string filePath)
         {
             if (!File.Exists(filePath))
             {
-                _logger.LogError($"Файл {filePath} не найден.");
+                _logger.LogError($"File not found: {filePath}");
                 return;
             }
 
-            var lines = await File.ReadAllLinesAsync(filePath);
-            foreach (var line in lines)
+            try
             {
-                try
+                var lines = await File.ReadAllLinesAsync(filePath);
+                var newAccounts = new List<TwitchAccount>();
+                var existingUsernames = (await _accountRepository.GetAll())
+                    .Select(a => a.Username)
+                    .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+                foreach (var line in lines.Where(l => !string.IsNullOrWhiteSpace(l)))
                 {
-                    var parts = line.Split(':');
-                    if (parts.Length != 2)
+                    try
                     {
-                        _logger.LogWarning($"Некорректный формат строки: {line}");
-                        continue;
+                        var parts = line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (parts.Length < 2) continue;
+
+                        var username = parts[0].Trim();
+                        var authToken = parts[1].Trim();
+
+                        if (existingUsernames.Contains(username))
+                        {
+                            _logger.LogDebug($"Account {username} already exists, skipping");
+                            continue;
+                        }
+
+                        newAccounts.Add(new TwitchAccount
+                        {
+                            Username = username,
+                            AuthToken = authToken,
+                            IsValid = false,
+                            LastChecked = DateTime.MinValue
+                        });
+
+                        existingUsernames.Add(username);
                     }
-
-                    var username = parts[0].Trim();
-                    var authToken = parts[1].Trim();
-
-                    var account = new TwitchAccount
+                    catch (Exception ex)
                     {
-                        Username = username,
-                        AuthToken = authToken,
-                        IsValid = false,
-                        LastChecked = DateTime.MinValue
-                    };
+                        _logger.LogError(ex, $"Error processing line: {line}");
+                    }
+                }
 
-                    await _accountRepository.AddAccount(account);
-                    _logger.LogInformation($"Аккаунт {username} загружен из файла.");
-                }
-                catch (Exception ex)
+                if (newAccounts.Any())
                 {
-                    _logger.LogError(ex, $"Ошибка при обработке строки: {line}");
+                    await _accountRepository.AddAccounts(newAccounts);
+                    _logger.LogInformation($"Added {newAccounts.Count} new accounts from file");
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading accounts from file");
+                throw;
             }
         }
     }

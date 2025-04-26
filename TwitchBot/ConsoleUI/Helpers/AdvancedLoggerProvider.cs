@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace TwitchViewerBot.ConsoleUI.Helpers
+namespace TwitchBot.ConsoleUI.Helpers
 {
     public class AdvancedLoggerProvider : ILoggerProvider
     {

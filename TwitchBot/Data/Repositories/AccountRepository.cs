@@ -1,7 +1,10 @@
-﻿using TwitchViewerBot.Core.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using TwitchBot.Core.Models;
 
-namespace TwitchViewerBot.Data.Repositories
+namespace TwitchBot.Data.Repositories
 {
     public class AccountRepository : IAccountRepository
     {
@@ -24,7 +27,7 @@ namespace TwitchViewerBot.Data.Repositories
 
         public async Task UpdateAccount(TwitchAccount account)
         {
-            account.LastChecked = DateTime.Now;
+            account.LastChecked = DateTime.UtcNow;
             _context.Accounts.Update(account);
             await _context.SaveChangesAsync();
         }
@@ -33,14 +36,17 @@ namespace TwitchViewerBot.Data.Repositories
         {
             return await _context.Accounts.ToListAsync();
         }
+
         public async Task AddAccount(TwitchAccount account)
         {
-            if (!_context.Accounts.Any(a => a.Username == account.Username))
-            {
-                _context.Accounts.Add(account);
-                await _context.SaveChangesAsync();
-            }
+            await _context.Accounts.AddAsync(account);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddAccounts(List<TwitchAccount> accounts)
+        {
+            await _context.Accounts.AddRangeAsync(accounts);
+            await _context.SaveChangesAsync();
         }
     }
-
 }

@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using TwitchViewerBot.Core.Models;
+using TwitchBot.Core.Models;
 
-namespace TwitchViewerBot.Core.Services
+namespace TwitchBot.Core.Services
 {
     public class TaskMonitor : BackgroundService
     {

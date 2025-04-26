@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace TwitchViewerBot.ConsoleUI.Helpers
+namespace TwitchBot.ConsoleUI.Helpers
 {
     public class AdvancedLogger : ILogger
     {

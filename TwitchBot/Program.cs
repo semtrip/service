@@ -4,14 +4,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using TwitchViewerBot.ConsoleUI.Commands;
-using TwitchViewerBot.ConsoleUI.Helpers;
-using TwitchViewerBot.ConsoleUI.Menus;
-using TwitchViewerBot.Core.Services;
-using TwitchViewerBot.Data;
-using TwitchViewerBot.Data.Repositories;
-using TwitchViewerBot.Data.Seeders;
-using TwitchViewerBot.Workers;
+using TwitchBot.ConsoleUI.Commands;
+using TwitchBot.ConsoleUI.Helpers;
+using TwitchBot.ConsoleUI.Menus;
+using TwitchBot.Core.Services;
+using TwitchBot.Data;
+using TwitchBot.Data.Repositories;
+using TwitchBot.Data.Seeders;
+using TwitchBot.Workers;
 
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureLogging(logging =>

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TwitchViewerBot.ConsoleUI.Commands;
-using TwitchViewerBot.Core.Services;
+using TwitchBot.ConsoleUI.Commands;
+using TwitchBot.Core.Services;
 
-namespace TwitchViewerBot.ConsoleUI.Menus
+namespace TwitchBot.ConsoleUI.Menus
 {
     public class MainMenu
     {
