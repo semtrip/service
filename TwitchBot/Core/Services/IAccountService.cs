@@ -7,6 +7,7 @@ namespace TwitchBot.Core.Services
     public interface IAccountService
     {
         Task<List<TwitchAccount>> GetValidAccounts(int count);
+        Task<List<TwitchAccount>> GetRandomValidAccounts(int count);
         Task UpdateAccount(TwitchAccount account);
         Task ValidateAccounts();
     }

@@ -1,11 +1,20 @@
-﻿//Program.cs
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using TwitchBot.ConsoleUI.Commands;
 using TwitchBot.ConsoleUI.Helpers;
+using TwitchBot.ConsoleUI.Menus;
+using TwitchBot.Core.Services;
+using TwitchBot.Data.Repositories;
+using TwitchBot.Data.Seeders;
+using TwitchBot.Data;
+using TwitchBot.Workers;
+using TwitchBot.ConsoleUI.Commands;
 using TwitchBot.ConsoleUI.Menus;
 using TwitchBot.Core.Services;
 using TwitchBot.Data;
@@ -17,16 +26,21 @@ var builder = Host.CreateDefaultBuilder(args)
     .ConfigureLogging(logging =>
     {
         logging.ClearProviders();
-        logging.AddProvider(new AdvancedLoggerProvider());
         logging.AddConsole();
         logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
     })
     .ConfigureServices((context, services) =>
     {
-        // Регистрация сервисов
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(context.Configuration.GetConnectionString("DefaultConnection")));
 
+        // Регистрация репозиториев
+        services.AddScoped<IProxyRepository, ProxyRepository>();
+        services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddScoped<ITaskRepository, TaskRepository>();
+
+        // Регистрация сервисов
+        services.AddSingleton<WebDriverPool>(_ => new WebDriverPool(40));
         services.AddSingleton<ITwitchService, TwitchService>();
         services.AddSingleton<IProxyService, ProxyService>();
         services.AddSingleton<IAccountService, AccountService>();
@@ -34,11 +48,6 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddSingleton<TaskMonitor>();
         services.AddSingleton<LoggingHelper>();
         services.AddSingleton<ILoggerProvider, LoggerProvider>();
-
-        // Регистрация репозиториев
-        services.AddScoped<IAccountRepository, AccountRepository>();
-        services.AddScoped<IProxyRepository, ProxyRepository>();
-        services.AddScoped<ITaskRepository, TaskRepository>();
 
         // Регистрация команд
         services.AddTransient<ValidateProxiesCommand>();
@@ -54,52 +63,59 @@ var builder = Host.CreateDefaultBuilder(args)
         // Регистрация UI
         services.AddScoped<MainMenu>();
 
-
         services.AddHttpClient("twitch")
-        .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-        {
-            MaxConnectionsPerServer = 100
-        });
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                MaxConnectionsPerServer = 100
+            });
         services.AddHttpClient("twitch_light", client =>
         {
             client.Timeout = TimeSpan.FromSeconds(10);
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0");
         });
-        services.AddSingleton<WebDriverPool>(_ => new WebDriverPool(
-            maxDrivers: 40, // Оптимальное количество драйверов
-            proxy: null));
     });
 
-var host = builder.Build();
+using var host = builder.Build();
+var lifetime = host.Services.GetRequiredService<IHostApplicationLifetime>();
+var driverPool = host.Services.GetRequiredService<WebDriverPool>();
 
-// Инициализация базы данных
-using (var scope = host.Services.CreateScope())
+var cts = new CancellationTokenSource();
+lifetime.ApplicationStopping.Register(() =>
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var proxyService = scope.ServiceProvider.GetRequiredService<IProxyService>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbInitializer>>();
-    var taskService = scope.ServiceProvider.GetRequiredService<ITaskService>();
+    cts.Cancel();
+    driverPool.Dispose();
+});
 
-    try
+try
+{
+    using (var scope = host.Services.CreateScope())
     {
-        // Создаем БД, если не существует (без удаления)
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var proxyService = scope.ServiceProvider.GetRequiredService<IProxyService>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbInitializer>>();
+        var taskService = scope.ServiceProvider.GetRequiredService<ITaskService>();
+
         await db.Database.EnsureCreatedAsync();
         await DbInitializer.Initialize(db, proxyService, logger);
         await taskService.InitializeAsync();
     }
-    catch (Exception ex)
-    {
-        logger.LogError(ex, "Ошибка при инициализации базы данных");
-        throw;
-    }
+
+    await host.StartAsync(cts.Token);
+
+    var mainMenu = host.Services.GetRequiredService<MainMenu>();
+    await mainMenu.ShowAsync();
 }
+catch (OperationCanceledException)
+{
+    Console.WriteLine("Application shutdown requested");
+}
+finally
+{
+    if (!cts.IsCancellationRequested)
+    {
+        cts.Cancel();
+    }
 
-var runHost = host.RunAsync();
-
-// Параллельно запускаем меню
-var mainMenu = host.Services.GetRequiredService<MainMenu>();
-await mainMenu.ShowAsync();
-
-
-// Дождаться завершения хоста
-await runHost;
+    await host.StopAsync();
+    host.Dispose();
+}

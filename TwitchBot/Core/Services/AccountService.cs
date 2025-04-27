@@ -45,6 +45,18 @@ namespace TwitchBot.Core.Services
                 return new List<TwitchAccount>();
             }
         }
+        public async Task<List<TwitchAccount>> GetRandomValidAccounts(int count)
+        {
+            try
+            {
+                return await _accountRepository.GetValidAccounts(count);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting valid accounts");
+                return new List<TwitchAccount>();
+            }
+        }
 
         public async Task UpdateAccount(TwitchAccount account)
         {

@@ -1,6 +1,6 @@
-﻿// TwitchBot/Core/Services/ITaskService.cs
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using TwitchBot.Core.Models;
 using TwitchBot.Core.Enums;
 using TwitchBot.Core.Models;
 
@@ -22,5 +22,6 @@ namespace TwitchBot.Core.Services
         Task AdjustViewers(BotTask task);
         Task CompleteTask(BotTask task);
         Task<BotTask?> GetById(int id);
+        Task CancelAllTasks();
     }
 }

@@ -24,6 +24,16 @@ namespace TwitchBot.Data.Repositories
                 .Take(count)
                 .ToListAsync();
         }
+        public async Task<List<TwitchAccount>> GetRandomValidAccounts(int count)
+        {
+            return await _context.Accounts
+                .Include(a => a.Proxy)
+                .Where(a => a.IsValid && a.Proxy != null)
+                .OrderBy(a => a.AuthToken)
+                .Take(count)
+                .ToListAsync();
+        }
+
 
         public async Task UpdateAccount(TwitchAccount account)
         {
