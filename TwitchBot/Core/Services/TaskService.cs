@@ -172,8 +172,8 @@ namespace TwitchBot.Core.Services
         {
             try
             {
-                await _twitchService.WatchLightweight(account, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
-                //await _twitchService.WatchStream(driver, account, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
+                await _twitchService.WatchStream(driver, account, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
+                //await _twitchService.WatchLightweight(account, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
             }
             catch
             {
@@ -193,8 +193,8 @@ namespace TwitchBot.Core.Services
         {
             try
             {
-                await _twitchService.WatchLightweight(null, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
-                //await _twitchService.WatchAsGuest(driver, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
+                //await _twitchService.WatchLightweight(null, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
+                await _twitchService.WatchAsGuest(driver, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
             }
             catch
             {
