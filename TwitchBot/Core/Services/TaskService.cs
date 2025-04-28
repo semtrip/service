@@ -11,6 +11,7 @@ using TwitchBot.Data.Repositories;
 using TwitchBot.Core.Enums;
 using TwitchBot.Core.Models;
 using TwitchBot.Data.Repositories;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace TwitchBot.Core.Services
 {
@@ -45,12 +46,6 @@ namespace TwitchBot.Core.Services
         public async Task InitializeAsync()
         {
             var activeTasks = await _taskRepository.GetAll();
-            activeTasks = activeTasks
-                .Where(t => t.Status == Core.Enums.TaskStatus.Pending ||
-                           t.Status == Core.Enums.TaskStatus.Running ||
-                           t.Status == Core.Enums.TaskStatus.Paused)
-                .ToList();
-
             _tasks.Clear();
             _tasks.AddRange(activeTasks);
             _logger.LogInformation("Инициализировано задач из БД: {Count}", _tasks.Count);
@@ -67,9 +62,9 @@ namespace TwitchBot.Core.Services
                 var isLive = await _twitchService.IsStreamLive(task.ChannelUrl);
                 task.Status = Core.Enums.TaskStatus.Pending;
                 task.LastUpdated = DateTime.UtcNow;
-
+                task.ElapsedTime = task.Duration;
                 await _taskRepository.AddTask(task);
-                _logger.LogInformation("Добавлена новая задача #{Id}, статус: {Status}", task.Id, task.Status);
+                _logger.LogInformation($"Добавлена новая задача #{task.Id}, статус: {task.Status}");
 
                 if (isLive)
                 {
@@ -89,73 +84,83 @@ namespace TwitchBot.Core.Services
         public async Task StartTask(BotTask task)
         {
             if (_taskTokens.ContainsKey(task.Id)) return;
+            var isLive = await _twitchService.IsStreamLive(task.ChannelUrl);
 
-            var cts = new CancellationTokenSource();
-            _taskTokens[task.Id] = cts;
-            var drivers = new List<(IWebDriver driver, ProxyServer proxy)>();
-
-            try
+            if (isLive)
             {
-                task.StartTime = DateTime.UtcNow;
-                task.EndTime = task.StartTime.Value + task.Duration;
-                task.Status = Core.Enums.TaskStatus.Running;
+                var cts = new CancellationTokenSource();
+                _taskTokens[task.Id] = cts;
+                var drivers = new List<(IWebDriver driver, ProxyServer proxy)>();
 
-                var watchingTasks = new List<Task>();
-
-                // Получаем валидные аккаунты с привязанными прокси
-                var accounts = await _accountService.GetValidAccounts(task.AuthViewersCount);
-                foreach (var account in accounts)
+                try
                 {
-                    if (account.Proxy == null || !account.Proxy.IsValid)
+                    _logger.LogInformation($"Начинаю выполненеи задачи #{task.Id} запрошенно просмотров {task.MaxViewers}");
+                    task.StartTime = DateTime.UtcNow;
+                    task.EndTime = task.StartTime.Value + task.ElapsedTime;
+                    task.Status = Core.Enums.TaskStatus.Running;
+                    await _taskRepository.UpdateTask(task);
+                    var watchingTasks = new List<Task>();
+
+                    // Получаем валидные аккаунты с привязанными прокси
+                    var accounts = await _accountService.GetValidAccounts(task.AuthViewersCount);
+                    _logger.LogInformation($"Для задачи #{task.Id} полученно {accounts.Count} аккаунтов");
+                    foreach (var account in accounts)
                     {
-                        _logger.LogWarning($"Аккаунт {account.Username} не имеет валидного прокси, пропускаем");
-                        continue;
+                        if (account.Proxy == null || !account.Proxy.IsValid)
+                        {
+                            _logger.LogWarning($"Аккаунт {account.Username} не имеет валидного прокси, пропускаем");
+                            continue;
+                        }
+
+                        var driver = await _driverPool.GetDriver(account.Proxy, cts.Token);
+                        drivers.Add((driver, account.Proxy));
+                        watchingTasks.Add(WatchAccountWithRetry(driver, account, account.Proxy, task, cts.Token));
                     }
 
-                    var driver = await _driverPool.GetDriver(account.Proxy, cts.Token);
-                    drivers.Add((driver, account.Proxy));
-                    watchingTasks.Add(WatchAccountWithRetry(driver, account, account.Proxy, task, cts.Token));
-                }
-
-                // Гостевые просмотры через случайные валидные прокси
-                for (int i = 0; i < task.GuestViewersCount; i++)
-                {
-                    var proxy = await _proxyService.GetRandomValidProxy();
-                    if (proxy == null)
+                    // Гостевые просмотры через случайные валидные прокси
+                    for (int i = 0; i < task.GuestViewersCount; i++)
                     {
-                        _logger.LogWarning("Не найдены валидные прокси для гостевого просмотра");
-                        continue;
+                        var proxy = await _proxyService.GetRandomValidProxy();
+                        if (proxy == null)
+                        {
+                            _logger.LogWarning("Не найдены валидные прокси для гостевого просмотра");
+                            continue;
+                        }
+
+                        var driver = await _driverPool.GetDriver(proxy, cts.Token);
+                        drivers.Add((driver, proxy));
+                        watchingTasks.Add(WatchGuestWithRetry(driver, proxy, task, cts.Token));
                     }
 
-                    var driver = await _driverPool.GetDriver(proxy, cts.Token);
-                    drivers.Add((driver, proxy));
-                    watchingTasks.Add(WatchGuestWithRetry(driver, proxy, task, cts.Token));
+                    await Task.WhenAny(
+                        Task.Delay(task.Duration, cts.Token),
+                        Task.WhenAll(watchingTasks)
+                    );
+
+                    task.Status = cts.IsCancellationRequested
+                        ? Core.Enums.TaskStatus.Canceled
+                        : Core.Enums.TaskStatus.Completed;
                 }
-
-                await Task.WhenAny(
-                    Task.Delay(task.Duration, cts.Token),
-                    Task.WhenAll(watchingTasks)
-                );
-
-                task.Status = cts.IsCancellationRequested
-                    ? Core.Enums.TaskStatus.Canceled
-                    : Core.Enums.TaskStatus.Completed;
-            }
-            catch (Exception ex) when (ex is not OperationCanceledException)
-            {
-                task.Status = Core.Enums.TaskStatus.Failed;
-                _logger.LogError(ex, $"Ошибка в задаче #{task.Id}");
-            }
-            finally
-            {
-                foreach (var (driver, proxy) in drivers)
+                catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    _driverPool.ReleaseDriver(driver, proxy);
+                    task.Status = Core.Enums.TaskStatus.Failed;
+                    _logger.LogError(ex, $"Ошибка в задаче #{task.Id}");
                 }
+                finally
+                {
+                    foreach (var (driver, proxy) in drivers)
+                    {
+                        _driverPool.ReleaseDriver(driver, proxy);
+                    }
 
-                _taskTokens.Remove(task.Id);
-                await _taskRepository.UpdateTask(task);
+                    _taskTokens.Remove(task.Id);
+                    await _taskRepository.UpdateTask(task);
+                }
             }
+            else 
+            {
+                 _logger.LogInformation($"Стрим оффлайн ${task.ChannelUrl}");
+            }        
         }
 
         private async Task WatchAccountWithRetry(
@@ -167,7 +172,8 @@ namespace TwitchBot.Core.Services
         {
             try
             {
-                await _twitchService.WatchStream(driver, account, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
+                await _twitchService.WatchLightweight(account, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
+                //await _twitchService.WatchStream(driver, account, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
             }
             catch
             {
@@ -187,7 +193,8 @@ namespace TwitchBot.Core.Services
         {
             try
             {
-                await _twitchService.WatchAsGuest(driver, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
+                await _twitchService.WatchLightweight(null, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
+                //await _twitchService.WatchAsGuest(driver, proxy, task.ChannelUrl, (int)task.Duration.TotalMinutes);
             }
             catch
             {

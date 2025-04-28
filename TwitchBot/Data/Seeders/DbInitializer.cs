@@ -12,9 +12,11 @@ namespace TwitchBot.Data.Seeders
 {
     public class DbInitializer
     {
-        public static async Task Initialize(AppDbContext context, IProxyService proxyService, ILogger<DbInitializer> logger)
+        public static async Task Initialize(AppDbContext context, IProxyService proxyService, ITaskService taskService, ILogger<DbInitializer> logger)
         {
             logger.LogInformation("Инициализация базы данных...");
+
+            await ResetRunningTasks(context, taskService, logger);
 
             var baseDir = AppDomain.CurrentDomain.BaseDirectory;
             var accountsPath = Path.Combine(baseDir, "accounts.txt");
@@ -31,6 +33,37 @@ namespace TwitchBot.Data.Seeders
             catch (Exception ex)
             {
                 logger.LogError(ex, "Ошибка при инициализации базы данных");
+                throw;
+            }
+        }
+
+        private static async Task ResetRunningTasks(AppDbContext context, ITaskService taskService, ILogger logger)
+        {
+            try
+            {
+                var runningTasks = await context.Tasks
+                    .Where(t => t.Status == Core.Enums.TaskStatus.Running)
+                    .ToListAsync();
+
+                if (runningTasks.Any())
+                {
+                    logger.LogInformation($"Найдено {runningTasks.Count} задач со статусом Running. Сбрасываем в Pending...");
+
+                    foreach (var task in runningTasks)
+                    {
+                        task.Status = Core.Enums.TaskStatus.Pending;
+                        task.StartTime = null;
+                        task.EndTime = null;
+                        task.ElapsedTime = TimeSpan.Zero;
+                    }
+
+                    await context.SaveChangesAsync();
+                    logger.LogInformation("Все Running задачи сброшены в Pending.");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Ошибка при сбросе Running задач");
                 throw;
             }
         }

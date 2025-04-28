@@ -19,11 +19,10 @@ using OpenQA.Selenium.DevTools;
 
 namespace TwitchBot.Core.Services
 {
-    public class TwitchService : ITwitchService, IDisposable
+    public class KickService : ITwitchService, IDisposable
     {
         private readonly ILogger<TwitchService> _logger;
         private readonly WebDriverPool _driverPool;
-        private readonly IAccountService _accountService;
         private IWebDriver _mainDriver;
         private readonly Random _random = new();
         private readonly List<string> _userAgents = new()
@@ -32,14 +31,12 @@ namespace TwitchBot.Core.Services
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         };
-        public TwitchService(
+        public KickService(
             ILogger<TwitchService> logger,
-            WebDriverPool driverPool,
-            IAccountService accountService)
+            WebDriverPool driverPool)
         {
             _logger = logger;
             _driverPool = driverPool;
-            _accountService = accountService;
             InitializeMainDriver();
         }
 
@@ -78,7 +75,7 @@ namespace TwitchBot.Core.Services
                 _mainDriver.SwitchTo().Window(_mainDriver.WindowHandles.Last());
                 _mainDriver.Navigate().GoToUrl(channelUrl);
 
-                await Task.Delay(5000);
+                await Task.Delay(10000);
 
                 var liveIndicator = _mainDriver.FindElements(By.CssSelector("span.CoreText-sc-1txzju1-0.bfNjIO"));
                 bool isLive = liveIndicator.Any(e => e.Displayed);
@@ -183,41 +180,23 @@ namespace TwitchBot.Core.Services
                 }
             }
         }
-        public async Task WatchLightweight(TwitchAccount account, ProxyServer proxy, string channelUrl, int minutes)
+        public async Task WatchLightweight(
+        TwitchAccount account,
+        ProxyServer proxy,
+        string channelUrl,
+        int minutes)
         {
             using var client = CreateHttpClient(proxy);
             if (account != null)
             {
-                _logger.LogInformation($"[{account.Username}] Начинаю просмотр стрима {channelUrl} через прокси {proxy.Address}:{proxy.Port}");
-
-                try
-                {
-                    var cookies = await GetOrRefreshAccountCookies(account, proxy);
-                    var cookiesHeader = FormatCookiesHeader(cookies);
-
-                    if (!string.IsNullOrEmpty(cookiesHeader))
-                    {
-                        client.DefaultRequestHeaders.Add("Cookie", cookiesHeader);
-                        _logger.LogInformation($"[{account.Username}] Использую куки: {cookiesHeader}");
-                    }
-                    else
-                    {
-                        _logger.LogWarning($"[{account.Username}] Не удалось получить куки");
-                        return;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"[{account.Username}] Ошибка при работе с куками");
-                    return;
-                }
+                _logger.LogInformation($"Начинаю просмотр стрима {channelUrl} с аккаунта {account.Username} с прокси {proxy.Address}");
+                client.DefaultRequestHeaders.Add("Cookie", $"auth-token={account.AuthToken}; persistent=1");
             }
             else
             {
-                _logger.LogInformation($"[Гость] Начинаю просмотр стрима {channelUrl} через прокси {proxy.Address}:{proxy.Port}");
+                _logger.LogInformation($"Начинаю просмотр стрима {channelUrl} гостем с прокси {proxy.Address}");
             }
 
-            // Настройка заголовков
             client.DefaultRequestHeaders.Add("User-Agent", _userAgents[_random.Next(_userAgents.Count)]);
             client.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
             client.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.5");
@@ -229,128 +208,38 @@ namespace TwitchBot.Core.Services
 
             try
             {
-                // 1. Первоначальный запрос
-                _logger.LogInformation($"[{(account?.Username ?? "Гость")}] Отправляю первоначальный запрос...");
+                // 1. Первоначальный запрос для установки соединения
                 var response = await client.GetAsync(channelUrl);
                 var content = await response.Content.ReadAsStringAsync();
-                _logger.LogInformation($"[{(account?.Username ?? "Гость")}] Получен ответ: {response.StatusCode}");
 
-                // 2. Извлекаем clientId
+                // 2. Извлечение необходимых токенов из HTML
                 var clientId = ExtractClientId(content);
                 var deviceId = Guid.NewGuid().ToString();
-                _logger.LogInformation($"[{(account?.Username ?? "Гость")}] ClientID: {clientId}, DeviceID: {deviceId}");
 
                 // 3. Инициализация просмотра
-                _logger.LogInformation($"[{(account?.Username ?? "Гость")}] Инициализирую просмотр...");
-                var initResponse = await InitializeViewer(client, channelName, clientId, deviceId);
-                _logger.LogInformation($"[{(account?.Username ?? "Гость")}] Инициализация завершена: {initResponse.StatusCode}");
+                await InitializeViewer(client, channelName, clientId, deviceId);
 
-                int heartbeatCount = 0;
                 while (DateTime.UtcNow < endTime)
                 {
-                    // 4. Heartbeat-запрос
-                    heartbeatCount++;
-                    _logger.LogInformation($"[{(account?.Username ?? "Гость")}] Отправляю heartbeat #{heartbeatCount}...");
-                    var heartbeatResponse = await SendHeartbeat(client, channelName, clientId, deviceId);
-                    _logger.LogInformation($"[{(account?.Username ?? "Гость")}] Heartbeat #{heartbeatCount} ответ: {heartbeatResponse.StatusCode}");
+                    // 4. Периодические heartbeat-запросы
+                    await SendHeartbeat(client, channelName, clientId, deviceId);
 
-                    // 5. Случайные действия
+                    // 5. Случайные действия для имитации активности
                     if (_random.Next(0, 100) < 30)
                     {
-                        _logger.LogInformation($"[{(account?.Username ?? "Гость")}] Имитирую активность...");
-                        await EmulateUserActivity(client, channelUrl);
+                        //await EmulateUserActivity(client, channelName);
                     }
 
-                    var delay = _random.Next(20000, 40000);
-                    _logger.LogInformation($"[{(account?.Username ?? "Гость")}] Следующий запрос через {delay/1000} сек...");
-                    await Task.Delay(delay);
+                    await Task.Delay(_random.Next(20000, 40000));
                 }
-
-                _logger.LogInformation($"[{(account?.Username ?? "Гость")}] Просмотр завершен успешно");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"[{(account?.Username ?? "Гость")}] Ошибка при просмотре {channelUrl}");
+                _logger.LogError(ex, $"Ошибка при просмотре {channelUrl}");
             }
         }
 
-        private async Task<Dictionary<string, string>> GetOrRefreshAccountCookies(TwitchAccount account, ProxyServer proxy)
-        {
-            // Инициализация пустого словаря, если куки отсутствуют
-            var cookiesDict = new Dictionary<string, string>();
-
-            // Проверяем наличие и валидность кук в БД
-            if (!string.IsNullOrEmpty(account.Cookies) && account.Cookies != "[]")
-            {
-                try
-                {
-                    cookiesDict = JsonSerializer.Deserialize<Dictionary<string, string>>(account.Cookies)
-                                  ?? new Dictionary<string, string>();
-
-                    if (cookiesDict.TryGetValue("expires", out var expiresStr) &&
-                        DateTime.TryParse(expiresStr, out var expires) &&
-                        expires > DateTime.UtcNow.AddHours(1))
-                    {
-                        _logger.LogInformation($"[{account.Username}] Использую сохраненные куки");
-                        return cookiesDict;
-                    }
-                }
-                catch (JsonException ex)
-                {
-                    _logger.LogWarning(ex, $"[{account.Username}] Ошибка десериализации кук, получаем новые");
-                }
-            }
-
-            // Получаем новые куки через Selenium
-            _logger.LogInformation($"[{account.Username}] Получаю новые куки...");
-            using var driver = await _driverPool.GetDriver(proxy);
-            try
-            {
-                driver.Navigate().GoToUrl("https://www.twitch.tv");
-                var cookie = new OpenQA.Selenium.Cookie("auth-token", account.AuthToken, ".twitch.tv", "/", DateTime.Now.AddYears(1));
-                driver.Manage().Cookies.AddCookie(cookie);
-                driver.Navigate().Refresh();
-                await Task.Delay(5000);
-
-                // Получаем все куки из браузера
-                var seleniumCookies = driver.Manage().Cookies.AllCookies;
-                cookiesDict = seleniumCookies.ToDictionary(
-                    c => c.Name,
-                    c => c.Value
-                );
-
-                // Добавляем время экспирации (24 часа)
-                cookiesDict["expires"] = DateTime.UtcNow.AddDays(1).ToString("o");
-
-                // Сохраняем в БД
-                account.Cookies = JsonSerializer.Serialize(cookiesDict);
-                await _accountService.UpdateAccount(account);
-                _logger.LogInformation($"[{account.Username}] Получено {cookiesDict.Count} кук, сохранено в БД");
-
-                return cookiesDict;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"[{account.Username}] Ошибка при получении кук");
-                return cookiesDict;
-            }
-            finally
-            {
-                _driverPool.ReleaseDriver(driver, proxy);
-            }
-        }
-
-        private string FormatCookiesHeader(Dictionary<string, string> cookies)
-        {
-            if (cookies == null || cookies.Count == 0)
-                return string.Empty;
-
-            return string.Join("; ", cookies
-                .Where(kv => kv.Key != "expires" && !string.IsNullOrEmpty(kv.Value))
-                .Select(kv => $"{kv.Key}={kv.Value}"));
-        }
-
-        private async Task<HttpResponseMessage> InitializeViewer(HttpClient client, string channelName, string clientId, string deviceId)
+        private async Task InitializeViewer(HttpClient client, string channelName, string clientId, string deviceId)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "https://gql.twitch.tv/gql")
             {
@@ -377,10 +266,10 @@ namespace TwitchBot.Core.Services
                     "application/json")
             };
 
-            return await client.SendAsync(request);
+            await client.SendAsync(request);
         }
 
-        private async Task<HttpResponseMessage> SendHeartbeat(HttpClient client, string channelName, string clientId, string deviceId)
+        private async Task SendHeartbeat(HttpClient client, string channelName, string clientId, string deviceId)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "https://gql.twitch.tv/gql")
             {
@@ -407,33 +296,7 @@ namespace TwitchBot.Core.Services
                     "application/json")
             };
 
-            return await client.SendAsync(request);
-        }
-
-        private async Task EmulateUserActivity(HttpClient client, string channelUrl)
-        {
-            try
-            {
-                // 1. Запрос чата
-                var chatResponse = await client.GetAsync($"{channelUrl}/chat");
-                _logger.LogInformation($"Chat response: {chatResponse.StatusCode}");
-
-                // 2. Запрос информации о стриме
-                var streamInfoResponse = await client.GetAsync($"{channelUrl}/about");
-                _logger.LogInformation($"Stream info response: {streamInfoResponse.StatusCode}");
-
-                // 3. Случайное действие
-                var actions = new[]
-                {
-            async () => await client.GetAsync($"{channelUrl}/schedule"),
-            async () => await client.GetAsync($"{channelUrl}/videos")
-        };
-                await actions[_random.Next(actions.Length)]();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during user activity emulation");
-            }
+            await client.SendAsync(request);
         }
 
         private string ExtractClientId(string htmlContent)
@@ -448,10 +311,7 @@ namespace TwitchBot.Core.Services
             var handler = new HttpClientHandler
             {
                 Proxy = proxy.Type == ProxyType.SOCKS5
-                    ? new WebProxy($"socks5://{proxy.Address}:{proxy.Port}") 
-                    {
-                        Credentials = new NetworkCredential(proxy.Username, proxy.Password)
-                    }
+                    ? new WebProxy($"socks5://{proxy.Address}:{proxy.Port}")
                     : new WebProxy($"http://{proxy.Address}:{proxy.Port}"),
                 UseProxy = true
             };

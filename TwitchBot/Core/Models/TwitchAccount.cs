@@ -9,5 +9,6 @@
         public DateTime LastChecked { get; set; } = DateTime.Now;
         public int? ProxyId { get; set; }
         public ProxyServer Proxy { get; set; }
+        public string Cookies { get; set; } = string.Empty;
     }
 }

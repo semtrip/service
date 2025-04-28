@@ -30,6 +30,7 @@
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
     <PackageReference Include="SocksSharp" Version="1.1.1" />
     <PackageReference Include="SocksWebProxy" Version="1.0.5" />
+    <PackageReference Include="System.Text.Json" Version="9.0.4" />
     <PackageReference Include="WebDriverManager" Version="2.17.5" />
   </ItemGroup>
 

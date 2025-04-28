@@ -27,7 +27,6 @@ namespace TwitchBot.Workers
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("TaskRunner started");
-
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
@@ -36,7 +35,6 @@ namespace TwitchBot.Workers
                     foreach (var task in pendingTasks)
                     {
                         if (stoppingToken.IsCancellationRequested) break;
-
                         _logger.LogInformation($"Starting task {task.Id} for {task.ChannelUrl}");
                         _ = _taskService.StartTask(task);
                     }

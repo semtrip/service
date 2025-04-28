@@ -14,8 +14,8 @@ namespace TwitchBot.Core.Services
         private readonly IAccountRepository _accountRepository;
         private readonly IProxyRepository _proxyRepository;
         private readonly IProxyService _proxyService;
-        private readonly ITwitchService _twitchService;
         private readonly ILogger<AccountService> _logger;
+        private readonly IAccountValidator _accountValidator;
         private readonly SemaphoreSlim _validationLock = new(1, 1);
         private readonly Random _random = new();
 
@@ -23,14 +23,14 @@ namespace TwitchBot.Core.Services
             IAccountRepository accountRepository,
             IProxyRepository proxyRepository,
             IProxyService proxyService,
-            ITwitchService twitchService,
-            ILogger<AccountService> logger)
+            ILogger<AccountService> logger,
+            IAccountValidator accountValidator)
         {
             _accountRepository = accountRepository;
             _proxyRepository = proxyRepository;
             _proxyService = proxyService;
-            _twitchService = twitchService;
             _logger = logger;
+            _accountValidator = accountValidator;
         }
 
         public async Task<List<TwitchAccount>> GetValidAccounts(int count)
@@ -131,18 +131,18 @@ namespace TwitchBot.Core.Services
                 try
                 {
                     _logger.LogInformation($"Validation {account.Username}");
-                    var isValid = await _twitchService.VerifyAccount(account, proxy);
-                    account.IsValid = isValid;
-                    account.ProxyId = isValid ? proxy.Id : (int?)null;
+                    var validationResult = await _accountValidator.ValidateAccount(account, proxy);
+                    account = validationResult;
                     account.LastChecked = DateTime.UtcNow;
-                    if (isValid) {
+                    if (account.IsValid) {
+                        account.ProxyId = proxy.Id;
                         proxy.ActiveAccountsCount++;
                     }
 
                     await _accountRepository.UpdateAccount(account);
                     await _proxyRepository.UpdateProxy(proxy);
 
-                    _logger.LogInformation($"Account {account.Username} validation: {(isValid ? "VALID" : "INVALID")}");
+                    _logger.LogInformation($"Account {account.Username} validation: {(account.IsValid ? "VALID" : "INVALID")}");
                     return;
                 }
                 catch (Exception ex)

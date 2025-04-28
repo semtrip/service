@@ -91,7 +91,7 @@ namespace TwitchBot.ConsoleUI.Menus
 
         private void PrintMenu()
         {
-            Console.WriteLine("=== Twitch Viewer Bot ===");
+            Console.WriteLine("=== StreamShop Activity BOT ===");
             foreach (var item in _menuItems)
             {
                 Console.WriteLine($"{item.Key}. {item.Value}");

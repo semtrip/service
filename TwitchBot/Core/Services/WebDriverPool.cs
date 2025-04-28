@@ -96,7 +96,7 @@ namespace TwitchBot.Core.Services
             }
         }
 
-        private IWebDriver CreateNewDriver(ProxyServer proxy)
+        private ChromeDriver CreateNewDriver(ProxyServer proxy)
         {
             var options = new ChromeOptions();
             options.AddArguments(_baseOptions.Arguments);

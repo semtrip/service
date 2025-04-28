@@ -46,6 +46,7 @@ namespace TwitchBot.Data.Repositories
 
         public async Task UpdateTask(BotTask task)
         {
+            task.LastUpdated = DateTime.UtcNow;
             _context.Tasks.Update(task);
             await _context.SaveChangesAsync();
         }

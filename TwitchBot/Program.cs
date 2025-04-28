@@ -40,6 +40,7 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddScoped<ITaskRepository, TaskRepository>();
 
         // Регистрация сервисов
+        services.AddScoped<IAccountValidator, AccountValidator>();
         services.AddSingleton<WebDriverPool>(_ => new WebDriverPool(40));
         services.AddSingleton<ITwitchService, TwitchService>();
         services.AddSingleton<IProxyService, ProxyService>();
@@ -96,7 +97,7 @@ try
         var taskService = scope.ServiceProvider.GetRequiredService<ITaskService>();
 
         await db.Database.EnsureCreatedAsync();
-        await DbInitializer.Initialize(db, proxyService, logger);
+        await DbInitializer.Initialize(db, proxyService, taskService, logger);
         await taskService.InitializeAsync();
     }
 

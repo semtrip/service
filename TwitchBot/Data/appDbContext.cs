@@ -26,6 +26,7 @@ namespace TwitchBot.Data
                     .HasConversion(
                         v => v.ToUniversalTime(),
                         v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+                entity.Property(a => a.Cookies);
             });
 
             modelBuilder.Entity<ProxyServer>(entity =>

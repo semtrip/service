@@ -8183,6 +8183,7 @@
       "Serilog.Sinks.File >= 6.0.0",
       "SocksSharp >= 1.1.1",
       "SocksWebProxy >= 1.0.5",
+      "System.Text.Json >= 9.0.4",
       "WebDriverManager >= 2.17.5"
     ]
   },
@@ -8300,6 +8301,10 @@
           "SocksWebProxy": {
             "target": "Package",
             "version": "[1.0.5, )"
+          },
+          "System.Text.Json": {
+            "target": "Package",
+            "version": "[9.0.4, )"
           },
           "WebDriverManager": {
             "target": "Package",
